@@ -17,7 +17,7 @@ Hands-on workshop to create containers-based backend platform that exposes async
     - Container Registry
     - Virtual Network
     - Log Analytics
-    i. App Insights for each microservice
+    - App Insights for each microservice
 4. Creating IoT Hub and IoT Edge Device
     - IoT Hub Provisioning
     - IoT Edge Device Provisioning
@@ -28,17 +28,17 @@ Hands-on workshop to create containers-based backend platform that exposes async
     - Services Deployment
     - OPTIONAL: AKS Secure Deployment
 6. Operation & Testing
-7. Bonus Tracks
+7. BONUS Tracks
     - Secure AKS Provisioning
-        i. Azure AD Integration
-        ii. Application Gateway Ingress Controller
-        iii. Azure Firewall and Egress Lockdown
+        - Azure AD Integration
+        - Application Gateway Ingress Controller
+        - Azure Firewall and Egress Lockdown
     - Realtime Communication
-        i. Cosmos DB Change Feed
-        ii. SignalR client communication
+        - Cosmos DB Change Feed
+        - SignalR client communication
     - IoT Edge Advance Deployment
-        i. Adding Face Detection Module
-        ii. Using Raspberry Pi with USB Camera
+        - Adding Face Detection Module
+        - Using Raspberry Pi with USB Camera
 
 ## About the project
 

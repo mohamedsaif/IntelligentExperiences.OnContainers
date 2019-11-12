@@ -97,7 +97,7 @@ All constructive feedback is welcomed 🙏
 
 You can always create issue, suggest an update through PR or direct message me on [Twitter](https://twitter.com/mohamedsaif101).
 
-## Authors
+## Author
 
 |      ![Photo](res/mohamed-saif.jpg)            |
 |:----------------------------------------------:|

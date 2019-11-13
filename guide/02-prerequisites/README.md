@@ -1,3 +1,5 @@
+![banner](assets/banner.png)
+
 # Creating Azure Prerequisites
 
 Now we are ready to setup our initial Azure resources that will be needed.

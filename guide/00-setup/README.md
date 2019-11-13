@@ -1,4 +1,8 @@
+![banner](assets/banner.png)
+
 # Dev Environment Setup
+
+These are the steps of one of the ways to start developing and deploying cloud-native solutions targeting Azure.
 
 ## Azure CLI
 

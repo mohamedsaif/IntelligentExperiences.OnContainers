@@ -4,6 +4,10 @@
 
 These are the steps of one of the ways to start developing and deploying cloud-native solutions targeting Azure.
 
+## Azure Account
+
+To complete this how-to, you need an Azure subscription. If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free) before you begin.
+
 ## Azure CLI
 
 Download and install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your relevant OS.

@@ -62,17 +62,18 @@ I'm really excited to share with you the great journey I took to build such syst
     - Container Registry
     - Virtual Network
     - Log Analytics
-    - App Insights for each microservice
-4. Creating IoT Hub and IoT Edge Device
+    - App Insights for each app
+4. AKS Cluster
+    - Essential kubernetes cluster provisioning
+    - OPTIONAL: AKS Secure Deployment
+5. Creating IoT Hub and IoT Edge Device
     - IoT Hub Provisioning
     - IoT Edge Device Provisioning
     - Testing the connectivity
-5. AKS Cluster
-    - Cluster provisioning
+6. Services Deployment & Testing
     - DevOps Setup
     - Services Deployment
-    - OPTIONAL: AKS Secure Deployment
-6. Operation & Testing
+    - Testing
 7. BONUS Tracks
     - Secure AKS Provisioning
         - Azure AD Integration

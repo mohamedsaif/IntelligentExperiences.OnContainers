@@ -18,3 +18,9 @@ I would highly recommend installing the following extensions:
 
 - [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
 - [Azure IoT Tools](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
+
+## Next step
+
+Congratulations on completing this section. Let's move to the next step:
+
+[Next Step](/guide/02-prerequisites/README.md)

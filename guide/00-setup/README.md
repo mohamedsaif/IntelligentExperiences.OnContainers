@@ -27,6 +27,14 @@ I would highly recommend installing the following extensions:
 - [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
 - [Azure IoT Tools](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
 
+### Azure Functions Core Tools
+
+As we will be using KEDA to deploy event driven APIs as part of the platform services, we will be using Azure Functions Core tools to help with the needed development time and kubernetes deployment tooling.
+
+Follow [the installation guide](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) to make sure it is installed on your target dev environment.
+
+>NOTE: At the time of writing the code, I used version 2.7.1846
+
 ## Next step
 
 Congratulations on completing this section. Let's move to the next step:

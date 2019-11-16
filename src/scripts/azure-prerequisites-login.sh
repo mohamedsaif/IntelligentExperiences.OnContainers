@@ -9,7 +9,7 @@ az account set --subscription "YOUR-SUBSCRIPTION-NAME"
 
 #Make sure the active subscription is set correctly
 SUBSCRIPTION_ACCOUNT=$(az account show)
-echo $SUBSCRIPTION_ACCOUNT
+echo $SUBSCRIPTION_ACCOUNT | jq
 
 # Get the tenant ID
 TENANT_ID=$(echo $SUBSCRIPTION_ACCOUNT | jq -r .tenantId)

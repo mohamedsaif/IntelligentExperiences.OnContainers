@@ -97,6 +97,20 @@ az aks create \
 
 ```
 
+### Getting AKS Credentials
+
+Now let's download kubectl context for our AKS cluster and test that it works
+
+```bash
+
+# Connecting to AKS via kubectl
+az aks get-credentials --resource-group $RG --name $CLUSTER_NAME
+
+# Test the connection
+kubectl get nodes
+
+```
+
 ## Next step
 
 Congratulations on completing this section. Let's move to the next step:

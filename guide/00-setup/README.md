@@ -48,6 +48,8 @@ Please follow the instruction in the documentation above to get started.
 
 Download and install [VS Code](https://code.visualstudio.com/)
 
+>NOTE: You can also use the full fledge Visual Studio 2019 or later
+
 ### VS Code Extension
 
 I would highly recommend installing the following extensions:

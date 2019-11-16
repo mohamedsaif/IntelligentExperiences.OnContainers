@@ -13,6 +13,8 @@ All scripts to provision the entire resources in this guide will have the prefix
 
 ## Azure CLI sign in
 
+>CODE: [azure-prerequisites-login.sh](../../src/scripts/azure-prerequisites-login.sh)
+
 Fire up your favorite bash terminal and execute the following commands:
 
 ```bash
@@ -49,6 +51,8 @@ clear
 ```
 
 ## Setting up deployment variables
+
+>CODE: [azure-prerequisites-variables.sh](../../src/scripts/azure-prerequisites-variables.sh)
 
 I use variables to easily change my deployment parameters across multiple scripts and sessions.
 
@@ -96,10 +100,13 @@ az group create --name $RG --location $LOCATION
 
 ## Storage Account
 
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
+
 [Azure Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview) offers a cloud storage for your blobs, files, disks,... We will used it to store captured frames from the connected cameras.
 
 ```bash
 
+# Creating Azure Storage account to store camera frames for post processing
 az storage account create \
     -n $FRAMES_STORAGE \
     -g $RG \
@@ -110,8 +117,11 @@ az storage account create \
 
 ## Cosmos DB
 
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
+
 ```bash
 
+# Creating Cosmos DB account to store all system data
 az cosmosdb create \
     -n $COSMOSDB_ACCOUNT \
     -g $RG \
@@ -121,10 +131,13 @@ az cosmosdb create \
 
 ## Service Bus
 
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
+
 Service Bus will be used to offer scalable distributed messaging platform.
 
 ```bash
 
+# For distributed async integration, we will be using Azure Service Bus
 az servicebus namespace create \
    --resource-group $RG \
    --name $SB_NAMESPACE \
@@ -134,6 +147,8 @@ az servicebus namespace create \
 ```
 
 ## Cognitive Service
+
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 Azure Cognitive Services are a set of pre-trained AI models that solve common AI requirements like vision, text and speech.
 
@@ -170,10 +185,13 @@ az cognitiveservices account list-kinds
 
 ## Container Registry
 
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
+
 As you build your containerized solution, you need a reliable and enterprise ready container registry, we will be using Azure Container Registry to accomplish that.
 
 ```bash
 
+# We will use Azure Container Registry to store all of our system container images
 az acr create \
     -g $RG \
     -n $CONTAINER_REGISTRY_NAME \
@@ -185,6 +203,8 @@ If you want to be able to push to this ACR from your dev machine, you can authen
 
 ```bash
 
+# If you wish to enable local dev push to ACR, you need to authenticate
+# Note that Docker daemon must be running before executing this command
 az acr login --name $CONTAINER_REGISTRY_NAME
 
 ```
@@ -194,6 +214,8 @@ az acr login --name $CONTAINER_REGISTRY_NAME
 Read more about [ACR Authentication](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli).
 
 ## Virtual Network
+
+>CODE: [azure-prerequisites-network.sh](../../src/scripts/azure-prerequisites-network.sh)
 
 Networking is an important part of your cloud-native platform that look after services routing, security and other important aspects of the deployment.
 
@@ -238,6 +260,7 @@ VNSUBNET_IP_PREFIX="10.42.5.0/24"
 
 ```bash
 
+# Creating our main virtual network
 az network vnet create \
     --resource-group $RG \
     --name $VNET_NAME \
@@ -246,6 +269,7 @@ az network vnet create \
     --subnet-prefix $AKSSUBNET_IP_PREFIX
 
 ```
+
 ### Subnets
 
 Now we are ready to create the subnet that are required:
@@ -311,14 +335,17 @@ echo export AKS_VNSUBNET_ID=$AKS_VNSUBNET_ID >> ~/.bashrc
 
 ## Log Analytics Workspace (AKS and Firewall Telemetry)
 
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
+
 Azure Log Analytics Workspace is part of Azure Monitor and offers scalable storage and queries for our systems telemetry.
 
 [Read more here](https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/get-started-portal)
 
 ```bash
+# Creating Azure Log Analytics workspace
 
 # We will use Azure Resource Manager json template to deploy the workspace.
-
+# Make sure that the active directory is set to scripts (where the .json file is located)
 # First we update the workspace template with our custom name and location (using Linux stream edit)
 sed logs-workspace-deployment.json \
     -e s/WORKSPACE-NAME/$WORKSPACE_NAME/g \
@@ -339,6 +366,8 @@ echo $WORKSPACE
 ```
 
 ## Application Insights
+
+>CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 Getting application performance telemetry is essential to keep track of how your code is performing (in dev or prod).
 
@@ -367,6 +396,8 @@ echo $APPINSIGHTS_KEY
 ```
 
 ## Service Principal Account
+
+>CODE: [azure-prerequisites-sp.sh](../../src/scripts/azure-prerequisites-sp.sh)
 
 AKS needs a Service Principal account to authenticate against Azure ARM APIs so it can manage its resources (like worker VMs for example)
 

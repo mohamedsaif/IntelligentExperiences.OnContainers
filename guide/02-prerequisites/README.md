@@ -181,6 +181,18 @@ az acr create \
 
 ```
 
+If you want to be able to push to this ACR from your dev machine, you can authenticate using the following command:
+
+```bash
+
+az acr login --name $CONTAINER_REGISTRY_NAME
+
+```
+
+>NOTE: Authenticating the dev machine to ACR is not recommended for production use. Instead use your DevOps pipeline to push the images.
+
+Read more about [ACR Authentication](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli).
+
 ## Virtual Network
 
 Networking is an important part of your cloud-native platform that look after services routing, security and other important aspects of the deployment.

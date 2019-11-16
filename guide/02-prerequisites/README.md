@@ -144,6 +144,39 @@ az servicebus namespace create \
    --location $LOCATION \
    --sku Standard
 
+# Create new authorization rule to use it to connect to the service bus
+az servicebus namespace authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name cognitive-orchestrator-key \
+    --rights Send Listen
+
+# We will be using Service Bus's topic/subscription (aka pub/sub pattern) to build our middleware messaging.
+# Let's create the topics and subscriptions
+SB_TOPIC="cognitive-request"
+az servicebus topic create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name $SB_TOPIC
+
+# Create subscription 1 to the topic
+SB_TOPIC_SUB="cognitive-orchestrator"
+az servicebus topic subscription create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC \
+    --name $SB_TOPIC_SUB
+
+# Retrieve the primary connection string:
+SB_COGNITIVE_ORCH_CONNECTION=$(az servicebus namespace authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name cognitive-orchestrator-key \
+    --query primaryConnectionString --output tsv)
+
+# Take a note of the connection string as we will need it to setup our deployed services
+echo $SB_COGNITIVE_ORCH_CONNECTION
+
 ```
 
 ## Cognitive Service

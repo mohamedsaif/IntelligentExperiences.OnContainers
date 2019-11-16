@@ -8,9 +8,9 @@ namespace CognitiveOrchestrator.Functions
     public static class CognitiveOrchestrator
     {
         [FunctionName("CognitiveOrchestrator")]
-        public static void Run([ServiceBusTrigger("camframe", "cognitive-orchestrator", Connection = "")]string mySbMsg, ILogger log)
+        public static void Run([ServiceBusTrigger("camframe", "cognitive-orchestrator", Connection = "")]string camFrameEvent, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus topic trigger function processed message: {mySbMsg}");
+            log.LogInformation($"C# ServiceBus topic trigger function processed message: {camFrameEvent}");
         }
     }
 }

@@ -14,6 +14,8 @@ Download and install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/inst
 
 >NOTE: At the time of writing the code, I used version 2.7.1846. Make sure you are running same or later version. Check with ```az --version```
 
+>NOTE: If you are using Git Bash command line under Windows (instead of CMD), you might need to run ```az.cmd" $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} > "C:\Program Files\Git\mingw64\bin\az"``` in CMD (admin elevated) to avoid using ```az.cmd``` instead for the normal ```az``` command
+
 ## Docker Desktop
 
 [Docker Desktop](https://www.docker.com/products/docker-desktop) is the way to go to build cloud-ready on your desktop.
@@ -33,6 +35,14 @@ az aks install-cli
 ```
 
 Follow the [documentation here](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to install on your target OS.
+
+## WSL on Windows 10 PC
+
+As you build software that leverage Open Source, and you still in love with your Windows 10 PC, I would highly recommend Enabling [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+Please follow the instruction in the documentation above to get started.
+
+>NOTE: If you want to use the new WSL 2, follow these documentation [Installing WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install)
 
 ## VS Code
 

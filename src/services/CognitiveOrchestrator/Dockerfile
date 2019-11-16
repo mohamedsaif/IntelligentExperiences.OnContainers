@@ -1,6 +1,6 @@
 FROM microsoft/dotnet:2.2-sdk AS installer-env
 
-COPY . /src/dotnet-function-app
+COPY . /src/services/CognitiveOrchestrator
 RUN cd /src/dotnet-function-app && \
     mkdir -p /home/site/wwwroot && \
     dotnet publish *.csproj --output /home/site/wwwroot

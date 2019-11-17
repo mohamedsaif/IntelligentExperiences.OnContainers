@@ -67,7 +67,7 @@ Deploying to Kubernetes is also super simple, and Azure Functions Core Tools hel
 
 ```bash
 
-func kubernetes deploy --name CognitiveOrchestrator --registry myregistry.azurecr.io/REPO --dotnet --dry-run > deploy.yaml
+func kubernetes deploy --name cognitive-orchestrator --registry $CONTAINER_REGISTRY_NAME.azurecr.io/services --dotnet --dry-run > deploy-updated.yaml
 
 ```
 

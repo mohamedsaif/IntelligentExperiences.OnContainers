@@ -11,10 +11,12 @@ namespace CognitiveOrchestrator.Functions
     {
         [FunctionName("CognitiveOrchestrator")]
         public static void Run(
-            [ServiceBusTrigger("cognitive-request", "cognitive-orchestrator", Connection = "SB_Connection")]CognitiveRequest cognitiveRequest, 
+            [ServiceBusTrigger("cognitive-request", "cognitive-orchestrator", Connection = "SB_Connection")]string request, 
             ILogger log)
         {
-            log.LogInformation($"cognitive-orchestrator topic trigger function processed message: {cognitiveRequest}");
+            var cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
+
+            log.LogInformation($"cognitive-orchestrator topic trigger function processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
             if(cognitiveRequest.TargetAction == CognitiveTargetAction.CamFrame.ToString())
                 CamFrameAnalysis(cognitiveRequest);
             else

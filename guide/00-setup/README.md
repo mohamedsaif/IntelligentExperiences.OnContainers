@@ -83,6 +83,14 @@ chocolatey install jq
 
 For information on installing it, refer to [jq documentation](https://stedolan.github.io/jq/download/)
 
+## Dapr
+
+A new cloud
+
+Follow [Dapr Installation Instructions](https://github.com/dapr/docs/blob/master/getting-started/environment-setup.md#prerequisites) to prepare your dev environment.
+
+>NOTE: You need Docker Desktop up and running (in Windows it must be under Linux Containers mode).
+
 ## Next step
 
 Congratulations on completing this section. Let's move to the next step:

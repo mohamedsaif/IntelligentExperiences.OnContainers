@@ -15,6 +15,12 @@ namespace CoreLib.Repos
         private readonly IDictionary<string, string> _collectionNames;
         private readonly IDocumentClient _documentClient;
 
+        /// <summary>
+        /// Usually used with dependency injection to retrieve the related database collection and create the schema if its missing
+        /// </summary>
+        /// <param name="databaseName">Database container name</param>
+        /// <param name="collectionNames">A dictionary of collection/partition key pairs used to create schema and retrieve collections</param>
+        /// <param name="documentClient"></param>
         public CosmosDbClientFactory(string databaseName, IDictionary<string, string> collectionNames, IDocumentClient documentClient)
         {
             _databaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));

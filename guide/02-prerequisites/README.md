@@ -179,6 +179,8 @@ echo $SB_COGNITIVE_ORCH_CONNECTION
 
 ```
 
+>NOTE: If you wish to have a client to test your service bus, check out [Service Bus Explorer](https://github.com/paolosalvatori/ServiceBusExplorer) open source project created by Paolo Salvatori. Please note it will require Manage permission as well (the above connection string does not allow management).
+
 ## Cognitive Service
 
 >CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)

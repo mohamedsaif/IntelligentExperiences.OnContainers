@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Includes a set of services that will be used accross multiple systems related to storage, db, and event handling.</Description>
   </PropertyGroup>
 
   <ItemGroup>

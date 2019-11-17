@@ -85,7 +85,7 @@ For information on installing it, refer to [jq documentation](https://stedolan.g
 
 ## Dapr
 
-A new cloud
+Dapr is an open-source, portable, event-driven runtime that makes it easy for enterprise developers to build resilient, microservice stateless and stateful applications that run on the cloud and edge and embraces the diversity of languages and developer frameworks.
 
 Follow [Dapr Installation Instructions](https://github.com/dapr/docs/blob/master/getting-started/environment-setup.md#prerequisites) to prepare your dev environment.
 

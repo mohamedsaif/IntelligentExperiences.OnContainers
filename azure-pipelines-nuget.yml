@@ -42,7 +42,7 @@ jobs:
       versioningScheme: byPrereleaseNumber
       majorVersion: '${{ Parameters.Major }}'
       minorVersion: '${{ Parameters.Minor }}'
-      patchVersion: '$(Build.BuildId)'
+      patchVersion: '$(Build.BuildNumber)'
 
 #  - task: NuGetCommand@2
 #    displayName: 'NuGet push'

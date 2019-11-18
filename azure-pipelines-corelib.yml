@@ -1,0 +1,23 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - 'src/core'
+      - 'azure-pipelines-corelib.yml'
+      - 'azure-pipelines-nuget.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-nuget.yml
+  parameters:
+    Name: 'CoreLib'
+    WorkingDirectory: 'src/core/CoreLib'
+    RestoreBuildProjects: '**/CoreLib.csproj'
+    ArtifactName: 'CoreLib-NuGet'

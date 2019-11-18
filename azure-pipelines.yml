@@ -8,13 +8,11 @@ trigger:
   paths:
     include:
       - 'src/services'
-      - 'src/core'
       - 'src/iot'
       - 'src/web'
       - 'azure-pipelines.yml'
       - 'azure-pipelines-angular.yml'
       - 'azure-pipelines-webapp.yml'
-      - 'azure-pipelines-nuget.yml'
 
 variables:
   buildConfiguration: 'Release'
@@ -29,10 +27,3 @@ jobs:
     ArtifactName: 'CognitiveOrchestrator'
     PublishWebApp: False
     ZipAfterPublish: False
-
-- template: azure-pipelines-nuget.yml
-  parameters:
-    Name: 'CoreLib'
-    WorkingDirectory: 'src/core/CoreLib'
-    RestoreBuildProjects: '**/CoreLib.csproj'
-    ArtifactName: 'CoreLib-NuGet'

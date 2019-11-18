@@ -10,11 +10,11 @@ Almost all retail shops already include a networked CCTV cameras all over the st
 
 >NOTE: Leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)
 
-### Footfall Analytics
+### Crowd Analytics
 
-This workshop walks through the steps to deploy a connected, secure and reliable **Footfall Analytics** platform leveraging cloud native solution.
+This workshop walks through the steps to deploy a connected, secure and reliable **Crowd Analytics** platform leveraging cloud native solution.
 
-Footfall analytics is about understanding who (age, gender, emotion,...) visit your location, when and how many.
+Crowd analytics (also known as footfall analytics) is about understanding who (age, gender, emotion,...) visit your location, when and how many.
 
 Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 
@@ -24,7 +24,7 @@ Authentication is a key part of almost all security measures.
 
 2-Factor authentication is becoming more and more a requirement rather than a fancy option.
 
-In the workshop, footfall analytics dashboard is protected by a 3-factor authentication
+In the workshop, crowd analytics dashboard is protected by a 3-factor authentication
 
 1. Something you know: username and password
 2. Something you have: your employee ID

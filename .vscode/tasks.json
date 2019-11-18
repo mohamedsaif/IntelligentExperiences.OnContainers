@@ -12,7 +12,7 @@
             "type": "process",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CognitiveOrchestrator"
+                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
             }
         },
         {
@@ -31,7 +31,7 @@
             },
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CognitiveOrchestrator"
+                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
             }
         },
         {
@@ -47,7 +47,7 @@
             "type": "process",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CognitiveOrchestrator"
+                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
             }
         },
         {
@@ -64,14 +64,14 @@
             "dependsOn": "clean release",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CognitiveOrchestrator"
+                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
             }
         },
         {
             "type": "func",
             "dependsOn": "build",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CognitiveOrchestrator/bin/Debug/netcoreapp2.1"
+                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer/bin/Debug/netcoreapp2.1"
             },
             "command": "host start",
             "isBackground": true,

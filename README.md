@@ -4,6 +4,13 @@ Hands-on workshop to create containers-based backend platform that exposes async
 
 ![architecture](res/architecture.png)
 
+|Service|Build|Release|
+|-|-|-|
+|CognitiveOrchestrator|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/mohamedsaif.IntelligentExperiences.OnContainers?branchName=master&jobName=CognitiveOrchestrator)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=37&branchName=master)|TBD|
+|CoreLib|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/mohamedsaif.IntelligentExperiences.OnContainers?branchName=master&jobName=CoreLib)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=37&branchName=master)|TBD|
+|CamFrameAnalyzer|TBD|TBD|
+|CrowdAnalysis.Dashboard|TBD|TBD|
+
 ## Overview
 
 Almost all retail shops already include a networked CCTV cameras all over the store. Why not extend these cameras capability to include some useful intelligence on top of it to improve customers experiences trough innovation and AI.

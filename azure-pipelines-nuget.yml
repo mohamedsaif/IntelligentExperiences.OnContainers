@@ -9,6 +9,7 @@ parameters:
   Major: '1'
   Minor: '0'
   ArtifactName: 'CustomNuGet'
+  FullVersion: '${{ Parameters.Major }}.0.$(Build.BuildNumber)'
 
 jobs:
 - job: ${{ Parameters.Name }}
@@ -39,7 +40,8 @@ jobs:
       configuration: '$(BuildConfiguration)'
       packDirectory: '$(Build.ArtifactStagingDirectory)'
       nobuild: true
-      versioningScheme: 'off'
+      versioningScheme: 'byEnvVar'
+      versionEnvVar: 'FullVersion'
       majorVersion: '${{ Parameters.Major }}'
       minorVersion: '${{ Parameters.Minor }}'
       patchVersion: '$(Build.BuildNumber)'

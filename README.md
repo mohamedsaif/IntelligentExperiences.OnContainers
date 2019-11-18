@@ -16,6 +16,13 @@ This workshop walks through the steps to deploy a connected, secure and reliable
 
 Crowd analytics (also known as footfall analytics) is about understanding who (age, gender, emotion,...) visit your location, when and how many.
 
+Crowd analytics scenario can be used in:
+
+1. Retail shops in many industry (like telecom shops, consumer goods retailers, malls…)
+2. Public and Private Parks
+3. Events
+4. Any many other scenarios
+
 Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 
 ### Multi-Factor Authentication

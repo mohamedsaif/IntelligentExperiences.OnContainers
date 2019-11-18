@@ -1,0 +1,51 @@
+# Azure Pipelines for .NET Core app (Web, Function, ....) :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+parameters:
+  Name: 'ClientSDKTests'
+  RestoreBuildProjects: '**/*.Tests.csproj'
+  BuildConfiguration: 'Release'
+  WorkingDirectory: 'Src/Backend/Tests/Contoso.CognitivePipeline.ClientSDK.Tests'
+  PublishWebApp: False
+  ArtifactName: 'ClientSDK-Tests'
+  ZipAfterPublish: False
+
+jobs:
+- job: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'ubuntu-16.04'
+    demands: npm
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+    displayName: 'Replace tokens in *.cs'
+    inputs:
+      rootDirectory: '${{ Parameters.WorkingDirectory }}'
+      targetFiles: '**/*Constants.cs'
+
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: ${{ Parameters.RestoreBuildProjects }}
+
+  - task: DotNetCoreCLI@2
+    displayName: test
+    inputs:
+      command: test
+      projects: ${{ Parameters.RestoreBuildProjects }}
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }}'
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: ${{ Parameters.PublishWebApp }}
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }} --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: ${{ Parameters.ZipAfterPublish }}
+      workingDirectory: ${{ Parameters.WorkingDirectory }}
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ Parameters.ArtifactName }}'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: ${{ Parameters.ArtifactName }}
+      zipAfterPublish: True

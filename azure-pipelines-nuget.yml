@@ -1,0 +1,59 @@
+# Azure Pipelines for NuGet :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+
+parameters:
+  Name: 'NuGetCI'
+  RestoreBuildProjects: '**/*.SDK.csproj'
+  WorkingDirectory: 'src'
+  BuildConfiguration: 'Release'
+  Major: '1'
+  Minor: '0'
+  ArtifactName: 'CustomNuGet'
+
+jobs:
+- job: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'vs2017-win2016'
+    demands: npm
+
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: DotNet Restore
+    inputs:
+      command: restore
+      projects: ${{ Parameters.RestoreBuildProjects }}
+
+  - task: DotNetCoreCLI@2
+    displayName: DotNet Build
+    inputs:
+      command: build
+      projects: ${{ Parameters.RestoreBuildProjects }}
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }}'
+      workingDirectory: ${{ Parameters.WorkingDirectory }}
+ 
+  - task: DotNetCoreCLI@2
+    displayName: 'DotNet Pack'
+    inputs:
+      command: pack
+      packagesToPack: '${{ Parameters.RestoreBuildProjects }}'
+      configuration: '$(BuildConfiguration)'
+      packDirectory: '$(Build.ArtifactStagingDirectory)'
+      nobuild: true
+      versioningScheme: byPrereleaseNumber
+      majorVersion: '${{ Parameters.Major }}'
+      minorVersion: '${{ Parameters.Minor }}'
+      patchVersion: '$(Build.BuildId)'
+
+#  - task: NuGetCommand@2
+#    displayName: 'NuGet push'
+#    inputs:
+#      command: push
+#      packagesToPush: '**/Contoso.CognitivePipeline.ClientSDK.*.nupkg;**/Contoso.CognitivePipeline.ClientSDK.*.symbols.nupkg'
+#      publishVstsFeed: '$(azureArtifactFeedId)'
+#      allowPackageConflicts: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish NuGet Artifact: ${{ Parameters.Name }}'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: '${{ Parameters.ArtifactName }}'

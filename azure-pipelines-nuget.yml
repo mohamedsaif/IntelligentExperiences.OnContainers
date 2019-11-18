@@ -30,12 +30,12 @@ jobs:
       projects: ${{ Parameters.RestoreBuildProjects }}
       arguments: '--configuration ${{ Parameters.BuildConfiguration }}'
       workingDirectory: ${{ Parameters.WorkingDirectory }}
+
   - powershell: |
       $Package_CI_Version = "1.0.$(Build.BuildNumber)"
       Write-Host ("##vso[task.setvariable variable=Package_CI_Version;]$Package_CI_Version")
     displayName: 'Update Version'
 
-  displayName: 'PowerShell Script'
   - task: DotNetCoreCLI@2
     displayName: 'DotNet Pack'
     inputs:

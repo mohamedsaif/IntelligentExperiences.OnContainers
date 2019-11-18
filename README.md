@@ -2,6 +2,8 @@
 
 Hands-on workshop to create containers-based backend platform that exposes async AI services
 
+![architecture](res/architecture.png)
+
 ## Overview
 
 Almost all retail shops already include a networked CCTV cameras all over the store. Why not extend these cameras capability to include some useful intelligence on top of it to improve customers experiences trough innovation and AI.

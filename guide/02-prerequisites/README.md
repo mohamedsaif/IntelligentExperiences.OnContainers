@@ -153,22 +153,39 @@ az servicebus namespace authorization-rule create \
 
 # We will be using Service Bus's topic/subscription (aka pub/sub pattern) to build our middleware messaging.
 # Let's create the topics and subscriptions
-SB_TOPIC="cognitive-request"
+
+# Creating the CognitiveOrchestrator topic and subscription
+SB_TOPIC_ORCH="cognitive-request"
 az servicebus topic create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
-    --name $SB_TOPIC
+    --name $SB_TOPIC_ORCH
 
-# Create subscription 1 to the topic
-SB_TOPIC_SUB="cognitive-orchestrator"
+# Create subscription CognitiveOrchestrator to the topic
+SB_TOPIC_ORCH_SUB="cognitive-orchestrator"
 az servicebus topic subscription create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
-    --topic-name $SB_TOPIC \
-    --name $SB_TOPIC_SUB
+    --topic-name $SB_TOPIC_ORCH \
+    --name $SB_TOPIC_ORCH_SUB
+
+# Creating the CamFrameAnalyzer topic and subscription
+SB_TOPIC_CAM="camframe-analysis"
+az servicebus topic create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name $SB_TOPIC_CAM
+
+# Create subscription CamFrameAnalyzer to the topic
+SB_TOPIC_CAM_SUB="camframe-analyzer"
+az servicebus topic subscription create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CAM \
+    --name $SB_TOPIC_CAM_SUB
 
 # Retrieve the primary connection string:
-SB_COGNITIVE_ORCH_CONNECTION=$(az servicebus namespace authorization-rule keys list \
+SB_COGNITIVE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --name cognitive-orchestrator-key \

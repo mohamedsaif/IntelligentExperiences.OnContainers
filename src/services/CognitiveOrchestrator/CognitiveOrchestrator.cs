@@ -16,7 +16,7 @@ namespace CognitiveOrchestrator.Functions
         {
             var cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
 
-            log.LogInformation($"cognitive-orchestrator topic trigger function processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
+            log.LogInformation($"FUNC (CognitiveOrchestrator): cognitive-orchestrator topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
             if(cognitiveRequest.TargetAction == CognitiveTargetAction.CamFrame.ToString())
                 CamFrameAnalysis(cognitiveRequest);
             else

@@ -1,0 +1,45 @@
+# Azure Pipelines for .NET Core app (Web, Function, ....) :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+parameters:
+  Name: 'ASPNetCoreWebApp'
+  RestoreBuildProjects: '**/*.API.csproj'
+  BuildConfiguration: 'Release'
+  WorkingDirectory: 'src'
+  PublishWebApp: True
+  ArtifactName: 'AppDrop'
+  ZipAfterPublish: True
+
+jobs:
+- job: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'ubuntu-16.04'
+    demands: npm
+  steps:
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: ${{ Parameters.RestoreBuildProjects }}
+
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: ${{ Parameters.RestoreBuildProjects }}
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }}'
+      workingDirectory: ${{ Parameters.WorkingDirectory }}
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: ${{ Parameters.PublishWebApp }}
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }} --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: ${{ Parameters.ZipAfterPublish }}
+      workingDirectory: ${{ Parameters.WorkingDirectory }}
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ Parameters.ArtifactName }}'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: ${{ Parameters.ArtifactName }}
+      zipAfterPublish: True

@@ -1,0 +1,56 @@
+# Azure Pipelines for Angular app :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+
+parameters:
+  Name: 'AngularApp'
+
+jobs:
+- job: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'vs2017-win2016'
+    demands: npm
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+    displayName: 'Replace tokens in *.ts *.html'
+    inputs:
+      rootDirectory: 'Src/FaceExplorer-App/src/app'
+      targetFiles: '**/*.ts,**/*.html'
+      
+  - script: npm install -g @angular/cli
+    displayName: Install Angular-CLI via NPM
+
+  - task: Npm@1
+    displayName: 'Project Dependencies Install'
+    inputs:
+      workingDir: 'Src/FaceExplorer-App'
+      verbose: false
+
+  - script: 'ng build --prod'
+    workingDirectory: 'Src/FaceExplorer-App'
+    displayName: 'Build Angular App'
+
+  - task: Npm@1
+    displayName: 'npm install for dist/ folder'
+    inputs:
+      workingDir: 'Src/FaceExplorer-App/dist'
+      verbose: false
+  
+  - task: CopyFiles@2
+    displayName: 'Copy .config to: Src/FaceExplorer-App/dist'
+    inputs:
+      SourceFolder: 'Src/FaceExplorer-App/src'
+      Contents: '*.config'
+      TargetFolder: 'Src/FaceExplorer-App/dist'
+
+  - task: ArchiveFiles@2
+    displayName: 'Archive Src/FaceExplorer-App/dist'
+    inputs:
+      rootFolderOrFile: 'Src/FaceExplorer-App/dist'
+      includeRootFolder: false
+      archiveFile: 'Src/FaceExplorer-App/zip/$(Build.BuildId).zip'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: FaceExplorer-App-Dist'
+    inputs:
+      PathtoPublish: 'Src/FaceExplorer-App/zip'
+      ArtifactName: 'FaceExplorer-App-Dist'

@@ -9,7 +9,6 @@ parameters:
   Major: '1'
   Minor: '0'
   ArtifactName: 'CustomNuGet'
-  FullVersion: '${{ Parameters.Major }}.0.$(Build.BuildNumber)'
 
 jobs:
 - job: ${{ Parameters.Name }}
@@ -31,7 +30,12 @@ jobs:
       projects: ${{ Parameters.RestoreBuildProjects }}
       arguments: '--configuration ${{ Parameters.BuildConfiguration }}'
       workingDirectory: ${{ Parameters.WorkingDirectory }}
- 
+  - powershell: |
+      $Package_CI_Version = "1.0.$(Build.BuildNumber)"
+      Write-Host ("##vso[task.setvariable variable=Package_CI_Version;]$Package_CI_Version")
+    displayName: 'Update Version'
+
+  displayName: 'PowerShell Script'
   - task: DotNetCoreCLI@2
     displayName: 'DotNet Pack'
     inputs:
@@ -41,7 +45,7 @@ jobs:
       packDirectory: '$(Build.ArtifactStagingDirectory)'
       nobuild: true
       versioningScheme: 'byEnvVar'
-      versionEnvVar: 'FullVersion'
+      versionEnvVar: 'Package_CI_Version'
       majorVersion: '${{ Parameters.Major }}'
       minorVersion: '${{ Parameters.Minor }}'
       patchVersion: '$(Build.BuildNumber)'

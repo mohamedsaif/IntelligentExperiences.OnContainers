@@ -1,3 +1,6 @@
+
+using System;
+
 namespace CamFrameAnalyzer.Models
 {
     public abstract class BaseModel

@@ -1,3 +1,6 @@
+using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using System.Collections.Generic;
+
 namespace CamFrameAnalyzer.Models
 {
     public class CamFrameAnalysis : BaseModel

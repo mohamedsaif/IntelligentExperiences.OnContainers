@@ -7,7 +7,7 @@ Hands-on workshop to create containers-based backend platform that exposes async
 |Service|Build|Release|
 |-|-|-|
 |CognitiveOrchestrator|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/mohamedsaif.IntelligentExperiences.OnContainers?branchName=master&jobName=CognitiveOrchestrator)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=37&branchName=master)|TBD|
-|CoreLib|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/mohamedsaif.IntelligentExperiences.OnContainers?branchName=master&jobName=CoreLib)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=37&branchName=master)|TBD|
+|CoreLib|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/mohamedsaif.IntelligentExperiences.OnContainers?branchName=master&jobName=CoreLib)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=37&branchName=master)|[![CoreLib package in Mo.Packages feed in Azure Artifacts](https://gbb-appinnovation.feeds.visualstudio.com/34b4ae1d-e873-49df-929f-51362697ee88/_apis/public/Packaging/Feeds/965d59b0-4754-4361-b681-be612dc5475b/Packages/ed95e168-e3b0-453c-9aed-e2add8eae974/Badge)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_packaging?_a=package&feed=965d59b0-4754-4361-b681-be612dc5475b&package=ed95e168-e3b0-453c-9aed-e2add8eae974&preferRelease=true)|
 |CamFrameAnalyzer|TBD|TBD|
 |CrowdAnalysis.Dashboard|TBD|TBD|
 

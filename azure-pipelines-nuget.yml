@@ -39,7 +39,7 @@ jobs:
       configuration: '$(BuildConfiguration)'
       packDirectory: '$(Build.ArtifactStagingDirectory)'
       nobuild: true
-      versioningScheme: byPrereleaseNumber
+      versioningScheme: 'off'
       majorVersion: '${{ Parameters.Major }}'
       minorVersion: '${{ Parameters.Minor }}'
       patchVersion: '$(Build.BuildNumber)'

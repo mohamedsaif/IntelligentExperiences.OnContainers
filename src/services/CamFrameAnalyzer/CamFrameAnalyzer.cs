@@ -1,8 +1,16 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.IO;
+using System.Collections.Generic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Microsoft.Azure.CognitiveServices.Vision.Face;
+using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using CamFrameAnalyzer.Models;
+using Newtonsoft.Json;
+using CoreLib.Utils;
 
 namespace CamFrameAnalyzer.Functions
 {
@@ -13,17 +21,18 @@ namespace CamFrameAnalyzer.Functions
         static IFaceClient faceClient;
 
         [FunctionName("CamFrameAnalyzer")]
-        public static async Run(
+        public static async Task Run(
             [ServiceBusTrigger("camframe-analysis", "camframe-analyzer", Connection = "SB_Connection")]string request, 
             ILogger log)
         {
+            CognitiveRequest cognitiveRequest = null;
             try
             {
-                var cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
+                cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
             }
             catch (Exception ex)
             {
-                log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
+                log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(request)} with the error: {ex.Message}");
             }
 
             try
@@ -62,7 +71,7 @@ namespace CamFrameAnalyzer.Functions
                                            };
             try
             {
-                using (Stream imageFileStream = new MemoryStream(data))
+                using (Stream imageFileStream = new MemoryStream(input.Data))
                 {
                     // The second argument specifies to return the faceId, while
                     // the third argument specifies not to return face landmarks.
@@ -81,7 +90,7 @@ namespace CamFrameAnalyzer.Functions
             {
                 log.LogError($"####### Failed to detect faces: {e.Message}");
                 input.IsSuccessfull = false;
-                input.Status = e.message;
+                input.Status = e.Message;
                 return input;
             }
         }

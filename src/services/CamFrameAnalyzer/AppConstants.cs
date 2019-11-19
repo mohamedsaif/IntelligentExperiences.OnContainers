@@ -19,8 +19,7 @@ namespace CamFrameAnalyzer
         public const string DbCognitiveFilesContainer = "CamFrameAnalysis";
 
         //Service Bus settings
-        public const string Topic = "";
-        public const string Subscription = "";
-        public const string ServiceBusNamespace = "";
+        public const string SBTopic = "camframe-analysis";
+        public const string SBSubscription = "camframe-analyzer";
     }
 }

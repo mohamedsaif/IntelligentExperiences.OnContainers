@@ -254,8 +254,17 @@ az cognitiveservices account create \
     --sku S0 \
     --yes
 
+# Get the access keys for our app deployment
+CS_ACCOUNT_KEY=$(az cognitiveservices account keys list \
+    -n $CS_ACCOUNT \
+    -g $RG \
+    --query key1 \
+    -o tsv)
+echo $CS_ACCOUNT_KEY
+
+# Tips
 # Discover the available cognitive services via this command (values can be used with --kind)
-az cognitiveservices account list-kinds
+# az cognitiveservices account list-kinds
 
 # Sample on how to create an account for a specific cognitive service like Face:
 # az cognitiveservices account create \

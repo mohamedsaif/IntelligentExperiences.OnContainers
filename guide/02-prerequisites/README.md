@@ -113,7 +113,31 @@ az storage account create \
     -l $LOCATION \
     --sku Standard_LRS
 
+FRAMES_STORAGE_KEY=$(az storage account keys list \
+    -n $FRAMES_STORAGE \
+    -g $RG \
+    --query "[?keyName=='key1'].value" \
+    -o tsv)
+echo $FRAMES_STORAGE_KEY
+
+# Getting the storage connection string to be used in the apps deployment
+FRAMES_STORAGE_CONN=$(az storage account show-connection-string \
+    --name $FRAMES_STORAGE \
+    --resource-group $RG \
+    --query connectionString \
+    -o tsv)
+echo $FRAMES_STORAGE_CONN
+
+# Creating a blob container for our Camera Frames (name must be all small letters)
+FRAMES_STORAGE_CONTAINER="camframefiles"
+az storage container create \
+    --account-name $FRAMES_STORAGE \
+    --account-key $FRAMES_STORAGE_KEY \
+    --name $FRAMES_STORAGE_CONTAINER
+
 ```
+
+>NOTE: We are simplifying the storage access by using the keys and connection strings. In production, you should consider leveraging [Stored Access Policies](https://docs.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy) along with [Shared Access Signature](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature) that is specific to the object being accessed (entire container or a particular file).
 
 ## Cosmos DB
 
@@ -126,6 +150,15 @@ az cosmosdb create \
     -n $COSMOSDB_ACCOUNT \
     -g $RG \
     --default-consistency-level Eventual
+
+# Retrieve Cosmos DB Primary Connection
+COSMOSDB_PRIMARY_CONN=$(az cosmosdb keys list \
+    --name $COSMOSDB_ACCOUNT \
+    --resource-group $RG \
+    --type connection-strings \
+    --query "connectionStrings[?description=='Primary SQL Connection String'].connectionString" \
+    -o tsv)
+echo $COSMOSDB_PRIMARY_CONN
 
 ```
 

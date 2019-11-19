@@ -11,17 +11,30 @@ using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using CamFrameAnalyzer.Models;
 using Newtonsoft.Json;
 using CoreLib.Utils;
+using CoreLib.Abstractions;
+using CamFrameAnalyzer.Abstractions;
+using CoreLib.Repos;
 
 namespace CamFrameAnalyzer.Functions
 {
-    public static class CamFrameAnalyzer
+    public class CamFrameAnalyzer
     {
         static string key = string.Empty;
         static string endpoint = string.Empty;
         static IFaceClient faceClient;
+        private IStorageRepository filesStorageRepo;
+        private ICamFrameAnalysisRepository camFrameAnalysisRepo;
+        private AzureServiceBusRepository serviceBusRepo;
+
+        public CamFrameAnalyzer(IStorageRepository storageRepo, AzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
+        {
+            filesStorageRepo = storageRepo;
+            camFrameAnalysisRepo = camFrameRepo;
+            serviceBusRepo = sbRepo;
+        }
 
         [FunctionName("CamFrameAnalyzer")]
-        public static async Task Run(
+        public async Task Run(
             [ServiceBusTrigger("camframe-analysis", "camframe-analyzer", Connection = "SB_Connection")]string request, 
             ILogger log)
         {
@@ -45,7 +58,7 @@ namespace CamFrameAnalyzer.Functions
                         new System.Net.Http.DelegatingHandler[] { })
                         { Endpoint = endpoint };
 
-                //var data = await filesStorageRepo.GetFileAsync(input.FileUrl);
+                var data = await filesStorageRepo.GetFileAsync(cognitiveRequest.FileUrl);
 
                 var frameAnalysis = new CamFrameAnalysis();
                 
@@ -53,13 +66,13 @@ namespace CamFrameAnalyzer.Functions
             }
             catch (Exception ex)
             {
-
+                log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
             }
 
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
         }
 
-        public static async Task<CamFrameAnalysis> FaceDetection(CamFrameAnalysis input, ILogger log)
+        public async Task<CamFrameAnalysis> FaceDetection(CamFrameAnalysis input, ILogger log)
         {
             log.LogInformation($"FUNC (CamFrameAnalyzer): Starting Face Detection");
 

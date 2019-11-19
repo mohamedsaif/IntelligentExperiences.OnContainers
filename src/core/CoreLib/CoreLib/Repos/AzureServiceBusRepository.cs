@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreLib.Repos
 {
-    public class AzureServiceBusRepository : IDisposable, IServiceBusRepository<ISubscriptionClient, MessageHandlerOptions, Message>
+    public class AzureServiceBusRepository : IDisposable, IAzureServiceBusRepository
     {
         ITopicClient topicClient;
         ISubscriptionClient subscriptionClient;

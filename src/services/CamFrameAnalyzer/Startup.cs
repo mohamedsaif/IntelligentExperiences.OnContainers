@@ -43,9 +43,9 @@ namespace CamFrameAnalyzer
             });
 
             var serviceBusConnection = GlobalSettings.GetKeyValue("serviceBusConnection");
-            builder.Services.AddSingleton<AzureServiceBusRepository>((s) =>
+            builder.Services.AddSingleton<IAzureServiceBusRepository>((s) =>
             {
-                return new AzureServiceBusRepository(serviceBusConnection, AppConstants.Topic, AppConstants.Subscription);
+                return new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
             });
         }
     }

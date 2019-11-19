@@ -24,9 +24,9 @@ namespace CamFrameAnalyzer.Functions
         static IFaceClient faceClient;
         private IStorageRepository filesStorageRepo;
         private ICamFrameAnalysisRepository camFrameAnalysisRepo;
-        private AzureServiceBusRepository serviceBusRepo;
+        private IAzureServiceBusRepository serviceBusRepo;
 
-        public CamFrameAnalyzer(IStorageRepository storageRepo, AzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
+        public CamFrameAnalyzer(IStorageRepository storageRepo, IAzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
         {
             filesStorageRepo = storageRepo;
             camFrameAnalysisRepo = camFrameRepo;
@@ -35,7 +35,7 @@ namespace CamFrameAnalyzer.Functions
 
         [FunctionName("CamFrameAnalyzer")]
         public async Task Run(
-            [ServiceBusTrigger("camframe-analysis", "camframe-analyzer", Connection = "SB_Connection")]string request, 
+            [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "SB_Connection")]string request, 
             ILogger log)
         {
             CognitiveRequest cognitiveRequest = null;
@@ -95,6 +95,9 @@ namespace CamFrameAnalyzer.Functions
                     input.DetectedFaces = faceList;
                     input.IsSuccessfull = true;
                     input.Status = $"Detected Faces: {faceList.Count}";
+
+                    log.LogInformation($"FUNC (CamFrameAnalyzer): Finished Face Detection");
+                    
                     return input;
                 }
             }

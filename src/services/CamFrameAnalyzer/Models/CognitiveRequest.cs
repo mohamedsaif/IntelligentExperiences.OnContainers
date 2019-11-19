@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoreLib.Models;
+using System;
 
 namespace CamFrameAnalyzer.Models
 {

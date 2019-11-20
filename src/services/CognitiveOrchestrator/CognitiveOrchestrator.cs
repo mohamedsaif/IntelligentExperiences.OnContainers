@@ -14,7 +14,6 @@ namespace CognitiveOrchestrator.Functions
 {
     public class CognitiveOrchestrator
     {
-        private IAzureServiceBusRepository serviceBusRepo;
         private CamFrameAnalyzerServiceBus camFrameAnalyzerServiceBus;
 
         public CognitiveOrchestrator(CamFrameAnalyzerServiceBus camFrameSB)
@@ -32,7 +31,7 @@ namespace CognitiveOrchestrator.Functions
             log.LogInformation($"FUNC (CognitiveOrchestrator): cognitive-orchestrator topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
             
             //Based on the cognitive action requested, the relevant message will be pushed to the designated topic.
-            if(cognitiveRequest.TargetAction == CognitiveTargetAction.CamFrame.ToString())
+            if(cognitiveRequest.TargetAction == CognitiveTargetAction.CamFrameAnalysis.ToString())
                 CamFrameAnalysis(cognitiveRequest);
             else
                 log.LogWarning($"FUNC (CognitiveOrchestrator): cognitive-orchestrator topic executed NO actions for message: {JsonConvert.SerializeObject(cognitiveRequest)}");

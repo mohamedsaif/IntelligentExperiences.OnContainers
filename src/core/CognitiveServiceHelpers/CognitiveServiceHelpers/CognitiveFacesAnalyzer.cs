@@ -20,7 +20,8 @@ namespace CognitiveServiceHelpers
         {
             FaceAttributeType.Age,
             FaceAttributeType.Gender,
-            FaceAttributeType.Emotion
+            FaceAttributeType.Emotion,
+            FaceAttributeType.HeadPose
         };
 
         public event EventHandler FaceDetectionCompleted;

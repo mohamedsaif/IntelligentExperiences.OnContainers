@@ -10,7 +10,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CognitiveServiceHelpers" Version="1.0.20191120.3" />
-    <PackageReference Include="CoreLib" Version="1.0.20191119.1" />
+    <PackageReference Include="CoreLib" Version="1.0.20191120.2" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="3.0.3" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.29" />

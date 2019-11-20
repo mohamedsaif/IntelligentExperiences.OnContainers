@@ -60,7 +60,10 @@ namespace CamFrameAnalyzer.Functions
                         new System.Net.Http.DelegatingHandler[] { })
                         { Endpoint = endpoint };
 
-                var data = await filesStorageRepo.GetFileAsync(cognitiveRequest.FileUrl);
+                //We need only the filename not the FQDN in FileUrl
+                var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
+
+                var data = await filesStorageRepo.GetFileAsync(fileName);
 
                 var frameAnalysis = new CamFrameAnalysis
                 {
@@ -72,11 +75,16 @@ namespace CamFrameAnalyzer.Functions
                     Origin = "CamFrameAnalyzer",
                     Status = ProcessingStatus.Processing.ToString()
                 };
+
+                frameAnalysis = await FaceDetection(frameAnalysis, log);
+                frameAnalysis = await SimilarDetection(frameAnalysis, log);
              }
             catch (Exception ex)
             {
                 log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
             }
+
+
 
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
         }
@@ -118,6 +126,11 @@ namespace CamFrameAnalyzer.Functions
                 input.Status = e.Message;
                 return input;
             }
+        }
+
+        private Task<CamFrameAnalysis> SimilarDetection(CamFrameAnalysis frameAnalysis, ILogger log)
+        {
+            
         }
     }
 }

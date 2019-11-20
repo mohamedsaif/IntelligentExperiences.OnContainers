@@ -114,6 +114,12 @@ All constructive feedback is welcomed 🙏
 
 You can always create issue, suggest an update through PR or direct message me on [Twitter](https://twitter.com/mohamedsaif101).
 
+## Contributors
+
+### Cognitive-Samples-IntelligentKiosk
+
+Part of this workshop source code is based on [Cognitive-Samples-IntelligentKiosk](https://github.com/microsoft/Cognitive-Samples-IntelligentKiosk). Visit the GitHub repo to know more about all of the great capabilities of Azure Cognitive Services.
+
 ## Author
 
 |      ![Photo](res/mohamed-saif.jpg)            |
@@ -122,3 +128,13 @@ You can always create issue, suggest an update through PR or direct message me o
 |     [GitHub](https://github.com/mohamedsaif)   |
 |  [Twitter](https://twitter.com/mohamedsaif101) |
 |         [Blog](http://blog.mohamedsaif.com)    |
+
+## License
+
+All Intelligent Experiences On Containers documentation and samples are licensed with the MIT License. For more details, see [LICENSE](LICENSE)
+
+## Developer Code of Conduct
+
+The image, voice, video or text understanding capabilities of the Intelligent Kiosk Sample uses Microsoft Cognitive Services. Microsoft will receive the images, audio, video, and other data that you upload (via this app) for service improvement purposes. To report abuse of the Microsoft Cognitive Services to Microsoft, please visit the Microsoft Cognitive Services website at [https://www.microsoft.com/cognitive-services](https://www.microsoft.com/cognitive-services), and use the “Report Abuse” link at the bottom of the page to contact Microsoft. For more information about Microsoft privacy policies please see their privacy statement here: [https://go.microsoft.com/fwlink/?LinkId=521839](https://go.microsoft.com/fwlink/?LinkId=521839).
+
+Developers using Cognitive Services, including this sample, are expected to follow the “Developer Code of Conduct for Microsoft Cognitive Services”, found at [http://go.microsoft.com/fwlink/?LinkId=698895](http://go.microsoft.com/fwlink/?LinkId=698895)

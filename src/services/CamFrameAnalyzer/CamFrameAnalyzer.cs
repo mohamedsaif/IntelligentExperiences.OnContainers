@@ -25,6 +25,7 @@ namespace CamFrameAnalyzer.Functions
         private IStorageRepository filesStorageRepo;
         private ICamFrameAnalysisRepository camFrameAnalysisRepo;
         private IAzureServiceBusRepository serviceBusRepo;
+        private CamFrameAnalysis frameAnalysis;
 
         public CamFrameAnalyzer(IStorageRepository storageRepo, IAzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
         {
@@ -65,7 +66,7 @@ namespace CamFrameAnalyzer.Functions
 
                 var data = await filesStorageRepo.GetFileAsync(fileName);
 
-                var frameAnalysis = new CamFrameAnalysis
+                frameAnalysis = new CamFrameAnalysis
                 {
                     Request = cognitiveRequest,
                     CreatedAt = DateTime.UtcNow,
@@ -141,6 +142,14 @@ namespace CamFrameAnalyzer.Functions
             this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
 
             this.isProcessingPhoto = false;
+        }
+
+        public async Task<Stream> GetFileStream()
+        {
+            if (frameAnalysis.Data != null)
+                return new MemoryStream(frameAnalysis.Data);
+            else
+                return null;
         }
     }
 }

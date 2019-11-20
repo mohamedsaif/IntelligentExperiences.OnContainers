@@ -27,8 +27,29 @@ namespace CognitiveServiceHelpers
         public event EventHandler FaceRecognitionCompleted;
 
         public static string PeopleGroupsUserDataFilter = null;
+        
+        //These represent 4 options to load the analyzer file data
         public Func<Task<Stream>> GetImageStreamCallback { get; set; }
         public string ImageUrl { get; set; }
+        public string LocalImagePath { get; set; }
+        public byte[] Data { get; set; }
+
+        public CognitiveFacesAnalyzer(string url)
+        {
+            this.ImageUrl = url;
+        }
+
+        public CognitiveFacesAnalyzer(Func<Task<Stream>> getStreamCallback, string path = null)
+        {
+            this.GetImageStreamCallback = getStreamCallback;
+            this.LocalImagePath = path;
+        }
+
+        public CognitiveFacesAnalyzer(byte[] data)
+        {
+            this.Data = data;
+            this.GetImageStreamCallback = () => Task.FromResult<Stream>(new MemoryStream(this.Data));
+        }
 
         public IEnumerable<DetectedFace> DetectedFaces { get; set; }
 

@@ -10,7 +10,7 @@ namespace CamFrameAnalyzer.Models
         {
             Summary = new CamFrameSummary();
         }
-
+        public CognitiveRequest Request { get; set; }
         public byte[] Data { get; set; }
         public IList<DetectedFace> DetectedFaces { get; set; }
         public IList<DetectedFace> IdentifiedFaces { get; set; }

@@ -35,10 +35,12 @@ namespace CamFrameAnalyzer.Functions
 
         [FunctionName("CamFrameAnalyzer")]
         public async Task Run(
-            [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "SB_Connection")]string request, 
+            [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "serviceBusConnection")]string request, 
             ILogger log)
         {
             CognitiveRequest cognitiveRequest = null;
+            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(cognitiveRequest)}");
+
             try
             {
                 cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
@@ -60,10 +62,17 @@ namespace CamFrameAnalyzer.Functions
 
                 var data = await filesStorageRepo.GetFileAsync(cognitiveRequest.FileUrl);
 
-                var frameAnalysis = new CamFrameAnalysis();
-                
-
-            }
+                var frameAnalysis = new CamFrameAnalysis
+                {
+                    Request = cognitiveRequest,
+                    CreatedAt = DateTime.UtcNow,
+                    Data = data,
+                    IsDeleted = false,
+                    IsSuccessfull = false,
+                    Origin = "CamFrameAnalyzer",
+                    Status = ProcessingStatus.Processing.ToString()
+                };
+             }
             catch (Exception ex)
             {
                 log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");

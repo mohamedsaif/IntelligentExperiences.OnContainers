@@ -14,6 +14,8 @@ using CoreLib.Utils;
 using CoreLib.Abstractions;
 using CamFrameAnalyzer.Abstractions;
 using CoreLib.Repos;
+using CognitiveServiceHelpers;
+using System.Linq;
 
 namespace CamFrameAnalyzer.Functions
 {
@@ -26,6 +28,7 @@ namespace CamFrameAnalyzer.Functions
         private ICamFrameAnalysisRepository camFrameAnalysisRepo;
         private IAzureServiceBusRepository serviceBusRepo;
         private CamFrameAnalysis frameAnalysis;
+        private CognitiveFacesAnalyzer cognitiveFacesAnalyzer;
 
         public CamFrameAnalyzer(IStorageRepository storageRepo, IAzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
         {
@@ -36,7 +39,7 @@ namespace CamFrameAnalyzer.Functions
 
         [FunctionName("CamFrameAnalyzer")]
         public async Task Run(
-            [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "serviceBusConnection")]string request, 
+            [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "serviceBusConnection")]string request,
             ILogger log)
         {
             CognitiveRequest cognitiveRequest = null;
@@ -59,7 +62,7 @@ namespace CamFrameAnalyzer.Functions
                 faceClient = new FaceClient(
                         new Microsoft.Azure.CognitiveServices.Vision.Face.ApiKeyServiceClientCredentials(key),
                         new System.Net.Http.DelegatingHandler[] { })
-                        { Endpoint = endpoint };
+                { Endpoint = endpoint };
 
                 //We need only the filename not the FQDN in FileUrl
                 var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
@@ -77,9 +80,15 @@ namespace CamFrameAnalyzer.Functions
                     Status = ProcessingStatus.Processing.ToString()
                 };
 
-                frameAnalysis = await FaceDetection(frameAnalysis, log);
-                frameAnalysis = await SimilarDetection(frameAnalysis, log);
-             }
+                cognitiveFacesAnalyzer = new CognitiveFacesAnalyzer(frameAnalysis.Data);
+
+                //First we detect the faces in the image
+                await DetectFaces(log);
+                if (frameAnalysis.IsSuccessfull)
+                {
+                    //Second, we take the detected list and compare it to similar and identified persons lists
+                }
+            }
             catch (Exception ex)
             {
                 log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
@@ -90,66 +99,50 @@ namespace CamFrameAnalyzer.Functions
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
         }
 
-        public async Task<CamFrameAnalysis> FaceDetection(CamFrameAnalysis input, ILogger log)
+        public async Task DetectFaces(ILogger log)
         {
             log.LogInformation($"FUNC (CamFrameAnalyzer): Starting Face Detection");
 
-            IList<FaceAttributeType> faceAttributes = new FaceAttributeType[]
-                                           {
-                                                FaceAttributeType.Gender, FaceAttributeType.Age,
-                                                FaceAttributeType.Smile, FaceAttributeType.Emotion,
-                                                FaceAttributeType.Glasses, FaceAttributeType.Hair
-                                           };
             try
             {
-                using (Stream imageFileStream = new MemoryStream(input.Data))
+                await cognitiveFacesAnalyzer.DetectFacesAsync(detectFaceAttributes: true);
+                if (cognitiveFacesAnalyzer.DetectedFaces == null || !cognitiveFacesAnalyzer.DetectedFaces.Any())
                 {
-                    // The second argument specifies to return the faceId, while
-                    // the third argument specifies not to return face landmarks.
-                    IList<DetectedFace> faceList =
-                        await faceClient.Face.DetectWithStreamAsync(
-                            imageFileStream, true, false, faceAttributes);
-
-                    input.DetectedFaces = faceList;
-                    input.IsSuccessfull = true;
-                    input.Status = $"Detected Faces: {faceList.Count}";
-
+                    log.LogWarning($"FUNC (CamFrameAnalyzer): No faces detected");
+                    frameAnalysis.DetectedFaces = null;
+                    frameAnalysis.IsSuccessfull = false;
+                    frameAnalysis.Status = "No Detected Faces";
+                }
+                else
+                {
                     log.LogInformation($"FUNC (CamFrameAnalyzer): Finished Face Detection");
-                    
-                    return input;
+                    frameAnalysis.DetectedFaces = cognitiveFacesAnalyzer.DetectedFaces;
+                    frameAnalysis.IsSuccessfull = false;
+                    frameAnalysis.Status = $"Detected Faces";
                 }
             }
             // Catch and display Face API errors.
-            catch (APIErrorException e)
+            catch (Exception e)
             {
                 log.LogError($"####### Failed to detect faces: {e.Message}");
-                input.IsSuccessfull = false;
-                input.Status = e.Message;
-                return input;
+                frameAnalysis.DetectedFaces = null;
+                frameAnalysis.IsSuccessfull = false;
+                frameAnalysis.Status = "Failed to detect faces";
             }
         }
 
-        private Task<CamFrameAnalysis> SimilarDetection(CamFrameAnalysis frameAnalysis, ILogger log)
+        private async Task DetectSimilarFacesAsync(ILogger log)
         {
-            await this.DetectFaceAttributesAsync(e);
+            await e.FindSimilarPersistedFacesAsync();
 
-            // Compute Face Identification and Unique Face Ids
-            await Task.WhenAll(ComputeFaceIdentificationAsync(e), this.ComputeUniqueFaceIdAsync(e));
-
-            this.UpdateDemographics(e);
-            this.UpdateEmotionTimelineUI(e);
-
-            this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
-
-            this.isProcessingPhoto = false;
-        }
-
-        public async Task<Stream> GetFileStream()
-        {
-            if (frameAnalysis.Data != null)
-                return new MemoryStream(frameAnalysis.Data);
+            if (!e.SimilarFaceMatches.Any())
+            {
+                this.lastSimilarPersistedFaceSample = null;
+            }
             else
-                return null;
+            {
+                this.lastSimilarPersistedFaceSample = e.SimilarFaceMatches;
+            }
         }
     }
 }

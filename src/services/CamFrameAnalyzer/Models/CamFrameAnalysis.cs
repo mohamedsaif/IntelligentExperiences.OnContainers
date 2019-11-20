@@ -12,9 +12,9 @@ namespace CamFrameAnalyzer.Models
         }
         public CognitiveRequest Request { get; set; }
         public byte[] Data { get; set; }
-        public IList<DetectedFace> DetectedFaces { get; set; }
-        public IList<DetectedFace> IdentifiedFaces { get; set; }
-        public IList<DetectedFace> SimilarFaces { get; set; }
+        public IEnumerable<DetectedFace> DetectedFaces { get; set; }
+        public IEnumerable<DetectedFace> IdentifiedFaces { get; set; }
+        public IEnumerable<DetectedFace> SimilarFaces { get; set; }
         public CamFrameSummary Summary { get; set; }
         public bool IsSuccessfull { get; set; }
         public string Status { get; set; }

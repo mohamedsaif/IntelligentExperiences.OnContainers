@@ -8,6 +8,6 @@ namespace CamFrameAnalyzer.Models
 {
     public enum ProcessingStatus
     {
-        Processing, Sucessful, Failed
+        Processing, Successful, PartiallySuccessful, Failed
     }
 }

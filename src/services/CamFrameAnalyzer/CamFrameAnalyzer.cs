@@ -16,6 +16,7 @@ using CamFrameAnalyzer.Abstractions;
 using CoreLib.Repos;
 using CognitiveServiceHelpers;
 using System.Linq;
+using CognitiveServiceHelpers.Models;
 
 namespace CamFrameAnalyzer.Functions
 {
@@ -56,13 +57,12 @@ namespace CamFrameAnalyzer.Functions
 
             try
             {
+                DateTime startTime = DateTime.UtcNow;
+
                 key = GlobalSettings.GetKeyValue("cognitiveKey");
                 endpoint = GlobalSettings.GetKeyValue("cognitiveEndpoint");
-
-                faceClient = new FaceClient(
-                        new Microsoft.Azure.CognitiveServices.Vision.Face.ApiKeyServiceClientCredentials(key),
-                        new System.Net.Http.DelegatingHandler[] { })
-                { Endpoint = endpoint };
+                FaceServiceHelper.ApiKey = key;
+                FaceServiceHelper.ApiEndpoint = endpoint;
 
                 //We need only the filename not the FQDN in FileUrl
                 var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
@@ -75,7 +75,7 @@ namespace CamFrameAnalyzer.Functions
                     CreatedAt = DateTime.UtcNow,
                     Data = data,
                     IsDeleted = false,
-                    IsSuccessfull = false,
+                    IsSuccessful = false,
                     Origin = "CamFrameAnalyzer",
                     Status = ProcessingStatus.Processing.ToString()
                 };
@@ -84,9 +84,30 @@ namespace CamFrameAnalyzer.Functions
 
                 //First we detect the faces in the image
                 await DetectFaces(log);
-                if (frameAnalysis.IsSuccessfull)
+                if (frameAnalysis.IsDetectionSuccessful)
                 {
                     //Second, we take the detected list and compare it to similar and identified persons lists
+                    await Task.WhenAll(IdentifyFacesAsync(log), this.DetectSimilarFacesAsync(log));
+
+                    //validate that everything went well :)
+                    if(frameAnalysis.IsSimilaritiesSuccessful && frameAnalysis.IsIdentificationSuccessful)
+                    {
+                        frameAnalysis.IsSuccessful = true;
+                        frameAnalysis.Status = ProcessingStatus.Successful.ToString();
+                        frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                    }
+                    else
+                    {
+                        frameAnalysis.IsSuccessful = false;
+                        frameAnalysis.Status = ProcessingStatus.PartiallySuccessful.ToString();
+                        frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                    }
+                }
+                else
+                {
+                    frameAnalysis.IsSuccessful = false;
+                    frameAnalysis.Status = ProcessingStatus.Failed.ToString();
+                    frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
                 }
             }
             catch (Exception ex)
@@ -110,14 +131,14 @@ namespace CamFrameAnalyzer.Functions
                 {
                     log.LogWarning($"FUNC (CamFrameAnalyzer): No faces detected");
                     frameAnalysis.DetectedFaces = null;
-                    frameAnalysis.IsSuccessfull = false;
+                    frameAnalysis.IsDetectionSuccessful = false;
                     frameAnalysis.Status = "No Detected Faces";
                 }
                 else
                 {
                     log.LogInformation($"FUNC (CamFrameAnalyzer): Finished Face Detection");
                     frameAnalysis.DetectedFaces = cognitiveFacesAnalyzer.DetectedFaces;
-                    frameAnalysis.IsSuccessfull = false;
+                    frameAnalysis.IsDetectionSuccessful = true;
                     frameAnalysis.Status = $"Detected Faces";
                 }
             }
@@ -126,22 +147,75 @@ namespace CamFrameAnalyzer.Functions
             {
                 log.LogError($"####### Failed to detect faces: {e.Message}");
                 frameAnalysis.DetectedFaces = null;
-                frameAnalysis.IsSuccessfull = false;
+                frameAnalysis.IsDetectionSuccessful = false;
+                frameAnalysis.IsSuccessful = false;
                 frameAnalysis.Status = "Failed to detect faces";
             }
         }
 
         private async Task DetectSimilarFacesAsync(ILogger log)
         {
-            await e.FindSimilarPersistedFacesAsync();
+            log.LogInformation($"FUNC (CamFrameAnalyzer): Starting Face Similarities Detection");
+            
+            try
+            {
+                await cognitiveFacesAnalyzer.FindSimilarPersistedFacesAsync();
 
-            if (!e.SimilarFaceMatches.Any())
-            {
-                this.lastSimilarPersistedFaceSample = null;
+                if (!cognitiveFacesAnalyzer.SimilarFaceMatches.Any())
+                {
+                    log.LogWarning($"FUNC (CamFrameAnalyzer): No similarities detected");
+                    frameAnalysis.SimilarFaces = null;
+                    frameAnalysis.IsSimilaritiesSuccessful = true;
+                    frameAnalysis.Status = "No similarities detected";
+                }
+                else
+                {
+                    frameAnalysis.SimilarFaces = cognitiveFacesAnalyzer.SimilarFaceMatches;
+                    frameAnalysis.IsSimilaritiesSuccessful = true;
+                    frameAnalysis.Status = "Detected Similarities";
+                }
             }
-            else
+            catch (Exception e)
             {
-                this.lastSimilarPersistedFaceSample = e.SimilarFaceMatches;
+
+                log.LogError($"####### Failed to find similar faces: {e.Message}");
+                frameAnalysis.SimilarFaces = null;
+                frameAnalysis.IsSimilaritiesSuccessful = false;
+                frameAnalysis.IsSuccessful = false;
+                frameAnalysis.Status = "Failed to find similar faces";
+            }
+        }
+
+        private async Task IdentifyFacesAsync(ILogger log)
+        {
+            log.LogInformation($"FUNC (CamFrameAnalyzer): Starting Face Identification");
+
+            try
+            {
+                await cognitiveFacesAnalyzer.IdentifyFacesAsync();
+
+                if (!cognitiveFacesAnalyzer.IdentifiedPersons.Any())
+                {
+                    log.LogWarning($"FUNC (CamFrameAnalyzer): No identified persons detected");
+                    frameAnalysis.IdentifiedPersons = null;
+                    frameAnalysis.IsIdentificationSuccessful = true;
+                    frameAnalysis.Status = "No identified persons detected";
+                }
+                else
+                {
+                    log.LogWarning($"FUNC (CamFrameAnalyzer): Identified persons detected");
+                    frameAnalysis.IdentifiedPersons = cognitiveFacesAnalyzer.DetectedFaces.Select(f => new Tuple<DetectedFace, IdentifiedPerson>(f, cognitiveFacesAnalyzer.IdentifiedPersons.FirstOrDefault(p => p.FaceId == f.FaceId)));
+                    frameAnalysis.IsIdentificationSuccessful = true;
+                    frameAnalysis.Status = "Identified Persons";
+                }
+            }
+            catch (Exception e)
+            {
+                log.LogError($"####### Failed to identify faces: {e.Message}");
+                frameAnalysis.IdentifiedPersons = null;
+                frameAnalysis.IsIdentificationSuccessful = false;
+                frameAnalysis.IsSuccessful = false;
+                frameAnalysis.Status = "Failed to identify faces";
             }
         }
     }

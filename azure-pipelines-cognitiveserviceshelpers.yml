@@ -7,8 +7,8 @@ trigger:
       - dev
   paths:
     include:
-      - 'src/core/CoreLib'
-      - 'azure-pipelines-corelib.yml'
+      - 'src/core/CognitiveServiceHelpers'
+      - 'azure-pipelines-cognitiveserviceshelpers.yml'
       - 'azure-pipelines-nuget.yml'
 
 variables:
@@ -17,7 +17,7 @@ variables:
 jobs:
 - template: azure-pipelines-nuget.yml
   parameters:
-    Name: 'CoreLib'
-    WorkingDirectory: 'src/core/CoreLib'
-    RestoreBuildProjects: '**/CoreLib.csproj'
-    ArtifactName: 'CoreLib-NuGet'
+    Name: 'CognitiveServiceHelpers'
+    WorkingDirectory: 'src/core/CognitiveServiceHelpers'
+    RestoreBuildProjects: '**/CognitiveServiceHelpers.csproj'
+    ArtifactName: 'CognitiveServiceHelpers-NuGet'

@@ -130,7 +130,17 @@ namespace CamFrameAnalyzer.Functions
 
         private Task<CamFrameAnalysis> SimilarDetection(CamFrameAnalysis frameAnalysis, ILogger log)
         {
-            
+            await this.DetectFaceAttributesAsync(e);
+
+            // Compute Face Identification and Unique Face Ids
+            await Task.WhenAll(ComputeFaceIdentificationAsync(e), this.ComputeUniqueFaceIdAsync(e));
+
+            this.UpdateDemographics(e);
+            this.UpdateEmotionTimelineUI(e);
+
+            this.debugText.Text = string.Format("Latency: {0}ms", (int)(DateTime.Now - start).TotalMilliseconds);
+
+            this.isProcessingPhoto = false;
         }
     }
 }

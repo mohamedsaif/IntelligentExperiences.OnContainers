@@ -13,6 +13,8 @@ namespace CognitiveServiceHelpers
     {
         public bool ShowDialogOnFaceApiErrors { get; set; } = false;
         public bool FilterOutSmallFaces { get; set; } = false;
+        public int DecodedImageHeight { get; private set; }
+        public int DecodedImageWidth { get; private set; }
 
         private static readonly FaceAttributeType[] DefaultFaceAttributeTypes = new FaceAttributeType[]
         {
@@ -26,12 +28,58 @@ namespace CognitiveServiceHelpers
 
         public static string PeopleGroupsUserDataFilter = null;
         public Func<Task<Stream>> GetImageStreamCallback { get; set; }
+        public string ImageUrl { get; set; }
 
         public IEnumerable<DetectedFace> DetectedFaces { get; set; }
 
         public IEnumerable<IdentifiedPerson> IdentifiedPersons { get; set; }
 
         public IEnumerable<SimilarFaceMatch> SimilarFaceMatches { get; set; }
+
+        public static uint MinDetectableFaceCoveragePercentage = 0;
+
+        public async Task DetectFacesAsync(bool detectFaceAttributes = false, bool detectFaceLandmarks = false)
+        {
+            try
+            {
+                if (this.ImageUrl != null)
+                {
+                    this.DetectedFaces = await FaceServiceHelper.DetectWithUrlAsync(
+                        this.ImageUrl,
+                        returnFaceId: true,
+                        returnFaceLandmarks: detectFaceLandmarks,
+                        returnFaceAttributes: detectFaceAttributes ? DefaultFaceAttributeTypes : null);
+                }
+                else if (this.GetImageStreamCallback != null)
+                {
+                    this.DetectedFaces = await FaceServiceHelper.DetectWithStreamAsync(
+                        this.GetImageStreamCallback,
+                        returnFaceId: true,
+                        returnFaceLandmarks: detectFaceLandmarks,
+                        returnFaceAttributes: detectFaceAttributes ? DefaultFaceAttributeTypes : null);
+                }
+
+                if (this.FilterOutSmallFaces)
+                {
+                    this.DetectedFaces = this.DetectedFaces.Where(f => IsFaceBigEnoughForDetection(f.FaceRectangle.Height, this.DecodedImageHeight));
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorTrackingHelper.TrackException(e, "Face API DetectAsync error");
+
+                this.DetectedFaces = Enumerable.Empty<DetectedFace>();
+
+                if (this.ShowDialogOnFaceApiErrors)
+                {
+                    await ErrorTrackingHelper.GenericApiCallExceptionHandler(e, "Face API failed.");
+                }
+            }
+            finally
+            {
+                this.OnFaceDetectionCompleted();
+            }
+        }
 
         public async Task IdentifyFacesAsync()
         {
@@ -150,6 +198,25 @@ namespace CognitiveServiceHelpers
         private void OnFaceRecognitionCompleted()
         {
             this.FaceRecognitionCompleted?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void UpdateDecodedImageSize(int height, int width)
+        {
+            this.DecodedImageHeight = height;
+            this.DecodedImageWidth = width;
+        }
+
+        public static bool IsFaceBigEnoughForDetection(int faceHeight, int imageHeight)
+        {
+            if (imageHeight == 0)
+            {
+                // sometimes we don't know the size of the image, so we assume the face is big enough
+                return true;
+            }
+
+            double faceHeightPercentage = 100 * ((double)faceHeight / imageHeight);
+
+            return faceHeightPercentage >= MinDetectableFaceCoveragePercentage;
         }
     }
 }

@@ -12,8 +12,8 @@ namespace CamFrameAnalyzer.Models
         {
             Summary = new CamFrameSummary();
         }
+        public string TimeKey { get; set; }
         public CognitiveRequest Request { get; set; }
-        public byte[] Data { get; set; }
         public IEnumerable<DetectedFace> DetectedFaces { get; set; }
         public IEnumerable<Tuple<DetectedFace, IdentifiedPerson>> IdentifiedPersons { get; set; }
         public IEnumerable<SimilarFaceMatch> SimilarFaces { get; set; }
@@ -23,8 +23,6 @@ namespace CamFrameAnalyzer.Models
         public bool IsIdentificationSuccessful { get; set; }
         public bool IsSimilaritiesSuccessful { get; set; }
         public string Status { get; set; }
-        public DateTime StartProcessingAt { get; set; }
-        public DateTime? CompletedProcessingAt { get; set; }
 
         //Milliseconds
         public int TotalProcessingTime { get; set; }

@@ -27,14 +27,18 @@ namespace CamFrameAnalyzer.Functions
 
         private IStorageRepository filesStorageRepo;
         private ICamFrameAnalysisRepository camFrameAnalysisRepo;
+        //private IVisitorsRepository visitorRepo;
         private IAzureServiceBusRepository serviceBusRepo;
         private CamFrameAnalysis frameAnalysis;
         private CognitiveFacesAnalyzer cognitiveFacesAnalyzer;
 
-        public CamFrameAnalyzer(IStorageRepository storageRepo, IAzureServiceBusRepository sbRepo, ICamFrameAnalysisRepository camFrameRepo)
+        public CamFrameAnalyzer(IStorageRepository storageRepo, 
+            IAzureServiceBusRepository sbRepo, 
+            ICamFrameAnalysisRepository camFrameRepo)
         {
             filesStorageRepo = storageRepo;
             camFrameAnalysisRepo = camFrameRepo;
+            //visitorRepo = visRepo;
             serviceBusRepo = sbRepo;
         }
 
@@ -43,6 +47,7 @@ namespace CamFrameAnalyzer.Functions
             [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "serviceBusConnection")]string request,
             ILogger log)
         {
+            DateTime startTime = DateTime.UtcNow;
             CognitiveRequest cognitiveRequest = null;
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(request)}");
 
@@ -57,8 +62,6 @@ namespace CamFrameAnalyzer.Functions
 
             try
             {
-                DateTime startTime = DateTime.UtcNow;
-
                 key = GlobalSettings.GetKeyValue("cognitiveKey");
                 endpoint = GlobalSettings.GetKeyValue("cognitiveEndpoint");
                 faceWorkspaceDataFilter = GlobalSettings.GetKeyValue("faceWorkspaceDataFilter");
@@ -67,63 +70,71 @@ namespace CamFrameAnalyzer.Functions
                 FaceServiceHelper.ApiEndpoint = endpoint;
                 FaceListManager.FaceListsUserDataFilter = faceWorkspaceDataFilter;
 
-                //We need only the filename not the FQDN in FileUrl
-                var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
-
-                var data = await filesStorageRepo.GetFileAsync(fileName);
-
                 frameAnalysis = new CamFrameAnalysis
                 {
                     Request = cognitiveRequest,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = startTime,
+                    TimeKey = $"{cognitiveRequest.TakenAt.Month}-{cognitiveRequest.TakenAt.Year}",
                     IsDeleted = false,
                     IsSuccessful = false,
                     Origin = "CamFrameAnalyzer",
                     Status = ProcessingStatus.Processing.ToString()
                 };
 
+                // Get image data. We need only the filename not the FQDN in FileUrl
+                var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
+                var data = await filesStorageRepo.GetFileAsync(fileName);
+
+                // Load the analyzer with data
                 cognitiveFacesAnalyzer = new CognitiveFacesAnalyzer(data);
 
-                //First we detect the faces in the image
-                await DetectFaces(log);
-                if (frameAnalysis.IsDetectionSuccessful)
-                {
-                    //Second, we take the detected list and compare it to similar and identified persons lists
-                    await Task.WhenAll(IdentifyFacesAsync(log), this.DetectSimilarFacesAsync(log));
-
-                    //validate that everything went well :)
-                    if(frameAnalysis.IsSimilaritiesSuccessful && frameAnalysis.IsIdentificationSuccessful)
-                    {
-                        frameAnalysis.IsSuccessful = true;
-                        frameAnalysis.Status = ProcessingStatus.Successful.ToString();
-                        frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
-                    }
-                    else
-                    {
-                        frameAnalysis.IsSuccessful = false;
-                        frameAnalysis.Status = ProcessingStatus.PartiallySuccessful.ToString();
-                        frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
-                    }
-                }
-                else
-                {
-                    frameAnalysis.IsSuccessful = false;
-                    frameAnalysis.Status = ProcessingStatus.Failed.ToString();
-                    frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
-                    log.LogError($"FUNC (CamFrameAnalyzer): Detection failed: {JsonConvert.SerializeObject(frameAnalysis)}");
-                }
+                await AnalyzeCameFrame(log);
+                
+                UpdateAnalysisSummary();
+                
+                frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                
+                await SaveAnalysisAsync();
             }
             catch (Exception ex)
             {
                 log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
             }
 
-
-
-            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(frameAnalysis)}");
+            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis COMPLETED: {JsonConvert.SerializeObject(frameAnalysis)}");
         }
 
-        public async Task DetectFaces(ILogger log)
+        private async Task AnalyzeCameFrame(ILogger log)
+        {
+            //First we detect the faces in the image
+            await DetectFacesAsync(log);
+            if (frameAnalysis.IsDetectionSuccessful)
+            {
+                //Second, we take the detected list and compare it to similar and identified persons lists
+                await Task.WhenAll(IdentifyFacesAsync(log), this.DetectSimilarFacesAsync(log));
+
+                //validate that everything went well :)
+                if (frameAnalysis.IsSimilaritiesSuccessful && frameAnalysis.IsIdentificationSuccessful)
+                {
+                    frameAnalysis.IsSuccessful = true;
+                    frameAnalysis.Status = ProcessingStatus.Successful.ToString();
+                }
+                else
+                {
+                    frameAnalysis.IsSuccessful = false;
+                    frameAnalysis.Status = ProcessingStatus.PartiallySuccessful.ToString();
+                }
+            }
+            else
+            {
+                frameAnalysis.IsSuccessful = false;
+                frameAnalysis.Status = ProcessingStatus.Failed.ToString();
+
+                log.LogError($"FUNC (CamFrameAnalyzer): Detection failed: {JsonConvert.SerializeObject(frameAnalysis)}");
+            }
+        }
+
+        public async Task DetectFacesAsync(ILogger log)
         {
             log.LogInformation($"FUNC (CamFrameAnalyzer): Starting Face Detection");
 
@@ -177,6 +188,8 @@ namespace CamFrameAnalyzer.Functions
                     frameAnalysis.IsSimilaritiesSuccessful = true;
                     frameAnalysis.Status = "Detected Similarities";
                 }
+
+                log.LogInformation($"FUNC (CamFrameAnalyzer): Finished Similarities Detection");
             }
             catch (Exception e)
             {
@@ -206,11 +219,12 @@ namespace CamFrameAnalyzer.Functions
                 }
                 else
                 {
-                    log.LogWarning($"FUNC (CamFrameAnalyzer): Identified persons detected");
                     frameAnalysis.IdentifiedPersons = cognitiveFacesAnalyzer.DetectedFaces.Select(f => new Tuple<DetectedFace, IdentifiedPerson>(f, cognitiveFacesAnalyzer.IdentifiedPersons.FirstOrDefault(p => p.FaceId == f.FaceId)));
                     frameAnalysis.IsIdentificationSuccessful = true;
                     frameAnalysis.Status = "Identified Persons";
                 }
+
+                log.LogInformation($"FUNC (CamFrameAnalyzer): Finished Identification Detection");
             }
             catch (Exception e)
             {
@@ -220,6 +234,62 @@ namespace CamFrameAnalyzer.Functions
                 frameAnalysis.IsSuccessful = false;
                 frameAnalysis.Status = "Failed to identify faces";
             }
+        }
+
+        private void UpdateAnalysisSummary()
+        {
+            if(frameAnalysis.DetectedFaces != null)
+            {
+                foreach(var face in frameAnalysis.DetectedFaces)
+                {
+                    frameAnalysis.Summary.TotalDetectedFaces++;
+                    AgeDistribution genderBasedAgeDistribution = null;
+                    if (face.FaceAttributes.Gender == Gender.Male)
+                    {
+                        frameAnalysis.Summary.TotalMales++;
+                        genderBasedAgeDistribution = frameAnalysis.Summary.AgeGenderDistribution.MaleDistribution;
+                    }
+                    else
+                    {
+                        frameAnalysis.Summary.TotalFemales++;
+                        genderBasedAgeDistribution = frameAnalysis.Summary.AgeGenderDistribution.FemaleDistribution;
+                    }
+
+                    if (face.FaceAttributes.Age < 16)
+                    {
+                        genderBasedAgeDistribution.Age0To15++;
+                    }
+                    else if (face.FaceAttributes.Age < 20)
+                    {
+                        genderBasedAgeDistribution.Age16To19++;
+                    }
+                    else if (face.FaceAttributes.Age < 30)
+                    {
+                        genderBasedAgeDistribution.Age20s++;
+                    }
+                    else if (face.FaceAttributes.Age < 40)
+                    {
+                        genderBasedAgeDistribution.Age30s++;
+                    }
+                    else if (face.FaceAttributes.Age < 50)
+                    {
+                        genderBasedAgeDistribution.Age40s++;
+                    }
+                    else if (face.FaceAttributes.Age < 60)
+                    {
+                        genderBasedAgeDistribution.Age50s++;
+                    }
+                    else
+                    {
+                        genderBasedAgeDistribution.Age60sAndOlder++;
+                    }
+                }
+            }
+        }
+
+        private async Task SaveAnalysisAsync()
+        {
+            await camFrameAnalysisRepo.AddAsync(frameAnalysis);
         }
     }
 }

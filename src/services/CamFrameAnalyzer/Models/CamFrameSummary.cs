@@ -8,14 +8,17 @@ namespace CamFrameAnalyzer.Models
 {
     public class CamFrameSummary
     {
+        public CamFrameSummary()
+        {
+            AgeGenderDistribution = new AgeGenderDistribution
+            {
+                MaleDistribution = new AgeDistribution(),
+                FemaleDistribution = new AgeDistribution()
+            };
+        }
         public int TotalDetectedFaces { get; set; }
-        public int TotalIdentifiedFaces { get; set; }
-        public int TotalSimilarFaces { get; set; }
-        public int TotalNewFaces { get; set; }
-        public int TotalNewMales { get; set; }
-        public int TotalNewFemales { get; set; }
-        public Dictionary<string, int> AgeGroupsMales { get; set; }
-        public Dictionary<string, int> AgeGroupFemales { get; set; }
-        public Dictionary<string, float> GenericStats { get; set; }
+        public int TotalMales { get; set; }
+        public int TotalFemales { get; set; }
+        public AgeGenderDistribution AgeGenderDistribution { get; set; }
     }
 }

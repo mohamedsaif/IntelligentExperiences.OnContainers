@@ -29,12 +29,13 @@ namespace CamFrameAnalyzer
             {
                 return new CosmosDbClientFactory(
                     AppConstants.DbName, 
-                    new Dictionary<string,string> { { AppConstants.DbCognitiveFilesContainer, AppConstants.DbCognitiveFilesContainer } }, 
+                    new Dictionary<string,string> { { AppConstants.DbColCamFrameAnalysis, AppConstants.DbColCamFrameAnalysisPartitionKey } }, 
                     dbClient);
             });
 
             //Register our cosmos db repository :)
             builder.Services.AddSingleton<ICamFrameAnalysisRepository, CamFrameAnalysisRepository>();
+            //builder.Services.AddSingleton<IVisitorsRepository, VisitorsRepository>();
 
             var camFrameStorageConnection = GlobalSettings.GetKeyValue("camFrameStorageConnection");
             builder.Services.AddSingleton<IStorageRepository>((s) =>

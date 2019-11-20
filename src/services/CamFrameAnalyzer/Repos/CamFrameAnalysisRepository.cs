@@ -14,7 +14,7 @@ namespace CamFrameAnalyzer.Repos
     {
         public CamFrameAnalysisRepository(ICosmosDbClientFactory cosmosDbClientFactory) : base(cosmosDbClientFactory) {}
 
-        public override string CollectionName { get; } = AppConstants.DbCognitiveFilesContainer;
+        public override string CollectionName { get; } = AppConstants.DbColCamFrameAnalysis;
 
         public override string GenerateId(CamFrameAnalysis entity) => $"{Guid.NewGuid()}";
 

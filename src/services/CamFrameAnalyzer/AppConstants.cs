@@ -15,8 +15,10 @@ namespace CamFrameAnalyzer
         public const string StorageContainerName = "camframefiles";
 
         //Cosmos Db settings
-        public const string DbName = "CognitiveAnalysisDb";
-        public const string DbCognitiveFilesContainer = "CamFrameAnalysis";
+        public const string DbName = "cognitive-analysis-db";
+        public const string DbColCamFrameAnalysis = "cam-frame-analysis";
+        public const string DbColCamFrameAnalysisPartitionKey = "TimeKey";
+        public const string DbColVisitors = "Visitors";
 
         //Service Bus settings
         public const string SBTopic = "camframe-analysis";

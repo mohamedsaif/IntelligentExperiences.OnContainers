@@ -55,7 +55,7 @@ namespace CoreLib.Repos
                 //Database do not exists! Create it
                 if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    await _documentClient.CreateDatabaseAsync(new Database { Id = _databaseName });
+                    var db = await _documentClient.CreateDatabaseAsync(new Database { Id = _databaseName });
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace CoreLib.Repos
                         var docCollection = new DocumentCollection { Id = collectionName.Key };
                         string partionKey = collectionName.Value;
 
-                        if (string.IsNullOrEmpty(partionKey))
+                        if (!string.IsNullOrEmpty(partionKey))
                             docCollection.PartitionKey.Paths.Add($"/{partionKey}");
 
                         await _documentClient.CreateDocumentCollectionAsync(

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
-using Microsoft.Azure.CognitiveServices.Vision.Face;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using CamFrameAnalyzer.Models;
 using Newtonsoft.Json;
@@ -24,7 +23,8 @@ namespace CamFrameAnalyzer.Functions
     {
         static string key = string.Empty;
         static string endpoint = string.Empty;
-        static IFaceClient faceClient;
+        private string faceWorkspaceDataFilter;
+
         private IStorageRepository filesStorageRepo;
         private ICamFrameAnalysisRepository camFrameAnalysisRepo;
         private IAzureServiceBusRepository serviceBusRepo;
@@ -44,7 +44,7 @@ namespace CamFrameAnalyzer.Functions
             ILogger log)
         {
             CognitiveRequest cognitiveRequest = null;
-            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(cognitiveRequest)}");
+            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(request)}");
 
             try
             {
@@ -61,8 +61,11 @@ namespace CamFrameAnalyzer.Functions
 
                 key = GlobalSettings.GetKeyValue("cognitiveKey");
                 endpoint = GlobalSettings.GetKeyValue("cognitiveEndpoint");
+                faceWorkspaceDataFilter = GlobalSettings.GetKeyValue("faceWorkspaceDataFilter");
+
                 FaceServiceHelper.ApiKey = key;
                 FaceServiceHelper.ApiEndpoint = endpoint;
+                FaceListManager.FaceListsUserDataFilter = faceWorkspaceDataFilter;
 
                 //We need only the filename not the FQDN in FileUrl
                 var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
@@ -73,14 +76,13 @@ namespace CamFrameAnalyzer.Functions
                 {
                     Request = cognitiveRequest,
                     CreatedAt = DateTime.UtcNow,
-                    Data = data,
                     IsDeleted = false,
                     IsSuccessful = false,
                     Origin = "CamFrameAnalyzer",
                     Status = ProcessingStatus.Processing.ToString()
                 };
 
-                cognitiveFacesAnalyzer = new CognitiveFacesAnalyzer(frameAnalysis.Data);
+                cognitiveFacesAnalyzer = new CognitiveFacesAnalyzer(data);
 
                 //First we detect the faces in the image
                 await DetectFaces(log);
@@ -108,6 +110,7 @@ namespace CamFrameAnalyzer.Functions
                     frameAnalysis.IsSuccessful = false;
                     frameAnalysis.Status = ProcessingStatus.Failed.ToString();
                     frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                    log.LogError($"FUNC (CamFrameAnalyzer): Detection failed: {JsonConvert.SerializeObject(frameAnalysis)}");
                 }
             }
             catch (Exception ex)
@@ -117,7 +120,7 @@ namespace CamFrameAnalyzer.Functions
 
 
 
-            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(cognitiveRequest)}");
+            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and processed message: {JsonConvert.SerializeObject(frameAnalysis)}");
         }
 
         public async Task DetectFaces(ILogger log)

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CoreLib.Models;
+using System;
 
 namespace CognitiveOrchestrator.Models
 {
-    public class CognitiveRequest
+    public class CognitiveRequest : BaseModel
     {
-        public string Id { get; set; }
-        public string ImageUrl { get; set; }
+        public string FileUrl { get; set; }
         public string DeviceId { get; set; }
         public DateTime TakenAt { get; set; }
         public DateTime ProcessedAt { get; set;}

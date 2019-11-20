@@ -20,7 +20,7 @@ jobs:
     inputs:
       command: restore
       feedsToUse: config
-      nugetConfigPath: 'nuget.config'
+      nugetConfigPath: '${{ Parameters.WorkingDirectory }}/nuget.config'
 
       projects: ${{ Parameters.RestoreBuildProjects }}
 

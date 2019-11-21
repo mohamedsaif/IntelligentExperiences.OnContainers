@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace CrowdAnalyzer.Repos
 {
-    public class CroudDemographicsRepository : CosmosDbRepository<CrowdDemographics>, ICrowdDemographicsRepository
+    public class CrowdDemographicsRepository : CosmosDbRepository<CrowdDemographics>, ICrowdDemographicsRepository
     {
-        public CroudDemographicsRepository(ICosmosDbClientFactory cosmosDbClientFactory) : base(cosmosDbClientFactory) { }
+        public CrowdDemographicsRepository(ICosmosDbClientFactory cosmosDbClientFactory) : base(cosmosDbClientFactory) { }
 
         public override string CollectionName { get; } = AppConstants.DbColCrowdDemographics;
 

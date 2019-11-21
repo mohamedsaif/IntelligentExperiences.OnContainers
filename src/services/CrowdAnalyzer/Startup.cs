@@ -38,7 +38,7 @@ namespace CamFrameAnalyzer
             });
 
             //Register our cosmos db repository :)
-            //builder.Services.AddSingleton<ICamFrameAnalysisRepository, CamFrameAnalysisRepository>();
+            builder.Services.AddSingleton<ICrowdDemographicsRepository, CrowdDemographicsRepository>();
             builder.Services.AddSingleton<IVisitorsRepository, VisitorsRepository>();
 
             //var serviceBusConnection = GlobalSettings.GetKeyValue("serviceBusConnection");

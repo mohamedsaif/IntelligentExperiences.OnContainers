@@ -2,7 +2,17 @@
 
 This is a regular Azure Function C# project triggered by Azure Service Bus topic.
 
+As Kubernetes (AKS) will be our main orchestrator, I've opted to deploy Azure Functions to AKS and leverage the KEDA project.
+
+The primary services of the platform are event driven, KEDA and Azure Functions make it really easy to build such scenarios so you can focus on building the actual services rather than worrying bout the pluming.
+
+>NOTE: Read more about [KEDA and Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda) here. Also check out this [1.0 Release](https://cloudblogs.microsoft.com/opensource/2019/11/19/keda-1-0-release-kubernetes-based-event-driven-autoscaling/) by Mr. Serverless (Jeff Hollan).
+
 ## Quick Tips
+
+### Azure Functions Core Tools
+
+As part for the prerequisites, you should have installed Azure Functions Core Tools. Please refer back to the setup documentation for further details.
 
 ### Creating new Azure Function in VS Code
 
@@ -17,6 +27,34 @@ To generate a docker file on your existing Azure Function project, just run the 
 ```bash
 
 func init . --docker-only
+
+```
+
+### Update local.settings.json
+
+This particular function requires various settings to be present at runtime (like Azure Storage and service bus connections). Updating the local.settings.json will allow the automatically generated Kubernetes deployment to have the needed Kubernetes secrets.
+
+This is a sanpshot that you can update and include in your local.settings.json:
+
+```json
+
+{
+  "IsEncrypted": false,
+  "serviceBus": {
+    "prefetchCount": 100,
+    "messageHandlerOptions": {
+        "autoComplete": true,
+        "maxConcurrentCalls": 32,
+        "maxAutoRenewDuration": "00:55:00"
+    }
+  },
+  "Values": {
+    "AzureWebJobsStorage": "REPLACE",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "serviceBusConnection": "REPLACE"
+  }
+}
+
 
 ```
 
@@ -49,6 +87,9 @@ kubectl get po -n keda
 # osiris-osiris-edge-proxy-injector-769cbdfcc7-5l8j6         1/1     Running   0          20s
 # osiris-osiris-edge-zeroscaler-754f77b757-cqz88             1/1     Running   0          19s
 
+# KEDA create also a new (scaledobjects.keda.k8s.io) CRS which will be used in kubernetes deployments.
+kubectl get customresourcedefinition
+
 ```
 
 >NOTE: If you deployed Azure Firewall in a secure AKS deployment, make sure that a rule to allow osiris images to be pulled from osiris.azurecr.io/osiris:6b69328 or the pods will fail to start
@@ -75,7 +116,7 @@ Check out the generated deployment file and update it accordingly.
 
 >NOTE: If you are pushing to private Azure Container Registry, please make sure you are authenticated correctly. Refer to [prerequisites guidelines](../../../guide/02-prerequisites/README.md) for more information.
 
-For example, if you need to leverage AKS Virtual Nodes capability, you can amend the tolerations to allow deployment to both cluster nodes and virtual nodes:
+If you need to leverage AKS Virtual Nodes capability (for a serverless infinite scale), you can amend the tolerations to allow deployment to both cluster nodes and virtual nodes:
 
 ```yaml
 
@@ -85,3 +126,71 @@ tolerations:
 ```
 
 >NOTE: To use AKS Virtual Nodes, you need first to enable it on your AKS cluster. Check out the [documentation here using Azure CLI](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-cli)
+
+#### Sample Deployment File
+
+Note that all caps values are to be replace with values related to your deployment.
+
+Also note that this deployment files adds ```tolerations``` to instruct KEDA to leverage AKS Virtual Nodes.
+
+```yaml
+
+data:
+  AzureWebJobsStorage: ENCODEDSECRET
+  FUNCTIONS_WORKER_RUNTIME: ZG90bmV0
+  serviceBusConnection: ENCODEDSECRET
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+  labels:
+    app: cognitive-orchestrator
+spec:
+  selector:
+    matchLabels:
+      app: cognitive-orchestrator
+  template:
+    metadata:
+      labels:
+        app: cognitive-orchestrator
+    spec:
+      containers:
+      - name: cognitive-orchestrator
+        image: YOUR-ACR-NAME.azurecr.io/services/cognitive-orchestrator
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: CognitiveOrchestrator
+        envFrom:
+        - secretRef:
+            name: cognitive-orchestrator
+      tolerations:
+      - operator: Exists
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+  labels:
+    deploymentName: cognitive-orchestrator
+spec:
+  scaleTargetRef:
+    deploymentName: cognitive-orchestrator
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      type: serviceBusTrigger
+      connection: serviceBusConnection
+      topicName: cognitive-request
+      subscriptionName: cognitive-orchestrator
+      name: request
+---
+
+```

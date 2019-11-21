@@ -32,7 +32,7 @@ namespace CrowdAnalyzer.Functions
             ILogger log)
         {
             DateTime startTime = DateTime.UtcNow;
-            log.LogInformation($"FUNC (CrowdAnalyzer): crowd-analysis topic triggered processing message: {JsonConvert.SerializeObject(request)}");
+            log.LogInformation($"FUNC (CrowdAnalyzer): crowd-analysis topic triggered processing message: {request.Substring(0, 20)}");
 
             CamFrameAnalysis analysis = null;
 

@@ -35,7 +35,15 @@ namespace CrowdAnalyzer.Models
         public int TotalVisitors { get; set; }
         public int TotalMales { get; set; }
         public int TotalFemales { get; set; }
-        public int TotalNewVisitors { get; set; }
+
+        /// <summary>
+        /// Stats about completely new visitors (not returning customers)
+        /// </summary>
+        public int TotalNewMaleVisitors { get; set; }
+        /// <summary>
+        /// Stats about completely new visitors (not returning customers)
+        /// </summary>
+        public int TotalNewFemaleVisitors { get; set; }
 
         public AgeGenderDistribution AgeGenderDistribution { get; set; }
         public EmotionGenderDistribution EmotionGenderDistribution { get; set; }

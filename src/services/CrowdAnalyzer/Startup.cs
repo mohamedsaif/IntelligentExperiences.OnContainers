@@ -19,6 +19,7 @@ namespace CamFrameAnalyzer
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            var checkForDbConsistency = bool.Parse(GlobalSettings.GetKeyValue("checkForDbConsistency"));
             //First register the db client (which is needed for the strongly typed repos)
             var cosmosDbEndpoint = GlobalSettings.GetKeyValue("cosmosDbEndpoint");
             var cosmosDbKey = GlobalSettings.GetKeyValue("cosmosDbKey");
@@ -28,19 +29,23 @@ namespace CamFrameAnalyzer
                 new ConnectionPolicy { EnableEndpointDiscovery = false });
             builder.Services.AddSingleton<ICosmosDbClientFactory>((s) =>
             {
-                return new CosmosDbClientFactory(
+                var factory = new CosmosDbClientFactory(
                     AppConstants.DbName, 
                     new Dictionary<string,string> { 
                         { AppConstants.DbColCrowdDemographics, AppConstants.DbColCrowdDemographicsPartitionKey },
                         { AppConstants.DbColVisitors, AppConstants.DbColVisitorsPartitionKey },
                     }, 
                     dbClient);
+                if (checkForDbConsistency)
+                    factory.EnsureDbSetupAsync().Wait();
+                return factory;
             });
 
             //Register our cosmos db repository :)
             builder.Services.AddSingleton<ICrowdDemographicsRepository, CrowdDemographicsRepository>();
             builder.Services.AddSingleton<IVisitorsRepository, VisitorsRepository>();
 
+            //If you need further control over Service Bus, you can also inject the repo for it.
             //var serviceBusConnection = GlobalSettings.GetKeyValue("serviceBusConnection");
             //builder.Services.AddSingleton<IAzureServiceBusRepository>((s) =>
             //{

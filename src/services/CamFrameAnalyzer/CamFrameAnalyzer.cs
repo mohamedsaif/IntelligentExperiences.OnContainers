@@ -76,9 +76,10 @@ namespace CamFrameAnalyzer.Functions
 
                 frameAnalysis = new CamFrameAnalysis
                 {
+                    Id = $"{Guid.NewGuid()}-{cognitiveRequest.TakenAt.Month}{cognitiveRequest.TakenAt.Year}",
                     Request = cognitiveRequest,
                     CreatedAt = startTime,
-                    TimeKey = $"{cognitiveRequest.TakenAt.Month}-{cognitiveRequest.TakenAt.Year}",
+                    TimeKey = $"{cognitiveRequest.TakenAt.Month}{cognitiveRequest.TakenAt.Year}",
                     IsDeleted = false,
                     IsSuccessful = false,
                     Origin = "CamFrameAnalyzer",

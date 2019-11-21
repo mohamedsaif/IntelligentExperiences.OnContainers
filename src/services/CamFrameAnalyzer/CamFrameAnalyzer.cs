@@ -43,14 +43,17 @@ namespace CamFrameAnalyzer.Functions
         }
 
         [FunctionName("CamFrameAnalyzer")]
-        public async Task Run(
+        [return: ServiceBus(queueOrTopicName: AppConstants.SBTopicCrowdAnalysis, 
+            entityType: Microsoft.Azure.WebJobs.ServiceBus.EntityType.Topic, 
+            Connection = "serviceBusConnection")]
+        public async Task<string> Run(
             [ServiceBusTrigger(AppConstants.SBTopic, AppConstants.SBSubscription, Connection = "serviceBusConnection")]string request,
             ILogger log)
         {
             DateTime startTime = DateTime.UtcNow;
             CognitiveRequest cognitiveRequest = null;
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(request)}");
-
+            
             try
             {
                 cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);
@@ -95,13 +98,17 @@ namespace CamFrameAnalyzer.Functions
                 frameAnalysis.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
                 
                 await SaveAnalysisAsync();
+
+                log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis COMPLETED: {JsonConvert.SerializeObject(frameAnalysis)}");
+
+                return JsonConvert.SerializeObject(frameAnalysis);
             }
             catch (Exception ex)
             {
                 log.LogError($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
             }
 
-            log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis COMPLETED: {JsonConvert.SerializeObject(frameAnalysis)}");
+            return null;
         }
 
         private async Task AnalyzeCameFrame(ILogger log)

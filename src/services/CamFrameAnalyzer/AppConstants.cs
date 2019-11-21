@@ -18,10 +18,12 @@ namespace CamFrameAnalyzer
         public const string DbName = "cognitive-analysis-db";
         public const string DbColCamFrameAnalysis = "cam-frame-analysis";
         public const string DbColCamFrameAnalysisPartitionKey = "TimeKey";
-        public const string DbColVisitors = "Visitors";
 
-        //Service Bus settings
+        //Main Service Bus settings
         public const string SBTopic = "camframe-analysis";
         public const string SBSubscription = "camframe-analyzer";
+
+        //Crowd Analysis Service Bus settings
+        public const string SBTopicCrowdAnalysis = "crowd-analysis";
     }
 }

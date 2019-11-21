@@ -1,6 +1,7 @@
 using CognitiveServiceHelpers.Models;
 using CoreLib.Models;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -14,6 +15,7 @@ namespace CamFrameAnalyzer.Models
         }
         public string TimeKey { get; set; }
         public CognitiveRequest Request { get; set; }
+        [JsonIgnore]
         public IEnumerable<DetectedFace> DetectedFaces { get; set; }
         public IEnumerable<Tuple<DetectedFace, IdentifiedPerson>> IdentifiedPersons { get; set; }
         public IEnumerable<SimilarFaceMatch> SimilarFaces { get; set; }

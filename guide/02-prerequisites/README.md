@@ -217,6 +217,21 @@ az servicebus topic subscription create \
     --topic-name $SB_TOPIC_CAM \
     --name $SB_TOPIC_CAM_SUB
 
+# Creating the crowd-analysis topic and subscription
+SB_TOPIC_CROWD="crowd-analysis"
+az servicebus topic create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name $SB_TOPIC_CROWD
+
+# Create subscription crowd-analyzer to the topic
+SB_TOPIC_CROWD_SUB="crowd-analyzer"
+az servicebus topic subscription create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CROWD \
+    --name $SB_TOPIC_CROWD_SUB
+
 # Retrieve the primary connection string:
 SB_COGNITIVE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
     --resource-group $RG \

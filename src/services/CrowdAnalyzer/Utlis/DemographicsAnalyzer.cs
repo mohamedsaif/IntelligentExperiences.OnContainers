@@ -59,8 +59,20 @@ namespace CrowdAnalyzer.Utils
             
             var passedTimeOfCurrentWindowSecs = (currentTime - currentAggregateWindowStart).TotalSeconds;
 
-            var crowdDemographicsId = $"{deviceId}-{currentAggregateWindowStart.ToString("yyyy-MM-dd-HH-mm-ss")}";
-            Demographics = await crowdDemographicsRepo.GetByIdAsync(crowdDemographicsId);
+            var crowdDemographicsId = $"{currentAggregateWindowStart.ToString("yyyy-MM-dd-HH-mm-ss")}-{deviceId}";
+
+            try
+            {
+                Demographics = await crowdDemographicsRepo.GetByIdAsync(crowdDemographicsId);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "Entity not found")
+                    Demographics = null;
+                else
+                    throw;
+            }
+
             if(Demographics == null)
             {
                 isNewDemographics = true;
@@ -85,7 +97,20 @@ namespace CrowdAnalyzer.Utils
                 {
                     //Do we have that visitor in our db
                     Guid persistedFaceId = item.SimilarPersistedFace.PersistedFaceId.GetValueOrDefault();
-                    var visitor = await visitorRepo.GetByIdAsync(persistedFaceId.ToString());
+
+                    Visitor visitor = null;
+                    try
+                    {
+                        visitor = await visitorRepo.GetByIdAsync($"{persistedFaceId}-{item.Face.FaceAttributes.Gender}");
+                    }
+                    catch (Exception ex)
+                    {
+
+                        if (ex.Message == "Entity not found")
+                            visitor = null;
+                        else
+                            throw;
+                    }
                     
                     //Visitor exists:
                     if (visitor != null)
@@ -128,7 +153,7 @@ namespace CrowdAnalyzer.Utils
 
                         visitor = new Visitor
                         {
-                            Id = persistedFaceId.ToString(),
+                            Id = $"{persistedFaceId}-{item.Face.FaceAttributes.Gender}",
                             VisitsCount = 1,
                             Age = (int)item.Face.FaceAttributes.Age,
                             AgeGroup = GetAgeGroupDescription((int)item.Face.FaceAttributes.Age),
@@ -148,6 +173,10 @@ namespace CrowdAnalyzer.Utils
 
                         await visitorRepo.AddAsync(visitor);
                         isDemographicsChanged = true;
+                        if (item.Face.FaceAttributes.Gender == Gender.Male)
+                            Demographics.TotalNewMaleVisitors++;
+                        else
+                            Demographics.TotalNewFemaleVisitors++;
                     }
 
                     if (isDemographicsChanged)
@@ -228,21 +257,21 @@ namespace CrowdAnalyzer.Utils
                 genderBasedEmotionDistribution = Demographics.EmotionGenderDistribution.FemaleDistribution;
             }
 
-            var emotions = new Dictionary<double, string>
+            var emotions = new Dictionary<string, double>
             {
-                { item.Face.FaceAttributes.Emotion.Anger, "Anger" },
-                { item.Face.FaceAttributes.Emotion.Contempt, "Contempt" },
-                { item.Face.FaceAttributes.Emotion.Disgust, "Disgust" },
-                { item.Face.FaceAttributes.Emotion.Fear, "Fear" },
-                { item.Face.FaceAttributes.Emotion.Happiness, "Happiness" },
-                { item.Face.FaceAttributes.Emotion.Neutral, "Neutral" },
-                { item.Face.FaceAttributes.Emotion.Sadness, "Sadness" },
-                { item.Face.FaceAttributes.Emotion.Surprise, "Surprise" }
+                { "Anger", item.Face.FaceAttributes.Emotion.Anger },
+                { "Contempt", item.Face.FaceAttributes.Emotion.Contempt },
+                { "Disgust", item.Face.FaceAttributes.Emotion.Disgust },
+                { "Fear", item.Face.FaceAttributes.Emotion.Fear },
+                { "Happiness", item.Face.FaceAttributes.Emotion.Happiness },
+                { "Neutral", item.Face.FaceAttributes.Emotion.Neutral },
+                { "Sadness", item.Face.FaceAttributes.Emotion.Sadness },
+                { "Surprise", item.Face.FaceAttributes.Emotion.Surprise }
             };
 
-            var topEmotion = emotions.OrderByDescending(e => e.Key).FirstOrDefault();
+            var topEmotion = emotions.OrderByDescending(e => e.Value).FirstOrDefault();
 
-            switch (topEmotion.Value)
+            switch (topEmotion.Key)
             {
                 case "Anger":
                     genderBasedEmotionDistribution.Anger++;

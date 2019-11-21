@@ -7,11 +7,8 @@ trigger:
       - dev
   paths:
     include:
-      - 'src/services'
-      - 'src/iot'
-      - 'src/web'
-      - 'azure-pipelines.yml'
-      - 'azure-pipelines-angular.yml'
+      - 'src/services/CamFrameAnalyzer'
+      - 'azure-pipelines-camframe-analyzer.yml'
       - 'azure-pipelines-webapp.yml'
 
 variables:
@@ -20,10 +17,10 @@ variables:
 jobs:
 - template: azure-pipelines-webapp.yml
   parameters:
-    Name: CognitiveOrchestrator
-    RestoreBuildProjects: '**/CognitiveOrchestrator.csproj'
+    Name: CamFrameAnalyzer
+    RestoreBuildProjects: '**/CamFrameAnalyzer.csproj'
     BuildConfiguration: 'Release'
-    WorkingDirectory: 'src/services/CognitiveOrchestrator'
-    ArtifactName: 'CognitiveOrchestrator'
+    WorkingDirectory: 'src/services/CamFrameAnalyzer'
+    ArtifactName: 'CamFrameAnalyzer'
     PublishWebApp: False
     ZipAfterPublish: False

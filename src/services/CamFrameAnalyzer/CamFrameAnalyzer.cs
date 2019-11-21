@@ -32,13 +32,13 @@ namespace CamFrameAnalyzer.Functions
         private CamFrameAnalysis frameAnalysis;
         private CognitiveFacesAnalyzer cognitiveFacesAnalyzer;
 
-        public CamFrameAnalyzer(IStorageRepository storageRepo, 
+        public CamFrameAnalyzer(
+            IStorageRepository storageRepo, 
             IAzureServiceBusRepository sbRepo, 
             ICamFrameAnalysisRepository camFrameRepo)
         {
             filesStorageRepo = storageRepo;
             camFrameAnalysisRepo = camFrameRepo;
-            //visitorRepo = visRepo;
             serviceBusRepo = sbRepo;
         }
 

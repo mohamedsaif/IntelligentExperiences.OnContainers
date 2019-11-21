@@ -1,12 +1,12 @@
-﻿using CamFrameAnalyzer.Abstractions;
-using CamFrameAnalyzer.Models;
+﻿using CrowdAnalyzer.Abstractions;
+using CrowdAnalyzer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CamFrameAnalyzer.Utils
+namespace CrowdAnalyzer.Utils
 {
     public class DemographicAnalyzer
     {

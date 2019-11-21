@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using CrowdAnalyzer.Abstractions;
 using CrowdAnalyzer.Models;
+using CrowdAnalyzer.Utils;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -38,10 +39,19 @@ namespace CrowdAnalyzer.Functions
             try
             {
                 analysis = JsonConvert.DeserializeObject<CamFrameAnalysis>(request);
+                
+                DemographicsAnalyzer demographics = new DemographicsAnalyzer(
+                    analysis,
+                    visitorRepo, 
+                    crowdDemographicsRepo,
+                    log);
+                await demographics.UpdateDemographics();
+
+                log.LogInformation($"FUNC (CrowdAnalyzer): finished processing with result: {JsonConvert.SerializeObject(demographics.Demographics)}");
             }
             catch(Exception e)
             {
-
+                log.LogError($"FUNC (CrowdAnalyzer): Failed with error: {JsonConvert.SerializeObject(e.Message)}");
             }
 
             return null;

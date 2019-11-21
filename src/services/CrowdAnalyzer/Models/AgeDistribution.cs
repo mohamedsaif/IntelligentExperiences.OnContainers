@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CamFrameAnalyzer.Models
+namespace CrowdAnalyzer.Models
 {
     public class AgeDistribution
     {

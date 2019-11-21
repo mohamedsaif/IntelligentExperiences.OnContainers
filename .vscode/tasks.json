@@ -12,7 +12,7 @@
             "type": "process",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
+                "cwd": "${workspaceFolder}/src\\services\\CrowdAnalyzer"
             }
         },
         {
@@ -31,7 +31,7 @@
             },
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
+                "cwd": "${workspaceFolder}/src\\services\\CrowdAnalyzer"
             }
         },
         {
@@ -47,7 +47,7 @@
             "type": "process",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
+                "cwd": "${workspaceFolder}/src\\services\\CrowdAnalyzer"
             }
         },
         {
@@ -64,14 +64,14 @@
             "dependsOn": "clean release",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer"
+                "cwd": "${workspaceFolder}/src\\services\\CrowdAnalyzer"
             }
         },
         {
             "type": "func",
             "dependsOn": "build",
             "options": {
-                "cwd": "${workspaceFolder}/src\\services\\CamFrameAnalyzer/bin/Debug/netcoreapp2.1"
+                "cwd": "${workspaceFolder}/src\\services\\CrowdAnalyzer/bin/Debug/netcoreapp2.1"
             },
             "command": "host start",
             "isBackground": true,

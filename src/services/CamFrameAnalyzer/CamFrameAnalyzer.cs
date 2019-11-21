@@ -51,9 +51,10 @@ namespace CamFrameAnalyzer.Functions
             ILogger log)
         {
             DateTime startTime = DateTime.UtcNow;
-            CognitiveRequest cognitiveRequest = null;
             log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis topic triggered processing message: {JsonConvert.SerializeObject(request)}");
             
+            CognitiveRequest cognitiveRequest = null;
+
             try
             {
                 cognitiveRequest = JsonConvert.DeserializeObject<CognitiveRequest>(request);

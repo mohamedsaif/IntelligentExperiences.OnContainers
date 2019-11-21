@@ -1,6 +1,5 @@
-﻿using CamFrameAnalyzer.Models;
+﻿using CrowdAnalyzer.Models;
 using CoreLib.Abstractions;
-using CrowdAnalyzer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

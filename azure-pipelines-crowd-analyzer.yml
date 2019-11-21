@@ -1,0 +1,26 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - 'src/services/CrowdAnalyzer'
+      - 'azure-pipelines-crowd-analyzer.yml'
+      - 'azure-pipelines-webapp.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-webapp.yml
+  parameters:
+    Name: CrowdAnalyzer
+    RestoreBuildProjects: '**/CrowdAnalyzer.csproj'
+    BuildConfiguration: 'Release'
+    WorkingDirectory: 'src/services/CrowdAnalyzer'
+    ArtifactName: 'CrowdAnalyzer'
+    PublishWebApp: False
+    ZipAfterPublish: False

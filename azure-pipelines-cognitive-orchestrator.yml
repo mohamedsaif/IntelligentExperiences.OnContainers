@@ -1,0 +1,26 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - 'src/services/CognitiveOrchestrator'
+      - 'azure-pipelines-cognitive-orchestrator.yml'
+      - 'azure-pipelines-webapp.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-webapp.yml
+  parameters:
+    Name: CognitiveOrchestrator
+    RestoreBuildProjects: '**/CognitiveOrchestrator.csproj'
+    BuildConfiguration: 'Release'
+    WorkingDirectory: 'src/services/CognitiveOrchestrator'
+    ArtifactName: 'CognitiveOrchestrator'
+    PublishWebApp: False
+    ZipAfterPublish: False

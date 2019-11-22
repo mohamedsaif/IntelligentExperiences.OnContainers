@@ -129,6 +129,8 @@ tolerations:
 
 >NOTE: To use AKS Virtual Nodes, you need first to enable it on your AKS cluster. Check out the [documentation here using Azure CLI](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-cli)
 
+One you are satisfied with the generated deployment file, copy the file to the deployment folder. This is to allow Azure DevOps to copy it out so it can be used in the release pipeline.
+
 #### Sample Deployment File
 
 Note that all caps values are to be replace with values related to your deployment.
@@ -139,7 +141,7 @@ Also note that this deployment files adds ```tolerations``` to instruct KEDA to 
 
 data:
   AzureWebJobsStorage: ENCODEDSECRET
-  FUNCTIONS_WORKER_RUNTIME: ZG90bmV0
+  FUNCTIONS_WORKER_RUNTIME: ENCODEDSECRET
   serviceBusConnection: ENCODEDSECRET
 apiVersion: v1
 kind: Secret

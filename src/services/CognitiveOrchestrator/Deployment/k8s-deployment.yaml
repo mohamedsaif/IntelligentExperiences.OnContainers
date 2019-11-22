@@ -1,0 +1,57 @@
+data:
+  AzureWebJobsStorage: RGVmYXVsdEVuZHBvaW50c1Byb3RvY29sPWh0dHBzO0VuZHBvaW50U3VmZml4PWNvcmUud2luZG93cy5uZXQ7QWNjb3VudE5hbWU9aWUyMjkxOWZyYW1lc3N0ZztBY2NvdW50S2V5PWprbXpsQzUwdXRUMnhidVlWMlljRTNJb2R3UGZTaXRtekQ0N3puZzdqaEozbndKd09OWFExNkd5eDgxZnBPdFdpVEVqQ3BzWEpTK0Jvclh4VGlISUR3PT0=
+  FUNCTIONS_WORKER_RUNTIME: ZG90bmV0
+  APPINSIGHTS_INSTRUMENTATIONKEY: ZTRiNzBkMzAtNWFkNC00MTY3LWEwNGUtYjk0MzgwZGE5MWJj
+  serviceBusConnection: RW5kcG9pbnQ9c2I6Ly9pZTIyOTE5LW5zLnNlcnZpY2VidXMud2luZG93cy5uZXQvO1NoYXJlZEFjY2Vzc0tleU5hbWU9Y29nbml0aXZlLW9yY2hlc3RyYXRvci1rZXk7U2hhcmVkQWNjZXNzS2V5PWpIK2lJTjh4VHJPanFkTkJQWXZtUmVGTjhzSGUxdjBIdGQ0Q2VvcHVyUEk9
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+  labels:
+    app: cognitive-orchestrator
+spec:
+  selector:
+    matchLabels:
+      app: cognitive-orchestrator
+  template:
+    metadata:
+      labels:
+        app: cognitive-orchestrator
+    spec:
+      containers:
+      - name: cognitive-orchestrator
+        image: aksadvmosaifgbbacr.azurecr.io/crowdanalytics/cognitive-orchestrator
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: CognitiveOrchestrator
+        envFrom:
+        - secretRef:
+            name: cognitive-orchestrator
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: cognitive-orchestrator
+  namespace: default
+  labels:
+    deploymentName: cognitive-orchestrator
+spec:
+  scaleTargetRef:
+    deploymentName: cognitive-orchestrator
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      type: serviceBusTrigger
+      connection: serviceBusConnection
+      topicName: cognitive-request
+      subscriptionName: cognitive-orchestrator
+      name: request
+---
+

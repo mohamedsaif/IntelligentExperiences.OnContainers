@@ -1,4 +1,4 @@
-# Cognitive Orchestrator
+# Azure Functions and KEDA
 
 This is a regular Azure Function C# project triggered by Azure Service Bus topic.
 

@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: cognitive-orchestrator
-        image: #{acrName}#/crowdanalytics/cognitive-orchestrator
+        image: #{acrName}#/crowdanalytics/cognitive-orchestrator:#{Build.BuildId}#
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: CognitiveOrchestrator

@@ -9,13 +9,13 @@ trigger:
     include:
       - 'src/services/CognitiveOrchestrator'
       - 'azure-pipelines-cognitive-orchestrator.yml'
-      - 'azure-pipelines-webapp.yml'
+      - 'azure-pipelines-webapp-containers.yml'
 
 variables:
   buildConfiguration: 'Release'
 
 jobs:
-- template: azure-pipelines-webapp.yml
+- template: azure-pipelines-webapp-containers.yml
   parameters:
     Name: CognitiveOrchestrator
     RestoreBuildProjects: '**/CognitiveOrchestrator.csproj'
@@ -24,3 +24,7 @@ jobs:
     ArtifactName: 'CognitiveOrchestrator'
     PublishWebApp: False
     ZipAfterPublish: False
+    DeploymentSourceFolder: 'src/services/CognitiveOrchestrator/Deployment'
+    ContainerRegistryServiceConnection: CrowdAnalyticsACR
+    ContainerRegistryRepo: CognitiveOrchestrator
+    DockerFilePath: 'src/services/CognitiveOrchestrator/Dockerfile'

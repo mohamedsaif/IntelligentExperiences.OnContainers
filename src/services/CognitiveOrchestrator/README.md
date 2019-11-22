@@ -20,6 +20,20 @@ You can leverage the Azure Functions VS Code extension to easily create new func
 
 You can also use Azure Functions Core tools to do as well through ```func new```
 
+### Custom NuGet Source
+
+As the project uses a custom feed to consume tailored and none-public packages, you can find a [nuget.config](nuget.config) file adding Azure DevOps Artifacts as source.
+
+You can use the following command to add custom package if you are using VS Code:
+
+```shell
+
+dotnet add package CoreLib -s https://ORGANIZATION.pkgs.visualstudio.com/PROJECT/_packaging/Mo.Packages/nuget/v3/index.json
+
+```
+
+In Visual Studio, the experience is a bit easier. Just go to the settings and add a new custom NuGet source which will then allow you to use the normal **Manage NuGet Packages** project right click action super simple. Just change the search in option from the drop down list in the top right.
+
 ### Adding Docker Support
 
 To generate a docker file on your existing Azure Function project, just run the following command (make sure you are in the Function project root directory):

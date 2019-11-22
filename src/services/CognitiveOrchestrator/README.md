@@ -9,9 +9,9 @@ You need to create a new local.settings.json file in the root of the service and
 {
   "IsEncrypted": false,
   "serviceBus": {
-    "prefetchCount": 1,
+    "prefetchCount": 100,
     "messageHandlerOptions": {
-        "autoComplete": true,
+        "autoComplete": false,
         "maxConcurrentCalls": 32,
         "maxAutoRenewDuration": "00:55:00"
     }
@@ -19,14 +19,8 @@ You need to create a new local.settings.json file in the root of the service and
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "serviceBusConnection": "",
     "APPINSIGHTS_INSTRUMENTATIONKEY": "",
-    "camFrameStorageConnection": "",
-    "cognitiveKey": "",
-    "cognitiveEndpoint": "",
-    "cosmosDbEndpoint": "",
-    "cosmosDbKey": "",
-    "faceWorkspaceDataFilter": "Contoso.CrowdAnalytics",
+    "serviceBusConnection": "",
     "KEDA_SERVICE_BUS_CONNECTION": ""
   }
 }
@@ -39,6 +33,6 @@ You need to create a new local.settings.json file in the root of the service and
 
 ```bash
 
-func kubernetes deploy --name camframe-analyzer --registry $CONTAINER_REGISTRY_NAME.azurecr.io/crowdanalytics --dotnet --dry-run > deploy-updated.yaml
+func kubernetes deploy --name cognitive-orchestrator --registry $CONTAINER_REGISTRY_NAME.azurecr.io/crowdanalytics --dotnet --dry-run > deploy-updated.yaml
 
 ```

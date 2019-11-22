@@ -232,15 +232,45 @@ az servicebus topic subscription create \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD_SUB
 
-# Retrieve the primary connection string:
-SB_COGNITIVE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
+# Retrieve namespace primary connection string:
+SB_NAMESPACE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --name cognitive-orchestrator-key \
     --query primaryConnectionString --output tsv)
 
 # Take a note of the connection string as we will need it to setup our deployed services
-echo $SB_COGNITIVE_ORCH_CONNECTION
+echo $SB_NAMESPACE_CONNECTION
+
+# Creating a Shared Access Signature (SAS) for each topic to be used by KEDA
+# (KEDA Service Bus trigger needed a single entity scope SAS in order to work as I write this script)
+SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_ORCH \
+    --name $SB_TOPIC_ORCH-sas \
+    --rights Send Listen \
+    --query primaryConnectionString --output tsv)
+
+SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CAM \
+    --name $SB_TOPIC_CAM-sas \
+    --rights Send Listen \
+    --query primaryConnectionString --output tsv)
+
+SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CROWD \
+    --name $SB_TOPIC_CROWD-sas \
+    --rights Send Listen \
+    --query primaryConnectionString --output tsv)
+
+echo $SB_TOPIC_ORCH_CONNECTION
+echo $SB_TOPIC_CAM_CONNECTION
+echo $SB_TOPIC_CROWD_CONNECTION
 
 ```
 

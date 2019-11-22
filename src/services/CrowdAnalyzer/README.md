@@ -9,7 +9,7 @@ You need to create a new local.settings.json file in the root of the service and
 {
   "IsEncrypted": false,
   "serviceBus": {
-    "prefetchCount": 1,
+    "prefetchCount": 100,
     "messageHandlerOptions": {
         "autoComplete": true,
         "maxConcurrentCalls": 32,
@@ -19,14 +19,17 @@ You need to create a new local.settings.json file in the root of the service and
   "Values": {
     "AzureWebJobsStorage": "",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "serviceBusConnection": "",
     "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+    "origin": "CrowdDemographics.V1.0.0",
+    "checkForDbConsistency": false,
+    "serviceBusConnection": "",
     "camFrameStorageConnection": "",
     "cognitiveKey": "",
-    "cognitiveEndpoint": "",
+    "cognitiveEndpoint": "https://westeurope.api.cognitive.microsoft.com/",
     "cosmosDbEndpoint": "",
     "cosmosDbKey": "",
     "faceWorkspaceDataFilter": "Contoso.CrowdAnalytics",
+    "demographicsWindowMins": 60,
     "KEDA_SERVICE_BUS_CONNECTION": ""
   }
 }
@@ -39,6 +42,6 @@ You need to create a new local.settings.json file in the root of the service and
 
 ```bash
 
-func kubernetes deploy --name camframe-analyzer --registry $CONTAINER_REGISTRY_NAME.azurecr.io/crowdanalytics --dotnet --dry-run > deploy-updated.yaml
+func kubernetes deploy --name crowd-analyzer --registry $CONTAINER_REGISTRY_NAME.azurecr.io/crowdanalytics --dotnet --dry-run > deploy-updated.yaml
 
 ```

@@ -133,6 +133,8 @@ tolerations:
 
 Another important note when using KEDA with Azure Service Bus, you need to have a connection string that scoped at the level of the topic (not at the namespace level). That is why I added a special service bus connection SAS into a separate variable under the secrets deployment ``` KEDA_SERVICE_BUS_CONNECTION ```.
 
+>NOTE: For simplicity, the function app uses only one connection to Service Bus to both receive from one topic and send to another. It can easily done through update the configuration and code to use 2 different connection string for each Service Bus Topics.
+
 One you are satisfied with the generated deployment file, copy the file to the deployment folder. This is to allow Azure DevOps to copy it out so it can be used in the release pipeline.
 
 #### Diagnose KEDA deployment

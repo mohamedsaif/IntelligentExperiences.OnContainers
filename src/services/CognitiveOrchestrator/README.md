@@ -32,11 +32,13 @@ func init . --docker-only
 
 >NOTE: Check the generated Dockerfile and update the path ```/src/dotnet-function-app``` to your relevant function app folder.
 
+It is worth mentioning that the generated docker is doing a multi-stage container building. This means it uses SDK container (fat container) to build your source code, then build another runtime-only container (leaner). This allows you to have platform-independent build (you don't need the machine building the container to have .NET Core SDK installed for example)
+
 ### Update local.settings.json
 
 This particular function requires various settings to be present at runtime (like Azure Storage and service bus connections). Updating the local.settings.json will allow the automatically generated Kubernetes deployment to have the needed Kubernetes secrets.
 
-This is a sanpshot that you can update and include in your local.settings.json:
+This is a snapshot that you can update and include in your local.settings.json:
 
 ```json
 

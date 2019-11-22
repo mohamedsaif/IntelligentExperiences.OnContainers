@@ -46,6 +46,10 @@ metadata:
 spec:
   scaleTargetRef:
     deploymentName: cognitive-orchestrator
+  pollingInterval: 30  # Optional. Default: 30 seconds
+  cooldownPeriod:  300 # Optional. Default: 300 seconds
+  minReplicaCount: 1   # Optional. Default: 0
+  maxReplicaCount: 100 # Optional. Default: 100
   triggers:
   - type: azure-servicebus
     metadata:

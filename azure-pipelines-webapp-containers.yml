@@ -45,6 +45,12 @@ jobs:
       zipAfterPublish: ${{ Parameters.ZipAfterPublish }}
       workingDirectory: ${{ Parameters.WorkingDirectory }}
 
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+    displayName: 'Replace tokens in deployment/*.yaml'
+    inputs:
+      rootDirectory: '${{ Parameters.DeploymentSourceFolder }}'
+      targetFiles: '**/*.yaml'
+
   - task: CopyFiles@2
     displayName: 'Copy Deployment Files'
     inputs:

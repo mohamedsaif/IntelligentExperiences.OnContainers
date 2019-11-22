@@ -8,6 +8,40 @@ Now it is time to deploy and activate the solution.
 
 I'm hosting the source code on GitHub and using Azure DevOps to manage the other aspects of SDL (Azure Boards for project management, Azure Pipelines for CI/CD and Azure Artifacts for custom NuGet packages).
 
+### Connecting to Azure
+
+Azure DevOps allows you to provision secure service connection to many external systems (like Azure Resource Manager and Container Registry).
+
+[Service Connections](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) can be used to access external systems in your build and release pipelines.
+
+#### Azure Container Registry Service Connection
+
+Let's add Azure Container Registry service connection so Azure DevOps can push images to be pulled by Kubernetes.
+
+Head up to **Project settings -> Service connections -> New service connection**:
+
+![project-settings](assets/azure-settings.png)
+
+In the new service connection drop-down list, select **Docker Registry**:
+
+![new-service-connection](assets/azure-new-serviceconnection.png)
+
+Azure DevOps has tight integration with Azure, so you will find an option for (Azure Container Registry) which you select a subscription and registry and Azure DevOps will provision all the authentication/authorization plumbing on your behalf.
+
+I opted to use **Others** option so it would not matter where that container registry is. I just supplied a registry information:
+
+![docker-registry](assets/azure-new-docker-registry.png)
+
+>NOTE: At previous step, we created both Azure Container Registry and a Service Principal. Refer back to this step to get the access information needed to create the new service connection.
+
+#### Azure Kubernetes Service
+
+As you will be deploying the platform services on AKS, I've opted to create another service connection to **Kubernetes**.
+
+You can use Kubeconfig, Kubernetes Service Account or Azure Subscription. Azure Subscription is the easiest option as again all the configuration will handled on your behalf.
+
+![k8s-connection](assets/k8s-connection.png)
+
 ### Source Code
 
 If you want to contribute to this workshop (which I would very much appreciate), I would recommend [Forking the GitHub repo](https://aka.ms/IE-On-Containers).

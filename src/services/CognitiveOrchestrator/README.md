@@ -153,23 +153,27 @@ Note that all caps values are to be replace with values related to your deployme
 
 Also note that this deployment files adds ```tolerations``` to instruct KEDA to leverage AKS Virtual Nodes.
 
+You can find the deployment file used in the DevOps process here [Deployment/k8s-deployment.yaml](Deployment/k8s-deployment.yaml)
+
 ```yaml
 
-data:
-  AzureWebJobsStorage: ENCODEDSECRET
-  FUNCTIONS_WORKER_RUNTIME: ENCODEDSECRET
-  serviceBusConnection: ENCODEDSECRET
 apiVersion: v1
 kind: Secret
 metadata:
   name: cognitive-orchestrator
-  namespace: default
+  namespace: crowd-analytics
+data:
+  AzureWebJobsStorage: #{funcStorage}#
+  FUNCTIONS_WORKER_RUNTIME: #{funcRuntime}#
+  APPINSIGHTS_INSTRUMENTATIONKEY: #{appInsightsKey}#
+  serviceBusConnection: #{serviceBusConnection}#
+  KEDA_SERVICE_BUS_CONNECTION: #{kedaServiceBusConnection}#
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cognitive-orchestrator
-  namespace: default
+  namespace: crowd-analytics
   labels:
     app: cognitive-orchestrator
 spec:
@@ -183,31 +187,33 @@ spec:
     spec:
       containers:
       - name: cognitive-orchestrator
-        image: YOUR-ACR-NAME.azurecr.io/services/cognitive-orchestrator
+        image: #{acrName}#/crowdanalytics/cognitive-orchestrator:#{Build.BuildId}#
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: CognitiveOrchestrator
         envFrom:
         - secretRef:
             name: cognitive-orchestrator
-      tolerations:
-      - operator: Exists
 ---
 apiVersion: keda.k8s.io/v1alpha1
 kind: ScaledObject
 metadata:
   name: cognitive-orchestrator
-  namespace: default
+  namespace: crowd-analytics
   labels:
     deploymentName: cognitive-orchestrator
 spec:
   scaleTargetRef:
     deploymentName: cognitive-orchestrator
+  pollingInterval: 30  # Optional. Default: 30 seconds
+  cooldownPeriod:  300 # Optional. Default: 300 seconds
+  minReplicaCount: 0   # Optional. Default: 0
+  maxReplicaCount: 100 # Optional. Default: 100
   triggers:
   - type: azure-servicebus
     metadata:
       type: serviceBusTrigger
-      connection: serviceBusConnection
+      connection: KEDA_SERVICE_BUS_CONNECTION
       topicName: cognitive-request
       subscriptionName: cognitive-orchestrator
       name: request

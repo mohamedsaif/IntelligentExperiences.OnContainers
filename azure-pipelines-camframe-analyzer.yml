@@ -9,13 +9,13 @@ trigger:
     include:
       - 'src/services/CamFrameAnalyzer'
       - 'azure-pipelines-camframe-analyzer.yml'
-      - 'azure-pipelines-webapp.yml'
+      - 'azure-pipelines-webapp-containers.yml'
 
 variables:
   buildConfiguration: 'Release'
 
 jobs:
-- template: azure-pipelines-webapp.yml
+- template: azure-pipelines-webapp-containers.yml
   parameters:
     Name: CamFrameAnalyzer
     RestoreBuildProjects: '**/CamFrameAnalyzer.csproj'
@@ -24,3 +24,8 @@ jobs:
     ArtifactName: 'CamFrameAnalyzer'
     PublishWebApp: False
     ZipAfterPublish: False
+    DeploymentSourceFolder: 'src/services/CamFrameAnalyzer/Deployment'
+    ContainerRegistryServiceConnection: CrowdAnalyticsACR
+    ContainerRegistryName: 'crowdanalytics/'
+    ContainerRegistryRepo: camframe-analyzer
+    DockerFilePath: 'src/services/CamFrameAnalyzer/Dockerfile'

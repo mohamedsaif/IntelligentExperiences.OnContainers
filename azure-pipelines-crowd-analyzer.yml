@@ -9,13 +9,13 @@ trigger:
     include:
       - 'src/services/CrowdAnalyzer'
       - 'azure-pipelines-crowd-analyzer.yml'
-      - 'azure-pipelines-webapp.yml'
+      - 'azure-pipelines-webapp-containers.yml'
 
 variables:
   buildConfiguration: 'Release'
 
 jobs:
-- template: azure-pipelines-webapp.yml
+- template: azure-pipelines-webapp-containers.yml
   parameters:
     Name: CrowdAnalyzer
     RestoreBuildProjects: '**/CrowdAnalyzer.csproj'
@@ -24,3 +24,8 @@ jobs:
     ArtifactName: 'CrowdAnalyzer'
     PublishWebApp: False
     ZipAfterPublish: False
+    DeploymentSourceFolder: 'src/services/CrowdAnalyzer/Deployment'
+    ContainerRegistryServiceConnection: CrowdAnalyticsACR
+    ContainerRegistryName: 'crowdanalytics/'
+    ContainerRegistryRepo: crowd-analyzer
+    DockerFilePath: 'src/services/CrowdAnalyzer/Dockerfile'

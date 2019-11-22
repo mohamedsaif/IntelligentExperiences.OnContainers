@@ -4,10 +4,11 @@ metadata:
   name: cognitive-orchestrator
   namespace: crowanalytics
 data:
-  AzureWebJobsStorage: SEFIQUhBSEE=
-  FUNCTIONS_WORKER_RUNTIME: SEFIQUhBSEE=
-  APPINSIGHTS_INSTRUMENTATIONKEY: SEFIQUhBSEE=
-  serviceBusConnection: SEFIQUhBSEE=
+  AzureWebJobsStorage: #{funcStorage}#
+  FUNCTIONS_WORKER_RUNTIME: #{funcRuntime}#
+  APPINSIGHTS_INSTRUMENTATIONKEY: #{appInsightsKey}#
+  serviceBusConnection: #{serviceBusConnection}#
+  KEDA_SERVICE_BUS_CONNECTION: #{kedaServiceBusConnection}#
 ---
 apiVersion: apps/v1
 kind: Deployment

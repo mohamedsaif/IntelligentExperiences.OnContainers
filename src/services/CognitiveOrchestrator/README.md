@@ -131,7 +131,19 @@ tolerations:
 
 >NOTE: To use AKS Virtual Nodes, you need first to enable it on your AKS cluster. Check out the [documentation here using Azure CLI](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-cli)
 
+Another important note when using KEDA with Azure Service Bus, you need to have a connection string that scoped at the level of the topic (not at the namespace level). That is why I added a special service bus connection SAS into a separate variable under the secrets deployment ``` KEDA_SERVICE_BUS_CONNECTION ```.
+
 One you are satisfied with the generated deployment file, copy the file to the deployment folder. This is to allow Azure DevOps to copy it out so it can be used in the release pipeline.
+
+#### Diagnose KEDA deployment
+
+If something is not going right, you can check directly KEDA logs:
+
+```bash
+
+kubectl logs $REPLACE_WITH_KEDA_POD_NAME -n keda
+
+```
 
 #### Sample Deployment File
 

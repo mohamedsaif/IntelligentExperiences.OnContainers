@@ -308,6 +308,32 @@ az acr create \
 
 ```
 
+Now we will create a [Service Principal for ACR](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal) to be used in Azure DevOps CI/CD pipelines.
+
+```bash
+
+# Create a SP to be used to access ACR
+ACR_SP_NAME="${PREFIX}-acr-sp"
+ACR_SP=$(az ad sp create-for-rbac -n $ACR_SP_NAME --skip-assignment)
+echo $ACR_SP | jq
+
+ACR_SP_ID=$(echo $ACR_SP | jq -r .appId)
+ACR_SP_PASSWORD=$(echo $ACR_SP | jq -r .password)
+echo $ACR_SP_ID
+echo $ACR_SP_PASSWORD
+
+# Take a note of the ID and Password values as we will be using them in Azure DevOps
+
+# We need the full ACR Azure resource id to grant the permissions
+CONTAINER_REGISTRY_ID=$(az acr show --name $CONTAINER_REGISTRY_NAME --query id --output tsv)
+echo $CONTAINER_REGISTRY_ID
+
+# No we grant permissions to the SP to allow push and pull roles
+az role assignment create --assignee $ACR_SP_ID --scope $CONTAINER_REGISTRY_ID --role acrpull
+az role assignment create --assignee $ACR_SP_ID --scope $CONTAINER_REGISTRY_ID --role acrpush
+
+```
+
 If you want to be able to push to this ACR from your dev machine, you can authenticate using the following command:
 
 ```bash

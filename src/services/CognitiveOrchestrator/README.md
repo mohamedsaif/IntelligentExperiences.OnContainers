@@ -30,6 +30,8 @@ func init . --docker-only
 
 ```
 
+>NOTE: Check the generated Dockerfile and update the path ```/src/dotnet-function-app``` to your relevant function app folder.
+
 ### Update local.settings.json
 
 This particular function requires various settings to be present at runtime (like Azure Storage and service bus connections). Updating the local.settings.json will allow the automatically generated Kubernetes deployment to have the needed Kubernetes secrets.

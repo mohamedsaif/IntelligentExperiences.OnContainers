@@ -26,5 +26,6 @@ jobs:
     ZipAfterPublish: False
     DeploymentSourceFolder: 'src/services/CognitiveOrchestrator/Deployment'
     ContainerRegistryServiceConnection: CrowdAnalyticsACR
-    ContainerRegistryRepo: CognitiveOrchestrator
+    ContainerRegistryName: crowdanalytics
+    ContainerRegistryRepo: cognitive-orchestrator
     DockerFilePath: 'src/services/CognitiveOrchestrator/Dockerfile'

@@ -41,7 +41,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: ${{ Parameters.PublishWebApp }}
-      arguments: '--configuration ${{ Parameters.BuildConfiguration }} --output $(build.artifactstagingdirectory)'
+      arguments: '--configuration ${{ Parameters.BuildConfiguration }} --output $(build.artifactstagingdirectory)/app'
       zipAfterPublish: ${{ Parameters.ZipAfterPublish }}
       workingDirectory: ${{ Parameters.WorkingDirectory }}
 
@@ -68,7 +68,7 @@ jobs:
     displayName: 'Docker Build'
     inputs:
       containerRegistry: ${{ Parameters.ContainerRegistryServiceConnection }}
-      repository: ${{ Parameters.ContainerRegistryRepo }}
+      repository: '${{ Parameters.ContainerRegistryName }}${{ Parameters.ContainerRegistryRepo }}'
       command: build
       Dockerfile: ${{ Parameters.DockerFilePath }}
 
@@ -76,6 +76,6 @@ jobs:
     displayName: 'Docker Push'
     inputs:
       containerRegistry: ${{ Parameters.ContainerRegistryServiceConnection }}
-      repository: ${{ Parameters.ContainerRegistryRepo }}
+      repository: '${{ Parameters.ContainerRegistryName }}${{ Parameters.ContainerRegistryRepo }}'
       command: push
       Dockerfile: ${{ Parameters.DockerFilePath }}

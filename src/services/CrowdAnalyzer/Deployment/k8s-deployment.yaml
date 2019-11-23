@@ -35,17 +35,22 @@ spec:
       containers:
       - name: crowd-analyzer
         image: #{acrName}#/crowdanalytics/crowd-analyzer:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: CrowdAnalyzer
-        - name: KEDA_SERVICE_BUS_CONNECTION
-          valueFrom:
-            secretKeyRef:
-              name: crowd-analyzer
-              key: KEDA_SERVICE_BUS_CONNECTION
         envFrom:
         - secretRef:
             name: crowd-analyzer
+      # nodeSelector:
+      #   kubernetes.io/role: agent
+      #   beta.kubernetes.io/os: linux
+      #   type: virtual-kubelet
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - key: azure.com/aci
+        effect: NoSchedule
 ---
 apiVersion: keda.k8s.io/v1alpha1
 kind: ScaledObject
@@ -64,10 +69,9 @@ spec:
   triggers:
   - type: azure-servicebus
     metadata:
-      type: serviceBusTrigger
       connection: KEDA_SERVICE_BUS_CONNECTION
       topicName: crowd-analysis 
       subscriptionName: crowd-analyzer
-      name: request
+      queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
 ---
 

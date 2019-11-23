@@ -115,3 +115,51 @@ Please repeat the above steps for each pipeline mentioned (only the template fil
 Creating Release Pipelines to actually deliver the target services to your Azure cloud services.
 
 >NOTE: You will need all the connection strings, keys and values you captured during the previous workshop steps to provision your release pipelines.
+
+## Testing
+
+Now you are ready to check as experienced SRE (Site Reliability Engineering) that the deployed components are up and healthy.
+
+### Kubernetes Services Test
+
+Let's check that every part of the deployment works
+
+#### Crowd Analytics Components
+
+You have mainly 3 components running:
+
+- Cognitive Orchestrator: gets any new messages coming from IoT Hub and send them to the appropriate processor. Currently we have only [Camera Frame Analyzer] service.
+- CamFrame Analyzer: look for faces in image, persist similar faces and identify any faces agains a predefined list and then publish frame analysis results with basic demographics information.
+- Crowd Analyzer: taking an analyzed Camera Frame and produced 1-hour demographics view (total males, total females, age groups, emotions,...) and persist the results in db so it can be displayed in a dashboard.
+
+All services are deployed to AKS in a namespace called [crowd-analytics]. Let's check all deployments:
+
+```bash
+
+kubectl get deployment -n crowd-analytics
+
+# Results could look like this:
+# NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+# camframe-analyzer        0/0     0            0           93m
+# cognitive-orchestrator   1/1     1            1           14h
+# crowd-analyzer           0/0     0            0           12m
+
+# You can get details about a specific deployment using:
+kubectl describe deployment camframe-analyzer -n crowd-analytics
+
+# Check the deployed pods (if you have all 0 you will not get any results)
+kubectl get pods -n crowd-analytics
+
+# In addition to the above, you can access KEDA scaler logs as well:
+kubectl get pods -n keda
+
+kubectl logs REPLACE_KEDA_POD_NAME -n keda
+
+# Save logs to a file
+kubectl logs REPLACE_KEDA_POD_NAME -n keda > keda.logs
+
+```
+
+One of the amazing aspects of KEDA's ```ScaledObject``` that it can scale down to 0 and scale up to N based on the event trigger (in this case we are using Service Bus trigger).
+
+>NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1).

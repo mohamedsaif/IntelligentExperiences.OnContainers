@@ -29,14 +29,10 @@ spec:
       containers:
       - name: cognitive-orchestrator
         image: #{acrName}#/crowdanalytics/cognitive-orchestrator:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: CognitiveOrchestrator
-        - name: KEDA_SERVICE_BUS_CONNECTION
-          valueFrom:
-            secretKeyRef:
-              name: cognitive-orchestrator
-              key: KEDA_SERVICE_BUS_CONNECTION
         envFrom:
         - secretRef:
             name: cognitive-orchestrator
@@ -58,10 +54,9 @@ spec:
   triggers:
   - type: azure-servicebus
     metadata:
-      type: serviceBusTrigger
       connection: KEDA_SERVICE_BUS_CONNECTION
       topicName: cognitive-request
       subscriptionName: cognitive-orchestrator
-      name: request
+      queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
 ---
 

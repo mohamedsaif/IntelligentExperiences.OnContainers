@@ -244,12 +244,13 @@ echo $SB_NAMESPACE_CONNECTION
 
 # Creating a Shared Access Signature (SAS) for each topic to be used by KEDA
 # (KEDA Service Bus trigger needed a single entity scope SAS in order to work as I write this script)
+# KEDA needs manage permission to be able to read the topic telemetry
 SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_ORCH \
     --name $SB_TOPIC_ORCH-sas \
-    --rights Send Listen \
+    --rights Manage \
     --query primaryConnectionString --output tsv)
 
 SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
@@ -257,7 +258,7 @@ SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CAM \
     --name $SB_TOPIC_CAM-sas \
-    --rights Send Listen \
+    --rights Manage \
     --query primaryConnectionString --output tsv)
 
 SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
@@ -265,7 +266,7 @@ SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD-sas \
-    --rights Send Listen \
+    --rights Manage \
     --query primaryConnectionString --output tsv)
 
 echo $SB_TOPIC_ORCH_CONNECTION

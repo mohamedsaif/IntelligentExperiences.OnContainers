@@ -136,6 +136,9 @@ All services are deployed to AKS in a namespace called [crowd-analytics]. Let's 
 
 ```bash
 
+# Get everything deployed to the namespace (crowd-analytics)
+kubectl get all -n crowd-analytics
+
 kubectl get deployment -n crowd-analytics
 
 # Results could look like this:
@@ -162,4 +165,28 @@ kubectl logs REPLACE_KEDA_POD_NAME -n keda > keda.logs
 
 One of the amazing aspects of KEDA's ```ScaledObject``` that it can scale down to 0 and scale up to N based on the event trigger (in this case we are using Service Bus trigger).
 
->NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1).
+>NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1)
+
+**Cleanup Quick Tips:**
+
+In the script below, you can find some usful tips:
+
+```bash
+
+# Manually cleaning the deployed services:
+kubectl delete deployment camframe-analyzer -n crowd-analytics
+kubectl delete deployment cognitive-orchestrator -n crowd-analytics
+kubectl delete deployment crowd-analyzer -n crowd-analytics
+
+kubectl delete secret camframe-analyzer -n crowd-analytics
+kubectl delete secret crowd-analyzer -n crowd-analytics
+kubectl delete secret cognitive-orchestrator -n crowd-analytics
+
+kubectl delete ScaledObject camframe-analyzer -n crowd-analytics
+kubectl delete ScaledObject crowd-analyzer -n crowd-analytics
+kubectl delete ScaledObject cognitive-orchestrator -n crowd-analytics
+
+# Delete everything in a namespace :)
+kubectl delete all --all -n crowd-analytics
+
+```

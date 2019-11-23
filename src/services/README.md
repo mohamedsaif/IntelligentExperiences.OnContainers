@@ -147,7 +147,9 @@ tolerations:
 
 >NOTE: To use AKS Virtual Nodes, you need first to enable it on your AKS cluster. Check out the [documentation here using Azure CLI](https://docs.microsoft.com/en-us/azure/aks/virtual-nodes-cli)
 
-Another important note when using KEDA with Azure Service Bus, you need to have a connection string that scoped at the level of the topic (not at the namespace level). That is why I added a special service bus connection SAS into a separate variable under the secrets deployment ``` KEDA_SERVICE_BUS_CONNECTION ```.
+Another important note when using KEDA with Azure Service Bus, you need to have a connection string that scoped at the level of the topic (not at the namespace level). That is why I added a special service bus connection SAS into a separate variable under the secrets deployment ``` KEDA_SERVICE_BUS_CONNECTION ``` which can basically can be the same connection but with ```;EntityPath=TOPIC_NAME``` at the end.
+
+During the prerequisites steps, you already created a SAS policy for each topic to be used as the relative KEDA connection.
 
 >NOTE: You can check the current enhancement issue mentioned above on [GitHub](https://github.com/kedacore/keda/issues/215)
 
@@ -178,51 +180,70 @@ You can find the deployment file used in the DevOps process here [Deployment/k8s
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cognitive-orchestrator
+  name: crowd-analyzer
   namespace: crowd-analytics
 data:
   AzureWebJobsStorage: #{funcStorage}#
-  FUNCTIONS_WORKER_RUNTIME: #{funcRuntime}#
+  FUNCTIONS_WORKER_RUNTIME: ZG90bmV0 # dotnet
   APPINSIGHTS_INSTRUMENTATIONKEY: #{appInsightsKey}#
   serviceBusConnection: #{serviceBusConnection}#
   KEDA_SERVICE_BUS_CONNECTION: #{kedaServiceBusConnection}#
+  origin: Q3Jvd2REZW1vZ3JhcGhpY3MuVjEuMC4w # CrowdDemographics.V1.0.0
+  checkForDbConsistency: dHJ1ZQ== #true
+  cosmosDbEndpoint: #{cosmosDbEndpoint}#
+  cosmosDbKey: #{cosmosDbKey}#
+  faceWorkspaceDataFilter: Q29udG9zby5Dcm93ZEFuYWx5dGljcw== # Contoso.CrowdAnalytics
+  demographicsWindowMins: NjA= # 60
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cognitive-orchestrator
+  name: crowd-analyzer
   namespace: crowd-analytics
   labels:
-    app: cognitive-orchestrator
+    app: crowd-analyzer
 spec:
   selector:
     matchLabels:
-      app: cognitive-orchestrator
+      app: crowd-analyzer
   template:
     metadata:
       labels:
-        app: cognitive-orchestrator
+        app: crowd-analyzer
     spec:
       containers:
-      - name: cognitive-orchestrator
-        image: #{acrName}#/crowdanalytics/cognitive-orchestrator:#{Build.BuildId}#
+      - name: crowd-analyzer
+        image: #{acrName}#/crowdanalytics/crowd-analyzer:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
         env:
         - name: AzureFunctionsJobHost__functions__0
-          value: CognitiveOrchestrator
+          value: CrowdAnalyzer
         envFrom:
         - secretRef:
-            name: cognitive-orchestrator
+            name: crowd-analyzer
+      # If your AKS Virtual Nodes and ACR is configured correctly, you can schedule the scaling on virtual nodes
+      # imagePullSecrets:
+      # - name: acrImagePullSecret
+      # nodeSelector:
+      #   kubernetes.io/role: agent
+      #   beta.kubernetes.io/os: linux
+      #   type: virtual-kubelet
+      # tolerations:
+      # - key: virtual-kubelet.io/provider
+      #   operator: Exists
+      # - key: azure.com/aci
+      #   effect: NoSchedule
 ---
 apiVersion: keda.k8s.io/v1alpha1
 kind: ScaledObject
 metadata:
-  name: cognitive-orchestrator
+  name: crowd-analyzer
   namespace: crowd-analytics
   labels:
-    deploymentName: cognitive-orchestrator
+    deploymentName: crowd-analyzer
 spec:
   scaleTargetRef:
-    deploymentName: cognitive-orchestrator
+    deploymentName: crowd-analyzer
   pollingInterval: 30  # Optional. Default: 30 seconds
   cooldownPeriod:  300 # Optional. Default: 300 seconds
   minReplicaCount: 0   # Optional. Default: 0
@@ -230,11 +251,12 @@ spec:
   triggers:
   - type: azure-servicebus
     metadata:
-      type: serviceBusTrigger
       connection: KEDA_SERVICE_BUS_CONNECTION
-      topicName: cognitive-request
-      subscriptionName: cognitive-orchestrator
-      name: request
+      topicName: crowd-analysis 
+      subscriptionName: crowd-analyzer
+      queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
+---
+
 ---
 
 ```

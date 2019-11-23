@@ -38,6 +38,11 @@ spec:
         env:
         - name: AzureFunctionsJobHost__functions__0
           value: CamFrameAnalyzer
+        - name: KEDA_SERVICE_BUS_CONNECTION
+          valueFrom:
+            secretKeyRef:
+              name: camframe-analyzer
+              key: KEDA_SERVICE_BUS_CONNECTION
         envFrom:
         - secretRef:
             name: camframe-analyzer
@@ -54,7 +59,7 @@ spec:
     deploymentName: camframe-analyzer
   pollingInterval: 30  # Optional. Default: 30 seconds
   cooldownPeriod:  300 # Optional. Default: 300 seconds
-  minReplicaCount: 1   # Optional. Default: 0
+  minReplicaCount: 0   # Optional. Default: 0
   maxReplicaCount: 100 # Optional. Default: 100
   triggers:
   - type: azure-servicebus

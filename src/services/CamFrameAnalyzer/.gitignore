@@ -265,3 +265,4 @@ __pycache__/
 
 # Test files
 *-sample.*
+*.logs

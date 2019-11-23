@@ -8,6 +8,8 @@ The primary services of the platform are event driven, KEDA and Azure Functions 
 
 >NOTE: Read more about [KEDA and Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-kubernetes-keda) here. Also check out this [1.0 Release](https://cloudblogs.microsoft.com/opensource/2019/11/19/keda-1-0-release-kubernetes-based-event-driven-autoscaling/) by Mr. Serverless (Jeff Hollan).
 
+Check out also these samples [kedacore/samples](https://github.com/kedacore/samples)
+
 ## Quick Tips
 
 ### Azure Functions Core Tools

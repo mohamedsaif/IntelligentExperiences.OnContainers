@@ -13,6 +13,16 @@ Azure IoT Edge is a fully managed service built on Azure IoT Hub. Deploy your cl
 
 [Read more about IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/)
 
+## Azuer CLI Extension for IoT
+
+To enable additional functionality of Azure CLI, you need to make sure that IoT extension is installed:
+
+```bash
+
+az extension add --name azure-cli-iot-ext
+
+```
+
 ## Variables
 
 ```bash
@@ -34,7 +44,13 @@ az iot hub create \
 
 ## IoT Edge
 
-Gateways in IoT Edge solutions provide device connectivity and edge analytics to IoT devices that otherwise wouldn't have those capabilities. Azure IoT Edge can be used to satisfy all needs for an IoT gateway regardless of whether they are related to connectivity, identity, or edge analytics. Gateway patterns in this article only refer to characteristics of downstream device connectivity and device identity, not how device data is processed on the gateway.
+[Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/) is an Internet of Things (IoT) service that builds on top of IoT Hub. This service is meant for customers who want to analyze data on devices, or "at the edge," instead of in the cloud. By moving parts of your workload to the edge, your devices can spend less time sending messages to the cloud and react more quickly to events.
+
+Gateways in IoT Edge solutions provide device connectivity and edge analytics to IoT devices that otherwise wouldn't have those capabilities.
+
+Azure IoT Edge can be used to satisfy all needs for an IoT gateway regardless of whether they are related to connectivity, identity, or edge analytics.
+
+Gateway patterns in this article only refer to characteristics of downstream device connectivity and device identity, not how device data is processed on the gateway.
 
 ![iot-edge-gateway](assets/edge-as-gateway.png)
 
@@ -48,6 +64,30 @@ We will be building our IoT Edge on Linux to support advance future deployment t
 
 Full documentation on how to [install IoT Edge on Windows can be found here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-windows-with-linux)
 
+You can use Azure virtual machine as your **IoT Edge Device** if for some reason you can't use the development machine to install IoT Edge.
+
+```bash
+
+az vm create \
+    --resource-group $RG \
+    --name EdgeDeviceVM \
+    --image MicrosoftWindowsDesktop:Windows-10:rs5-pro:latest \
+    --admin-username azureuser \
+    --admin-password {password} \
+    --size Standard_DS1_v2
+
+```
+
+Navigate to your new Windows virtual machine in the Azure portal:
+
+- Select **Connect**.
+- On the RDP tab, select Download RDP File.
+- Open this file with Remote Desktop Connection to connect to your Windows virtual machine using the administrator name and password you specified with the ```az vm create``` command.
+
+Look for more details getting started check this [quick start](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart).
+
+Check [IoT Edge supported systems](https://docs.microsoft.com/en-us/azure/iot-edge/support) for more details.
+
 #### Docker Desktop
 
 To run IoT Edge on a Windows machine and develop Linux containers, all what you need to have Docker Desktop installed and running on your target machine.
@@ -60,7 +100,7 @@ We will use a manually registered edge device connection to provision and connec
 
 ```bash
 
-DEVICE_ID="devcam"
+DEVICE_ID="EdgeCam"
 
 # Create new Edge Device in IoT Hub
 az iot hub device-identity create \
@@ -72,13 +112,22 @@ az iot hub device-identity create \
 az iot hub device-identity list --hub-name $IOT_HUB_NAME
 
 # Retrieve device connection string
-az iot hub device-identity show-connection-string \
+EDGE_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
     --device-id $DEVICE_ID \
-    --hub-name $IOT_HUB_NAME
+    --hub-name $IOT_HUB_NAME \
+    --query connectionString -o tsv)
+echo $EDGE_DEVICE_CONNECTION
 
 ```
 
-#### Installing on Windows
+#### Installing IoT Edge Runtime
+
+The IoT Edge runtime is deployed on all IoT Edge devices.
+It has three components:
+
+1. The **IoT Edge security** daemon starts each time an IoT Edge device boots and bootstraps the device by starting the other components.
+2. The **IoT Edge agent** which manages deployment and monitoring of modules on the IoT Edge device, including the IoT Edge hub.
+3. The **IoT Edge hub** handles communications between modules on the IoT Edge device, and between the device and IoT Hub.
 
 Powershell script can be used to easily execute all the required commands to install IoT Edge on Windows.
 

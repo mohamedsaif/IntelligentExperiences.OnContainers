@@ -13,7 +13,7 @@ Azure IoT Edge is a fully managed service built on Azure IoT Hub. Deploy your cl
 
 [Read more about IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/)
 
-## Azuer CLI Extension for IoT
+## Azure CLI Extension for IoT
 
 To enable additional functionality of Azure CLI, you need to make sure that IoT extension is installed:
 
@@ -23,22 +23,22 @@ az extension add --name azure-cli-iot-ext
 
 ```
 
-## Variables
-
-```bash
-
-IOT_HUB_NAME="${PREFIX}-iothub"
-
-```
+>NOTE: This is important steps to execute IoT Hub specific commands like creating a device identity.
 
 ## IoT Hub Provisioning
 
 ```bash
 
+# Be patient as this would take a few mins
+IOT_HUB_NAME="${PREFIX}-iothub"
 az iot hub create \
     --name $IOT_HUB_NAME \
     --resource-group $RG \
     --sku S1
+
+# If you wish to get the IoT Hub connection string (maybe to connect a Device Explorer to it) use the following:
+# This command get the default policy and primary key connection string
+az iot hub show-connection-string --name $IOT_HUB_NAME
 
 ```
 
@@ -90,9 +90,15 @@ Check [IoT Edge supported systems](https://docs.microsoft.com/en-us/azure/iot-ed
 
 #### Docker Desktop
 
-To run IoT Edge on a Windows machine and develop Linux containers, all what you need to have Docker Desktop installed and running on your target machine.
+##### Development
 
-It is worth mentioning if you are using Mac, you are good to go already :)
+To effectively develop IoT Edge solutions on a dev machine, you need to have Docker Desktop installed and running on your target machine.
+
+##### Edge Runtime
+
+It is worth mentioning this is also a critical to have Docker Desktop if you are using Windows as Edge device and building Linux containers. Docker Desktop must be in Linux containers mode.
+
+If you are using Mac/Linux, you are good to go already :)
 
 #### Manual Device Provisioning
 
@@ -108,10 +114,10 @@ az iot hub device-identity create \
     --hub-name $IOT_HUB_NAME \
     --edge-enabled
 
-# List devices in IoT Hub
+# List devices in IoT Hub. You should EdgeCam device with disconnected state
 az iot hub device-identity list --hub-name $IOT_HUB_NAME
 
-# Retrieve device connection string
+# Retrieve device connection string. Take note of that as we will use it during the runtime provisioning
 EDGE_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
     --device-id $DEVICE_ID \
     --hub-name $IOT_HUB_NAME \
@@ -129,14 +135,22 @@ It has three components:
 2. The **IoT Edge agent** which manages deployment and monitoring of modules on the IoT Edge device, including the IoT Edge hub.
 3. The **IoT Edge hub** handles communications between modules on the IoT Edge device, and between the device and IoT Hub.
 
+##### Deploy on Windows Device
+
 Powershell script can be used to easily execute all the required commands to install IoT Edge on Windows.
 
-Start a new PowerShell 64 session (32 version will not work) as an administrator.
+>NOTE: The steps in this section all take place on your IoT Edge device, so you want to connect to that virtual machine now via remote desktop if you opted to use one.
+
+Start a new PowerShell 64 session (x86 version will not work. You can know as the name will include x86) as an administrator.
+
+>NOTE: I prefer using PowerShell ISE as it has a UI component that allows you to easily organize your code execution.
+![powershell-ise](assets/powershell.png)
 
 ```powershell
 
 # Deploy IoT Edge runtime
 # The Deploy-IoTEdge command downloads and deploys the IoT Edge Security Daemon and its dependencies.
+# You might need to reboot. Buckle up :)
 . {Invoke-WebRequest -useb https://aka.ms/iotedge-win} | Invoke-Expression; `
 Deploy-IoTEdge -ContainerOs Linux
 

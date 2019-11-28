@@ -24,6 +24,11 @@ namespace Cam.Device.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            // Adding AppSettings section
+            var appSettingsSection = 
+                Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

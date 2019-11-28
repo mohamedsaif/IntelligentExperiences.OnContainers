@@ -2,7 +2,52 @@
     ViewData["Title"] = "Cam Device";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Cam Device</h1>
-    <p>This simple ASP .NET Core MVC app capture frames from a connected webcam and save them to a folder</p>
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Cam Device</h1>
+        <p>This simple ASP .NET Core MVC app capture frames from a connected webcam and save them to a folder</p>
+        <h4>@ViewData["DeviceId"]</h4>
+        <div class="demo-area">
+            <h3 class="view-text view-text--video">
+                <span>Webcam View</span>
+                <span id="videoViewText" class="view-text__instructions">Live feed from the webcam</span>
+            </h3>
+            <div class="view--video">
+                <video id="videoTag" src="" autoplay muted class="view--video__video"></video>
+            </div>
+            <h3 class="view-text view-text--snapshot">
+                <span>Snapshot View</span>
+                <span id="photoViewText" class="view-text__instructions">Last captured frame</span>
+                <span id="uploadedViewText">Last uploaded frame</span>
+            </h3>
+            <div class="view--snapshot">
+                <canvas id="canvasTag" class="view--snapshot__canvas"></canvas>
+                <a id="saveImg" class="hide" href="#"></a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Switching Cameras</h2>
+            <ul class="list-group" id="cameras">
+
+            </ul>
+            <div class="alert--error alert" class="hide" id="tooltip"></div>
+            <p><button class="btn btn-default" type="button" disabled id="switch">Switch Camera</button></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Change Filters</h2>
+            <p>You can also adjust the CSS filters applied to your video</p>
+            <p><button class="btn btn-default" type="button" id="change-vid-filters">Change Video Filters</button></p>
+            <p><button class="btn btn-default" type="button" id="change-img-filters">Change Image Filters</button></p>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+    </div>
+
+@section scripts {
+
+    <script src="~/js/userMedia.js" asp-append-version="true"></script>
+    <script src="~/js/canvas-toBlob.js" asp-append-version="true"></script>
+
+}

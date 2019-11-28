@@ -1,0 +1,136 @@
+﻿.hide {
+    display: none;
+}
+
+.alert--error {
+    color: #E81123;
+}
+
+.alert {
+    padding: 0;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.view-text,
+.view--video,
+.view--snapshot {
+    margin-top: 0;
+}
+
+.view-text {
+    padding: 1.2rem;
+    text-align: center;
+    background-color: #e6e6e6;
+}
+
+.view-text__instructions {
+    display: block;
+    margin-top: .4rem;
+    font-size: 1.5rem;
+}
+
+.view-text--snapshot {
+    background-color: #f2f2f2;
+    margin-top: 1.2rem;
+}
+
+.view--video {
+    background-color: rgba(0,0,0,1);
+}
+
+.view--snapshot {
+    position: relative;
+    background-color: rgba(0,0,0,.85);
+}
+
+.view--video__video,
+.view--snapshot__canvas {
+    width: 100%;
+    cursor: pointer;
+}
+
+@media (min-width: 33.75em) {
+
+    .demo-area {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .view-text,
+    .view--video,
+    .view--snapshot {
+        flex: 1 1 auto;
+        margin-top: 0;
+        width: 50%;
+        max-width: none;
+    }
+
+    .view-text--video {
+        -webkit-order: 1;
+        order: 1;
+    }
+
+    .view-text--snapshot {
+        margin-top: 0;
+        -webkit-order: 2;
+        order: 2;
+    }
+
+    .view--video {
+        -webkit-order: 3;
+        order: 3;
+    }
+
+    .view--snapshot {
+        -webkit-order: 4;
+        order: 4;
+    }
+}
+
+/* image * video filters */
+.grayscale {
+    -webkit-filter: grayscale(1);
+    -moz-filter: grayscale(1);
+    -ms-filter: grayscale(1);
+    filter: grayscale(1);
+}
+
+.sepia {
+    -webkit-filter: sepia(1);
+    -moz-filter: sepia(1);
+    -ms-filter: sepia(1);
+    filter: sepia(1);
+}
+
+.blur {
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+}
+
+.invert {
+    -moz-filter: invert(.8);
+    -ms-filter: invert(.8);
+    -webkit-filter: invert(.8);
+    filter: invert(.8);
+}
+
+.brightness {
+    -moz-filter: brightness(3);
+    -ms-filter: brightness(3);
+    -webkit-filter: brightness(3);
+    filter: brightness(3);
+}
+
+.contrast {
+    -moz-filter: contrast(4);
+    -ms-filter: contrast(4);
+    -webkit-filter: contrast(4);
+    filter: contrast(4);
+}

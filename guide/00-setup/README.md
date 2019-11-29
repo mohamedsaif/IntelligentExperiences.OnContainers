@@ -54,7 +54,9 @@ Download and install [VS Code](https://code.visualstudio.com/)
 
 I would highly recommend installing the following extensions:
 
+- [C#](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
 - [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
+- [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
 - [Azure IoT Tools](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
 
 ### Azure Functions Core Tools

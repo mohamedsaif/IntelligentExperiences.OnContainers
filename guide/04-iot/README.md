@@ -103,6 +103,37 @@ What will be doing is:
 
 ### Cam Device (Web)
 
-You can check the [Cam Device Web](../../src/iot/Cam.Device.Web) for the project source code. You can simply open it in VS Code or Visual Studio and run it.
+You can check the [Cam Device Web](../../src/iot/Cam.Device.Web) for the project source code. 
+
+### Manual Device Provisioning
+
+We will use a manually registered IoT Hub device connection to provision and connect our new Cam Device (Web).
+
+```bash
+
+DEVICE_ID="WebCam001"
+
+# Create new Edge Device in IoT Hub
+az iot hub device-identity create \
+    --device-id $DEVICE_ID \
+    --hub-name $IOT_HUB_NAME
+
+# List devices in IoT Hub. You should EdgeCam device with disconnected state
+az iot hub device-identity list --hub-name $IOT_HUB_NAME
+
+# Retrieve device connection string. Take note of that as we will use it during the runtime provisioning
+WEBCAM_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
+    --device-id $DEVICE_ID \
+    --hub-name $IOT_HUB_NAME \
+    --query connectionString -o tsv)
+echo $WEBCAM_DEVICE_CONNECTION
+
+```
+
+>NOTE: In production scenarios, there are options for automating the device provision to support at scale provisions. Check the [documentation](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management-cli) for more information.
+
+#### Updating the Cam Device Web Settings
 
 Don't forget to update the  ```appsettings.json``` with the relevant values.
+
+You can simply open it in VS Code or Visual Studio and run it.

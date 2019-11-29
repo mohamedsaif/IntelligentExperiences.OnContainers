@@ -54,7 +54,7 @@ echo $EDGE_DEVICE_CONNECTION
 
 ```
 
->NOTE: In production scenarios, there are options for automating the device provision to support at scale provisions. Check the documentation for more information.
+>NOTE: In production scenarios, there are options for automating the device provision to support at scale provisions. Check the [documentation](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management-cli) for more information.
 
 ### Supported IoT Edge Deployment for Production
 

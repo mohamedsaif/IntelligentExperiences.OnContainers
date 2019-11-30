@@ -85,6 +85,51 @@ az iot hub show --name $IOT_HUB_NAME
 
 ```
 
+## IoT Hub Routing to Service Bus
+
+Crowd Analytics core services leverages Service Bus Topics to orchestrate event driven processing of captured frames.
+
+Creating IoT Hub messages route to Service Bus Topic will instruct received messages in IoT Hub that have a specific filter (```CognitiveAction=CamFrameAnalysis```) to be routed to ```cognitive-request``` Service Bus Topic.
+
+You can read [IoT Hub message routing to send device-to-cloud messages to different endpoints](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-devguide-messages-d2c) for more information.
+
+```bash
+
+# From a previous step in the prerequisites guide, you created an authorization rule for the (cognitive-request) topic
+echo $SB_TOPIC_ORCH_CONNECTION
+
+# We will need the subscription id:
+SUB_ID=$(az account show --query id -o tsv)
+
+# Setup some variables
+ENDPOINT_NAME="cognitive-request-sb-topic"
+ENDPOINT_TYPE="ServiceBusTopic"
+ROUTE_NAME="cognitive-request-sb-topic-route"
+CONDITION='$body.TargetAction="CamFrameAnalysis"'
+
+# Register routing endpoint for the Service Bus topic.
+# This uses the Service Bus topic connection string.
+az iot hub routing-endpoint create \
+  --connection-string $SB_TOPIC_ORCH_CONNECTION \
+  --endpoint-name $ENDPOINT_NAME \
+  --endpoint-resource-group $RG \
+    --endpoint-subscription-id $SUB_ID \
+  --endpoint-type $ENDPOINT_TYPE \
+  --hub-name $IOT_HUB_NAME \
+  --resource-group $RG
+
+# Set up the message route for the Service Bus queue endpoint.
+az iot hub route create \
+  --name $ROUTE_NAME \
+  --hub-name $IOT_HUB_NAME \
+  --source-type devicemessages \
+  --resource-group $RG \
+  --endpoint-name $ENDPOINT_NAME \
+  --enabled \
+  --condition $CONDITION
+
+```
+
 ## IoT Device Options
 
 [Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/) is an Internet of Things (IoT) service that builds on top of IoT Hub. This service is meant for customers who want to analyze data on devices, or "at the edge," instead of in the cloud. By moving parts of your workload to the edge, your devices can spend less time sending messages to the cloud and react more quickly to events.
@@ -137,7 +182,7 @@ echo $WEBCAM_DEVICE_CONNECTION
 
 >NOTE: In production scenarios, there are options for automating the device provision to support at scale provisions. Check the [documentation](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management-cli) for more information.
 
-#### Updating the Cam Device Web Settings
+### Updating the Cam Device Web Settings
 
 Don't forget to update the  ```appsettings.json``` with the relevant values.
 

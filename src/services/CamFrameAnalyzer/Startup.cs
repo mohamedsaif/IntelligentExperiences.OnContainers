@@ -35,7 +35,6 @@ namespace CamFrameAnalyzer
 
             //Register our cosmos db repository :)
             builder.Services.AddSingleton<ICamFrameAnalysisRepository, CamFrameAnalysisRepository>();
-            //builder.Services.AddSingleton<IVisitorsRepository, VisitorsRepository>();
 
             var camFrameStorageConnection = GlobalSettings.GetKeyValue("camFrameStorageConnection");
             builder.Services.AddSingleton<IStorageRepository>((s) =>

@@ -6,6 +6,7 @@
     var currentCam = null;
     var photoReady = false;
     var uploadedCount = 1;
+    var delay = 15000;
 
     var init = function () {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -37,7 +38,7 @@
         }
         if (webcamList.length > 1) {
             document.getElementById('switch').disabled = false;
-            ul.children[currentCam].setAttribute("class", "list-group-item active");
+            //ul.children[currentCam].setAttribute("class", "list-group-item active");
         }
         capture();
     };
@@ -46,9 +47,10 @@
         if (photoReady) {
             var canvas = document.getElementById('canvasTag');
             canvas.toBlob(function (blob) {
-                if (blob == null)
+                if (blob == null) {
+                    setTimeout(capture, delay);
                     return;
-
+                }
                 //Upload to server
                 var data = new FormData();
                 data.append('frame', blob, 'deviceId' + uploadedCount + "." + 'jpg');
@@ -68,7 +70,7 @@
                 });
 
                 uploadedCount += 1;
-                setTimeout(capture, 3000);
+                setTimeout(capture, delay);
             });
         }
     };
@@ -138,15 +140,15 @@
     };
 
     var devicesCallback = function (devices) {
-        var ul = document.getElementById("cameras");
-        ul.innerHTML = "";
+        //var ul = document.getElementById("cameras");
+        //ul.innerHTML = "";
         // Identify all webcams
         for (var i = 0; i < devices.length; i++) {
             if (devices[i].kind === 'videoinput') {
                 webcamList[webcamList.length] = devices[i].deviceId;
-                var li = document.createElement("li");
-                li.appendChild(document.createTextNode(devices[i].deviceId));
-                ul.appendChild(li);
+                //var li = document.createElement("li");
+                //li.appendChild(document.createTextNode(devices[i].deviceId));
+                //ul.appendChild(li);
             }
         }
 

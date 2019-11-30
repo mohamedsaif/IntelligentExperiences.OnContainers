@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cam.Device.Web.Repos;
+using CoreLib.Abstractions;
+using CoreLib.Repos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +32,16 @@ namespace Cam.Device.Web
             var appSettingsSection = 
                 Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
+            services.AddSingleton<IIoTHubRepo, IoTHubRepo>();
+            //var settings = Configuration.Get<AppSettings>();
+            var settings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+            var camFrameStorageConnection = settings.StorageConnection;
+            var camFrameStorageContainer = settings.StorageContainer;
+
+            services.AddSingleton<IStorageRepository>((s) =>
+            {
+                return new AzureBlobStorageRepository(camFrameStorageConnection, camFrameStorageContainer);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

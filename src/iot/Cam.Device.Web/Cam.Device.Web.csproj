@@ -9,4 +9,16 @@
     <Folder Include="wwwroot\CamFrames\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="wwwroot\AI\haarcascade_frontalface_alt.xml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="CoreLib" Version="1.0.20191120.2" />
+    <PackageReference Include="Microsoft.Azure.Devices.Client" Version="1.21.2" />
+    <PackageReference Include="OpenCvSharp4" Version="4.1.1.20191110" />
+  </ItemGroup>
+
 </Project>

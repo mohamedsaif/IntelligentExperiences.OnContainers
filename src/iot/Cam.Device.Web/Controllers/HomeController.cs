@@ -10,22 +10,34 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Cam.Device.Web.AI;
+using Cam.Device.Web.Repos;
+using Newtonsoft.Json;
+using CoreLib.Abstractions;
 
 namespace Cam.Device.Web.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IOptions<AppSettings> _appSettings;
+        private readonly AppSettings _appSettings;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private string deviceId;
+        private IIoTHubRepo _iotHub;
+        private IStorageRepository _storageRepo;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AppSettings> settings, IWebHostEnvironment env)
+        public HomeController(ILogger<HomeController> logger, 
+            IOptions<AppSettings> settings,
+            IIoTHubRepo iotHub,
+            IStorageRepository storageRepo,
+            IWebHostEnvironment env)
         {
             _logger = logger;
-            _appSettings = settings;
+            _appSettings = settings.Value;
             _hostingEnvironment = env;
-            deviceId = _appSettings.Value.DeviceId;
+            deviceId = _appSettings.DeviceId;
+            _iotHub = iotHub;
+            _storageRepo = storageRepo;
         }
 
         public IActionResult Index()
@@ -63,17 +75,37 @@ namespace Cam.Device.Web.Controllers
                             
                             // Getting Extension
                             var fileExtension = Path.GetExtension(fileName);
+                            string newFileName = "";
+                            //If Edge Mode enabled, always save the file with the same name (CamFrames folder will be used as a camera stream to an Edge Device)
+                            if (_appSettings.IsEdgeModeEnabled)
+                            {
+                                // Always save the file with the same name to simulate a stream
+                                // Use deviceId + fileExtension as the file name
+                                newFileName = $"{deviceId}{fileExtension}";
+                            }
+                            else
+                            {
+                                //Create unique file name to be uploaded to storage
+                                newFileName = $"{deviceId}-{DateTime.UtcNow.ToString("ddMMyyHHmmss")}{fileExtension}";
+                            }
 
-                            // Always save the file with the same name to simulate a stream
-                            // Use deviceId + fileExtension as the file name
-                            var newFileName = string.Concat(deviceId, fileExtension);
                             //  Generating physical path to store photo 
-                            var filepath = Path.Combine(_hostingEnvironment.WebRootPath, "CamFrames") + $@"\{newFileName}";
+                            var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "CamFrames", newFileName);
 
-                            if (!string.IsNullOrEmpty(filepath))
+                            if (!string.IsNullOrEmpty(filePath))
                             {
                                 // Save the frame
-                                SaveFrame(file, filepath);
+                                SaveFrame(file, filePath);
+
+                                // If edge mode is not enabled, send telemetry to IoT Hub and Upload the file
+                                if (!_appSettings.IsEdgeModeEnabled)
+                                {
+                                    //Only send if there are detected faces
+                                    //FaceDetectionResult faces = FaceDetector.DetectFaces(filePath, Path.Combine(_hostingEnvironment.WebRootPath, "AI", "haarcascade_frontalface_alt.xml"));
+                                    //if(faces != null && faces.DetectedFacesFrames.Length > 0)
+                                    //SendFrame(filePath, faces.DetectedFacesFrames.Length);
+                                    SendFrame(filePath, 0);
+                                }
                             }
                         }
                     }
@@ -103,6 +135,33 @@ namespace Cam.Device.Web.Controllers
                 file.CopyTo(fs);
                 fs.Flush();
             }
+        }
+
+        private void SendFrame(string filePath, int detectedFaces)
+        {
+            _storageRepo.CreateFileAsync(Path.GetFileName(filePath), System.IO.File.ReadAllBytes(filePath)).Wait();
+            CognitiveRequest req = new CognitiveRequest
+            {
+                CreatedAt = DateTime.UtcNow,
+                DeviceId = deviceId,
+                FileUrl = Path.GetFileName(filePath),
+                Id = Guid.NewGuid().ToString(),
+                IsActive = true,
+                IsDeleted = false,
+                IsProcessed = false,
+                Origin = "Device.Web.V1.0.0",
+                Status = "Submitted",
+                TakenAt = DateTime.UtcNow,
+                TargetAction = CognitiveTargetAction.CamFrameAnalysis.ToString()
+            };
+
+            Dictionary<string, string> properties = new Dictionary<string, string>
+            {
+                { "DeviceId", deviceId },
+                { "DetectedFacesCount", detectedFaces.ToString() }
+            };
+
+            _iotHub.SendEventAsync(JsonConvert.SerializeObject(req), properties).Wait();
         }
 
     }

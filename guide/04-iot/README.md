@@ -51,7 +51,12 @@ echo $FRAMES_STORAGE_CONTAINER
 # Set storage connection string
 az iot hub update \
     --name $IOT_HUB_NAME \
-    --set properties.storageEndpoints.'$default'.connectionString=$FRAMES_STORAGE_CONN
+    --fileupload-storage-connectionstring "$FRAMES_STORAGE_CONN" \
+    --fileupload-storage-container-name "$FRAMES_STORAGE_CONTAINER"
+
+az iot hub update \
+    --name $IOT_HUB_NAME \
+    --add properties.storageEndpoints.'$default'.connectionString="$FRAMES_STORAGE_CONN"
 
 # Set storage container name
 az iot hub update \
@@ -103,7 +108,7 @@ What will be doing is:
 
 ### Cam Device (Web)
 
-You can check the [Cam Device Web](../../src/iot/Cam.Device.Web) for the project source code. 
+You can check the [Cam Device Web](../../src/iot/Cam.Device.Web) for the project source code.
 
 ### Manual Device Provisioning
 
@@ -111,11 +116,11 @@ We will use a manually registered IoT Hub device connection to provision and con
 
 ```bash
 
-DEVICE_ID="WebCam001"
+WEB_DEVICE_ID="WebCam001"
 
 # Create new Edge Device in IoT Hub
 az iot hub device-identity create \
-    --device-id $DEVICE_ID \
+    --device-id $WEB_DEVICE_ID \
     --hub-name $IOT_HUB_NAME
 
 # List devices in IoT Hub. You should EdgeCam device with disconnected state
@@ -123,7 +128,7 @@ az iot hub device-identity list --hub-name $IOT_HUB_NAME
 
 # Retrieve device connection string. Take note of that as we will use it during the runtime provisioning
 WEBCAM_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
-    --device-id $DEVICE_ID \
+    --device-id $WEB_DEVICE_ID \
     --hub-name $IOT_HUB_NAME \
     --query connectionString -o tsv)
 echo $WEBCAM_DEVICE_CONNECTION

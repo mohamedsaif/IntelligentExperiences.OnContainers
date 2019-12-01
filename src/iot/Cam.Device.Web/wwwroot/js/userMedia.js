@@ -7,11 +7,13 @@
     var photoReady = false;
     var uploadedCount = 0;
     var delay = 15000;
+    var isSuspended = false;
 
     var init = function () {
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         document.getElementById('switch').addEventListener('click', nextWebCam, false);
+        document.getElementById('suspend').addEventListener('click', suspendFrameSending, false);
 
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             navigator.mediaDevices.enumerateDevices().then(devicesCallback);
@@ -43,6 +45,31 @@
         capture();
     };
 
+    var capture = function () {
+
+        if (!mediaStream) {
+            photoReady = false;
+            return;
+        }
+
+        var video = document.getElementById('videoTag');
+        var canvas = document.getElementById('canvasTag');
+
+        var videoWidth = video.videoWidth;
+        var videoHeight = video.videoHeight;
+
+        if (canvas.width !== videoWidth || canvas.height !== videoHeight) {
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+        }
+
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        photoReady = true;
+        document.getElementById('photoViewText').innerHTML = 'Last captured frame: ' + Date();
+        savePhoto();
+    };
+
     var savePhoto = function () {
         if (photoReady) {
             var canvas = document.getElementById('canvasTag');
@@ -51,6 +78,12 @@
                     setTimeout(capture, delay);
                     return;
                 }
+                //If suspended, skip and try again after delay
+                if (isSuspended == true) {
+                    setTimeout(capture, delay);
+                    return;
+                }
+
                 //Upload to server
                 var data = new FormData();
                 data.append('frame', blob, 'deviceId' + uploadedCount + "." + 'jpg');
@@ -73,31 +106,6 @@
                 setTimeout(capture, delay);
             });
         }
-    };
-
-    var capture = function () {
-
-        if (!mediaStream) {
-            photoReady = false;
-            return;
-        }
-
-        var video = document.getElementById('videoTag');
-        var canvas = document.getElementById('canvasTag');
-        
-        var videoWidth = video.videoWidth;
-        var videoHeight = video.videoHeight;
-
-        if (canvas.width !== videoWidth || canvas.height !== videoHeight) {
-            canvas.width = videoWidth;
-            canvas.height = videoHeight;
-        }
-
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-        photoReady = true;
-        document.getElementById('photoViewText').innerHTML = 'Last captured frame: ' + Date();
-        savePhoto();
     };
 
     var nextWebCam = function () {
@@ -167,6 +175,17 @@
         }
         navigator.mediaDevices.addEventListener('devicechange', deviceChanged);
     };
+
+    var suspendFrameSending = function () {
+        if (isSuspended == true) {
+            isSuspended = false;
+            document.getElementById('suspend').innerText = 'Suspend Sending Frames'
+        }
+        else {
+            isSuspended = true;
+            document.getElementById('suspend').innerText = 'Resume Sending Frames'
+        }
+    }
 
     var writeError = function (string) {
         var elem = document.getElementById('error');

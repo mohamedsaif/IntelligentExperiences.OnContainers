@@ -42,6 +42,21 @@ You can use Kubeconfig, Kubernetes Service Account or Azure Subscription. Azure 
 
 ![k8s-connection](assets/k8s-connection.png)
 
+#### Kubernetes Service Connection
+
+Let's create a service connection to our Kubernetes cluster first.
+
+Head to Project settings -> Service connections and select (New service connection) -> Kubernetes.
+
+In the (New Kubernetes service connection blade) select Azure Subscription and fill in the following information:
+
+1. Azure Subscription: Your Azure subscription name
+2. Cluster: Your cluster name
+3. Namespace: crowd-analytics
+4. Service connection name: ie-aks-crowd-analytics
+
+Click save and your are good to go :)
+
 ### Source Code
 
 If you want to contribute to this workshop (which I would very much appreciate), I would recommend [Forking the GitHub repo](https://aka.ms/IE-On-Containers).
@@ -114,7 +129,51 @@ Please repeat the above steps for each pipeline mentioned (only the template fil
 
 Creating Release Pipelines to actually deliver the target services to your Azure cloud services.
 
->NOTE: You will need all the connection strings, keys and values you captured during the previous workshop steps to provision your release pipelines.
+>NOTE: You will need all the connection strings, keys and values you captured during the previous steps to provision your release pipelines.
+
+#### Azure DevOps Release Pipelines
+
+We will use Azure DevOps Release exported definitions as a starting point and then configure them.
+
+You can find the templates in [src/devops-cd](../../src/devops-cd). Make sure you have them downloaded to your machine.
+
+Head to your project Releases and click (New -> Import release pipeline):
+
+![release import](assets/release-import.png)
+
+Browse to your local deployment file named (IE.OnContainers.CognitiveOrchestrator-CD.json).
+
+![release imported](assets/release-imported.png)
+
+Now you need to delete the existing artifact to create a new one that will link to the relevant CI pipeline artifacts.
+
+Just click on the artifact named (CognitiveOrchestrator-CI) and then delete it.
+
+![release artifact delete](assets/release-delete-artifact.png)
+
+Now add a new artifact that points to the relevant build pipeline. Make sure to give it the alias as before (CognitiveOrchestrator-CI).
+
+Head to the tasks under the (Dev) stage in the release designer.
+
+![release stage](assets/release-dev-stage.png)
+
+Configure the agent properties as per the following:
+
+![release agent](assets/release-agent.png)
+
+Now update the Kubernetes task to use the previously created service connection to Kubernetes cluster:
+
+![agent kube](assets/release-kube.png)
+
+Final thing is the update the pipeline variables as the Kubernetes deployment file will replace the secrets with values from the release variables (through Replace Tokens) task.
+
+![release variables](assets/release-vars.png)
+
+>NOTE: Variable values must be ```base64``` encoded before saving them to the pipeline (except the acrName variable). You can use the auto generated deployment file from Azure Functions Core Tools. Refer to [Services Guide](src/../../../src/services/README.md) for more information.
+
+Now click save, then click create release to run the pipeline.
+
+Now you can repeat the above steps for each service and NuGet library part of this solution.
 
 ## Testing
 
@@ -126,7 +185,9 @@ Let's check that every part of the deployment works
 
 #### Crowd Analytics Components
 
-You have mainly 3 components running:
+##### AKS
+
+You have mainly 3 components running on AKS:
 
 - Cognitive Orchestrator: gets any new messages coming from IoT Hub and send them to the appropriate processor. Currently we have only [Camera Frame Analyzer] service.
 - CamFrame Analyzer: look for faces in image, persist similar faces and identify any faces agains a predefined list and then publish frame analysis results with basic demographics information.
@@ -166,6 +227,38 @@ kubectl logs REPLACE_KEDA_POD_NAME -n keda > keda.logs
 One of the amazing aspects of KEDA's ```ScaledObject``` that it can scale down to 0 and scale up to N based on the event trigger (in this case we are using Service Bus trigger).
 
 >NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1)
+
+##### Cam Device Web
+
+Open the [src/iot/Cam.Device.Web/Cam.Device.Web.csproj](cam.../../src/iot/Cam.Device.Web/Cam.Device.Web.csproj) project in Visual Studio or Visual Studio code.
+
+Update the following settings in (appSettings.json) before running the project:
+
+```json
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "AppSettings": {
+    "DeviceId": "Device-Simulated-001",
+    "DeviceConnectionString": "#{DeviceConnectionString}#",
+    "IsEdgeModeEnabled": false,
+    "StorageConnection": "#{StorageConnection}#",
+    "StorageContainer": "camframefiles"
+  }
+}
+
+```
+
+Now build and run the ASP .NET Core website locally. Grant permission to the camera to allow it to collect the frames.
+
+![device](assets/device.png)
 
 **Cleanup Quick Tips:**
 

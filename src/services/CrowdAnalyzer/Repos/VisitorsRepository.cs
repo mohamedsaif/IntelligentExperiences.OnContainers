@@ -18,6 +18,6 @@ namespace CrowdAnalyzer.Repos
 
         public override string GenerateId(Visitor entity) => $"{entity.Id ?? Guid.NewGuid().ToString()}";
 
-        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf('-') + 1)}");
+        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf(':') + 1)}");
     }
 }

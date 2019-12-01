@@ -232,6 +232,22 @@ az servicebus topic subscription create \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD_SUB
 
+# Creating the demographics-analysis topic and subscription
+SB_TOPIC_DEMOGRAPHIC="demographics-analysis"
+az servicebus topic create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name $SB_TOPIC_DEMOGRAPHIC
+
+# Create subscription demographics-analyzer to the topic.
+# This can be utilized to notify other systems that demographics analysis updated
+SB_TOPIC_DEMOGRAPHIC_SUB="demographics-analyzer"
+az servicebus topic subscription create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_DEMOGRAPHIC \
+    --name $SB_TOPIC_DEMOGRAPHIC_SUB
+
 # Retrieve namespace primary connection string:
 SB_NAMESPACE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
     --resource-group $RG \

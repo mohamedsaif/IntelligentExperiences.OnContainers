@@ -16,8 +16,7 @@
             </div>
             <h3 class="view-text view-text--snapshot">
                 <span>Snapshot View</span>
-                <span id="photoViewText" class="view-text__instructions">Last captured frame</span>
-                <span id="uploadedViewText">Last uploaded frame</span>
+                
             </h3>
             <div class="view--snapshot">
                 <canvas id="canvasTag" class="view--snapshot__canvas"></canvas>
@@ -26,22 +25,19 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h2>Switching Cameras</h2>
             <ul class="list-group" id="cameras">
             </ul>
             <div class="alert--error alert" class="hide" id="tooltip"></div>
             <div class="alert--error alert" id="error"></div>
-            <p><button class="btn btn-default" type="button" disabled id="switch">Switch Camera</button></p>
+            <p><button class="btn btn-primary" type="button" disabled id="switch">Switch Camera</button></p>
+            <p><button class="btn btn-danger" type="button" id="suspend">Suspend Sending Frames</button></p>
         </div>
-        <div class="col-md-4">
-            <h2>Change Filters</h2>
-            <p>You can also adjust the CSS filters applied to your video</p>
-            <p><button class="btn btn-default" type="button" id="change-vid-filters">Change Video Filters</button></p>
-            <p><button class="btn btn-default" type="button" id="change-img-filters">Change Image Filters</button></p>
-        </div>
-        <div class="col-md-4">
-
+        <div class="col-md-6">
+            <h2>Device Status:</h2>
+            <span id="uploadedViewText" class="view-text__instructions">Last uploaded frame</span>
+            <span id="photoViewText">Last captured frame</span>
         </div>
     </div>
 

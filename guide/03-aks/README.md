@@ -111,8 +111,18 @@ kubectl get nodes
 
 ```
 
+### Some Kubernetes Prep Work
+
+Crowd Analytics main services will be deployed to ```crowd-analytics``` namespace. So let's created now:
+
+```bash
+
+kubectl create namespace crowd-analytics
+
+```
+
 ## Next step
 
 Congratulations on completing this section. Let's move to the next step:
 
-[Next Step]()
+[Next Step](../04-iot/)

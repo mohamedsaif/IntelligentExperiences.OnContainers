@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CrowdAnalyzer.Abstractions;
 using CrowdAnalyzer.Models;
@@ -39,21 +40,34 @@ namespace CrowdAnalyzer.Functions
             try
             {
                 analysis = JsonConvert.DeserializeObject<CamFrameAnalysis>(request);
-                
+
+                // Only process if there are detected faces
+                if (analysis.SimilarFaces == null)
+                {
+                    log.LogWarning($"FUNC (CrowdAnalyzer): starting crowd-analysis: found no faces in the analysis request");
+                    return null;
+                }
+
                 DemographicsAnalyzer demographics = new DemographicsAnalyzer(
                     analysis,
                     visitorRepo, 
                     crowdDemographicsRepo,
                     log);
-                await demographics.UpdateDemographics();
+                var isDemographicsUpdated = await demographics.UpdateDemographics();
 
                 log.LogInformation($"FUNC (CrowdAnalyzer): finished processing with result: {JsonConvert.SerializeObject(demographics.Demographics)}");
+
+                // If changes where made, publish changes to demographics-analysis topic
+                if (isDemographicsUpdated)
+                    return JsonConvert.SerializeObject(demographics.Demographics);
+
             }
             catch(Exception e)
             {
                 log.LogError($"FUNC (CrowdAnalyzer): Failed with error: {JsonConvert.SerializeObject(e.Message)}");
             }
 
+            
             return null;
         }
     }

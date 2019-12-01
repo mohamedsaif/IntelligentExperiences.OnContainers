@@ -103,7 +103,11 @@ namespace CamFrameAnalyzer.Functions
 
                 log.LogInformation($"FUNC (CamFrameAnalyzer): camframe-analysis COMPLETED: {JsonConvert.SerializeObject(frameAnalysis)}");
 
-                return JsonConvert.SerializeObject(frameAnalysis);
+                //Only publish a new analysis when face detection was successful with faces
+                if (frameAnalysis.IsSuccessful)
+                    return JsonConvert.SerializeObject(frameAnalysis);
+                else
+                    return null;
             }
             catch (Exception ex)
             {
@@ -137,7 +141,7 @@ namespace CamFrameAnalyzer.Functions
             else
             {
                 frameAnalysis.IsSuccessful = false;
-                frameAnalysis.Status = ProcessingStatus.Failed.ToString();
+                frameAnalysis.Status += "|" + ProcessingStatus.Failed.ToString();
 
                 log.LogError($"FUNC (CamFrameAnalyzer): Detection failed: {JsonConvert.SerializeObject(frameAnalysis)}");
             }
@@ -172,7 +176,7 @@ namespace CamFrameAnalyzer.Functions
                 frameAnalysis.DetectedFaces = null;
                 frameAnalysis.IsDetectionSuccessful = false;
                 frameAnalysis.IsSuccessful = false;
-                frameAnalysis.Status = "Failed to detect faces";
+                frameAnalysis.Status = $"CamFrameAnalyzer ERROR: Failed to detect faces ({e.Message})";
             }
         }
 

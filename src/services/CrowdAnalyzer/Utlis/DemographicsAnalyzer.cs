@@ -32,7 +32,7 @@ namespace CrowdAnalyzer.Utils
             origin = GlobalSettings.GetKeyValue("origin");
             log = logger;
         }
-        public async Task UpdateDemographics()
+        public async Task<bool> UpdateDemographics()
         {
             var start = DateTime.UtcNow;
 
@@ -55,12 +55,20 @@ namespace CrowdAnalyzer.Utils
             var demographicsWindowMins = double.Parse(GlobalSettings.GetKeyValue("demographicsWindowMins")); //Default to 60mins
             var currentAggregateWindowStart = new DateTime(analysisTakenAt.Year, analysisTakenAt.Month, analysisTakenAt.Day, analysisTakenAt.Hour, 0, 0);
             var currentAggregateWindowEnd = currentAggregateWindowStart.AddMinutes(demographicsWindowMins);
-            var currentTime = DateTime.UtcNow;
+            //var currentTime = DateTime.UtcNow;
             
-            var passedTimeOfCurrentWindowSecs = (currentTime - currentAggregateWindowStart).TotalSeconds;
+            var passedTimeOfCurrentWindowMins = (currentAggregateWindowEnd - currentAggregateWindowStart).TotalMinutes;
+            string crowdDemographicsId = null;
 
-            var crowdDemographicsId = $"{currentAggregateWindowStart.ToString("yyyy-MM-dd-HH-mm-ss")}-{deviceId}";
-
+            if (passedTimeOfCurrentWindowMins > demographicsWindowMins)
+            {
+                // Move the demographics to the next window
+                currentAggregateWindowStart = currentAggregateWindowStart.AddMinutes(demographicsWindowMins);
+                currentAggregateWindowEnd = currentAggregateWindowStart.AddMinutes(demographicsWindowMins);
+            }
+            
+            crowdDemographicsId = $"{currentAggregateWindowStart.ToString("yyyy-MM-dd-HH-mm-ss")}|{currentAggregateWindowEnd.ToString("yyyy-MM-dd-HH-mm-ss")}:{deviceId}";
+            
             try
             {
                 Demographics = await crowdDemographicsRepo.GetByIdAsync(crowdDemographicsId);
@@ -93,6 +101,7 @@ namespace CrowdAnalyzer.Utils
             if (frameAnalysis.SimilarFaces != null)
             {
                 // Update the Visitor collection (either add new entry or update existing)
+                log.LogWarning($"FUNC (CrowdAnalyzer): ({frameAnalysis.SimilarFaces.Count()}) detected faces is being processed.");
                 foreach (var item in frameAnalysis.SimilarFaces)
                 {
                     //Do we have that visitor in our db
@@ -101,7 +110,7 @@ namespace CrowdAnalyzer.Utils
                     Visitor visitor = null;
                     try
                     {
-                        visitor = await visitorRepo.GetByIdAsync($"{persistedFaceId}-{item.Face.FaceAttributes.Gender}");
+                        visitor = await visitorRepo.GetByIdAsync($"{persistedFaceId}:{item.Face.FaceAttributes.Gender}");
                     }
                     catch (Exception ex)
                     {
@@ -129,6 +138,7 @@ namespace CrowdAnalyzer.Utils
 
                                 //This means also that the demographic for this window is changed as well.
                                 isDemographicsChanged = true;
+                                await visitorRepo.UpdateAsync(visitor);
                             }
                         }
                         else
@@ -142,9 +152,8 @@ namespace CrowdAnalyzer.Utils
                             };
                             visitor.LastVisits.Add(newVisit);
                             isDemographicsChanged = true;
+                            await visitorRepo.UpdateAsync(visitor);
                         }
-
-                        await visitorRepo.UpdateAsync(visitor);
                     }
                     //New Visitor
                     else
@@ -153,7 +162,7 @@ namespace CrowdAnalyzer.Utils
 
                         visitor = new Visitor
                         {
-                            Id = $"{persistedFaceId}-{item.Face.FaceAttributes.Gender}",
+                            Id = $"{persistedFaceId}:{item.Face.FaceAttributes.Gender}",
                             VisitsCount = 1,
                             Age = (int)item.Face.FaceAttributes.Age,
                             AgeGroup = GetAgeGroupDescription((int)item.Face.FaceAttributes.Age),
@@ -182,19 +191,28 @@ namespace CrowdAnalyzer.Utils
                     if (isDemographicsChanged)
                         UpdateVisitorDemographics(item);
                 }
-                
+
+                Demographics.TotalVisitors = Demographics.TotalMales + Demographics.TotalFemales;
                 Demographics.TotalProcessingTime = (int)(DateTime.UtcNow - start).TotalMilliseconds;
-                
+
                 if (isNewDemographics)
+                {
                     await crowdDemographicsRepo.AddAsync(Demographics);
+                    return true;
+                }
                 else if (isDemographicsChanged)
+                {
                     await crowdDemographicsRepo.UpdateAsync(Demographics);
+                    return true;
+                }
             }
             //No faces in the analysis request
             else
             {
                 log.LogWarning($"FUNC (CrowdAnalyzer): crowd-analysis found no faces in the analysis request");
             }
+
+            return false;
         }
 
         public void UpdateVisitorDemographics(SimilarFaceMatch item)

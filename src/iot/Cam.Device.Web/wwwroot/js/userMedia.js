@@ -5,7 +5,7 @@
     var webcamList = [];
     var currentCam = null;
     var photoReady = false;
-    var uploadedCount = 1;
+    var uploadedCount = 0;
     var delay = 15000;
 
     var init = function () {

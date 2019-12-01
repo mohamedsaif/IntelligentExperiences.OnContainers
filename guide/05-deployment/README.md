@@ -283,3 +283,31 @@ kubectl delete ScaledObject cognitive-orchestrator -n crowd-analytics
 kubectl delete all --all -n crowd-analytics
 
 ```
+
+### Azure Monitor & App Insights
+
+It is crucial to maintain visibility on how the system is performing. **Azure Monitor** wide offering allows developers and SREs to gain valuable insights on the systems they develop/operate.
+
+#### Application Insights
+
+If you configured app insights keys for each service, you can visit the app insights for a sneak peak on how your system is performing:
+
+![app insights](assets/ai-overview.png)
+
+One of the cool things about **Application Insights** is the dependency mapping. Check the Application Map to see how is your service dependencies are performing:
+
+![app map](ai-assets/ai-cog-rochestrator.png)
+
+#### AKS Insights
+
+Enabling AKS insights as part of provisioning the cluster gives you access to really detailed insights about the cluster performance.
+
+Take a look into these metrics by selecting your kubernetes cluster -> Insights
+
+![aks](assets/ai-aks.png)
+
+You can even monitory your deployments of the crowd-analytics platform:
+
+![aks-deployments](aks-assets/aks-deployments.png)
+
+You have issue and you need to stream live the logs, either use ```kubectl logs``` or leverage Azure Monitor to connect to the pod and stream the logs right inside Azure Portal by clicking the "View live data" button.

@@ -121,6 +121,15 @@ kubectl create namespace crowd-analytics
 
 ```
 
+In order to leverage Azure Monitor full potential, you might need to grant permission to access server information:
+
+```bash
+
+# make sure that your active directory has the file below (you can find it under this guide directory/scripts)
+kubectl apply -f aks-azure-monitor-rbac.json
+
+```
+
 ## Next step
 
 Congratulations on completing this section. Let's move to the next step:

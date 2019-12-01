@@ -11,7 +11,6 @@ Hands-on workshop to create containers-based backend platform that exposes async
 |Crowd Analyzer|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/IE.OnContainers.CrowdAnalyzer-CI?branchName=master)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=42&branchName=master)|![crowd analyzer](https://gbb-appinnovation.vsrm.visualstudio.com/_apis/public/Release/badge/34b4ae1d-e873-49df-929f-51362697ee88/5/5)|
 |Core Lib|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/IE.OnContainers.CoreLib-CI?branchName=master)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=38&branchName=master)|[![CoreLib package in Mo.Packages feed in Azure Artifacts](https://gbb-appinnovation.feeds.visualstudio.com/34b4ae1d-e873-49df-929f-51362697ee88/_apis/public/Packaging/Feeds/965d59b0-4754-4361-b681-be612dc5475b/Packages/ed95e168-e3b0-453c-9aed-e2add8eae974/Badge)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_packaging?_a=package&feed=965d59b0-4754-4361-b681-be612dc5475b&package=ed95e168-e3b0-453c-9aed-e2add8eae974&preferRelease=true)|
 |Cognitive Services Helper|[![Build Status](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_apis/build/status/IE.OnContainers.CognitiveServiceHelpers-CI?branchName=master)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_build/latest?definitionId=39&branchName=master)|[![CognitiveServiceHelpers package in Mo.Packages feed in Azure Artifacts](https://gbb-appinnovation.feeds.visualstudio.com/34b4ae1d-e873-49df-929f-51362697ee88/_apis/public/Packaging/Feeds/965d59b0-4754-4361-b681-be612dc5475b/Packages/bbedce86-4ccb-4f55-8219-2e4b19a311ad/Badge)](https://gbb-appinnovation.visualstudio.com/IntelligentExperiences.OnContainers/_packaging?_a=package&feed=965d59b0-4754-4361-b681-be612dc5475b&package=bbedce86-4ccb-4f55-8219-2e4b19a311ad&preferRelease=true)|
-|CrowdAnalysis.Dashboard|TBD|TBD|
 
 ## Overview
 
@@ -34,33 +33,20 @@ Crowd analytics scenario can be used in:
 
 Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 
-### Multi-Factor Authentication
-
-Authentication is a key part of almost all security measures.
-
-2-Factor authentication is becoming more and more a requirement rather than a fancy option.
-
-In the workshop, crowd analytics dashboard is protected by a 3-factor authentication
-
-1. Something you know: username and password
-2. Something you have: your employee ID
-3. Something you are: face verification
-
-Several discussions with enterprises always brought up in my meetings adding extra layer of security to their regular user name and password.
-
-Although Azure Active directory has built-in multi-factor authentication and conditional access, it was fun to extend it through AI-powered services to scan the employee ID (OCR and Forms Recognition) and Face ID cognitive services.
-
 ### Azure Technologies
 
 Azure already provides a sophisticated platform to develop and operate such system.
 
 **Kubernetes** became the defacto cloud native technology to develop and operate sophisticated containerized systems anywhere and with Azure Kubernetes Service takes a lot of the cluster management tasks out of your way to focus more on the solution you want to build.
 
-Key technologies used in the workshop include:
+Key Azure technologies used in the workshop include:
 
 - Azure Kubernetes Service (AKS)
+- Azure Container Registry
 - Azure IoT Hub
 - Azure Cognitive Services
+- Azure Storage
+- Azure DevOps
 - and many more
 
 I'm really excited to share with you the great journey I took to build such system.
@@ -70,6 +56,7 @@ I'm really excited to share with you the great journey I took to build such syst
 1. Dev Environment Setup
     - Visual Studio Code
     - Azure CLI
+    - Other tools
 2. Solution Whiteboarding & Architecture
 3. Creating Azure Prerequisites
     - Resource Group
@@ -121,6 +108,10 @@ You can always create issue, suggest an update through PR or direct message me o
 ### Cognitive-Samples-IntelligentKiosk
 
 Part of this workshop source code is based on [Cognitive-Samples-IntelligentKiosk](https://github.com/microsoft/Cognitive-Samples-IntelligentKiosk). Visit the GitHub repo to know more about all of the great capabilities of Azure Cognitive Services.
+
+### HTML5 UserMedia
+
+Using a webcam through HTML5/JS code based partially on the great demo from [DaveVoyles](https://github.com/DaveVoyles/GetUserMedia-sample)
 
 ## Author
 

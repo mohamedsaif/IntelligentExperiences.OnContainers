@@ -142,7 +142,7 @@ Gateway patterns in this article only refer to characteristics of downstream dev
 
 ![iot-edge-gateway](assets/edge-as-gateway.png)
 
-## IoT Edge Device.. Workshop Style 🐱‍👓
+## IoT Device.. Workshop Style 🐱‍👓
 
 In the workshop, I've wanted to have the IoT Hub Client as close as possible to a production development. I've decided to put 2 components to work:
 

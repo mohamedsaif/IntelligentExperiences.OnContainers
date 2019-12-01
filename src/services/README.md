@@ -116,6 +116,8 @@ kubectl get customresourcedefinition
 
 If you faced issues in deploying KEDA, you can remove the deployment and consult the [KEDA documentations](https://keda.sh/)
 
+>NOTE: [Deploying KEDA](https://keda.sh/deploy/) shows how you can leverage helm in deploying KEDA (instead of using Azure Functions Core Tools).
+
 ```bash
 
 func kubernetes remove --namespace keda
@@ -164,6 +166,20 @@ If something is not going right, you can check directly KEDA logs:
 ```bash
 
 kubectl logs $REPLACE_WITH_KEDA_POD_NAME -n keda
+
+```
+
+#### Delete Evicted Pods
+
+Sometimes when KEDA autoscaler provision many pods, some of them will be evicted due to memory/cpu constraints. This is okay as the remaining active pods will process the queue message.
+
+To delete all evicted pods in all namespaces, you can use the following command:
+
+```bash
+
+kubectl get pods --all-namespaces -ojson \
+  | jq -r '.items[] | select(.status.reason!=null) | select(.status.reason | contains("Evicted")) | .metadata.name + " " + .metadata.namespace' \
+  | xargs -n2 -l bash -c 'kubectl delete pods $0 --namespace=$1'
 
 ```
 
@@ -255,8 +271,6 @@ spec:
       topicName: crowd-analysis 
       subscriptionName: crowd-analyzer
       queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
----
-
 ---
 
 ```

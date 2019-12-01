@@ -33,20 +33,24 @@ Crowd analytics scenario can be used in:
 
 Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 
-### Azure Technologies
+### Open Source and Azure Technologies
+
+![azure-tech](res/technologies.png)
 
 Azure already provides a sophisticated platform to develop and operate such system.
 
 **Kubernetes** became the defacto cloud native technology to develop and operate sophisticated containerized systems anywhere and with Azure Kubernetes Service takes a lot of the cluster management tasks out of your way to focus more on the solution you want to build.
 
-Key Azure technologies used in the workshop include:
+Key technologies used in the workshop include:
 
 - Azure Kubernetes Service (AKS)
-- Azure Container Registry
+- Azure Container Registry (ACR)
+- Azure Service Bus
 - Azure IoT Hub
 - Azure Cognitive Services
 - Azure Storage
 - Azure DevOps
+- Power BI
 - and many more
 
 I'm really excited to share with you the great journey I took to build such system.
@@ -58,6 +62,8 @@ I'm really excited to share with you the great journey I took to build such syst
     - Azure CLI
     - Other tools
 2. Solution Whiteboarding & Architecture
+    - Walkthrough the system objectives
+    - Review Azure architecture
 3. Creating Azure Prerequisites
     - Resource Group
     - Storage Account
@@ -70,26 +76,100 @@ I'm really excited to share with you the great journey I took to build such syst
     - App Insights for each app
 4. AKS Cluster
     - Essential kubernetes cluster provisioning
-    - OPTIONAL: AKS Secure Deployment
+    - Kubernetes cluster preparations
 5. Creating IoT Hub and IoT Edge Device
     - IoT Hub Provisioning
-    - IoT Edge Device Provisioning
-    - Testing the connectivity
+    - Message Routing to Service Bus
+    - Device Options
+    - Workshop Device Setup
 6. Services Deployment & Testing
-    - DevOps Setup
-    - Services Deployment
+    - Connecting to Azure
+    - Source Code
+    - Continuos Integration
+    - Continuos Delivery
     - Testing
-7. BONUS Tracks
-    - Secure AKS Provisioning
+7. BONUS Tracks (coming soon)
+    - Advanced AKS Provisioning
+        - AKS Preview Features
         - Azure AD Integration
+        - Helm initialization
+        - Node pools (with Windows Pool)
+        - Virtual Nodes
         - Application Gateway Ingress Controller
         - Azure Firewall and Egress Lockdown
     - Realtime Communication
         - Cosmos DB Change Feed
         - SignalR client communication
-    - IoT Edge Advance Deployment
-        - Adding Face Detection Module
-        - Using Raspberry Pi with USB Camera
+    - IoT Edge Deployment
+        - IoT Edge on Kubernetes
+        - Custom Modules
+        - IoT Edge on Raspberry Pi with USB Camera
+
+## Suggested 1-Day Workshop Agenda
+
+<table>
+<th>Topic</th>
+<th>Duration</th>
+<tr>
+<td>Registration and Setup</td>
+<td>15 mins</td>
+<tr>
+<tr>
+<td>Why Intelligent Experiences?</td>
+<td>20 mins</td>
+</tr>
+<tr>
+<td>Intelligent Retail - Crowd Analytics Overview</td>
+<td>25 mins</td>
+</tr>
+<tr>
+<td colspan="2">Break</td>
+</tr>
+<tr>
+<td>Solution White-boarding</td>
+<td>30 mins</td>
+</tr>
+<tr>
+<td>Lab - Azure Services Provisioning</td>
+<td>60 mins</td>
+</tr>
+<tr>
+<td>Lab - AKS Provisioning</td>
+<td>60 mins</td>
+</tr>
+<tr>
+<td colspan="2">Lunch</td>
+</tr>
+<td>Lab - IoT Hub Provisioning</td>
+<td>30 mins</td>
+</tr>
+<tr>
+<td>Lab - DevOps & Services Deployment</td>
+<td>90 mins</td>
+</tr>
+<tr>
+<td colspan="2">Break</td>
+</tr>
+<tr>
+<td>Lab - Dashboard & Data Visualization</td>
+<td>30 mins</td>
+</tr>
+<tr>
+<td>Q and A + Next Steps</td>
+<td>30 mins</td>
+</tr>
+<tr>
+<td colspan="2">Bonus Workshop Material (Take home tasks)</td>
+</tr>
+<tr>
+<td>Bonus 1 - Advanced AKS Provisioning</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Bonus 2 - IoT Edge Development</td>
+<td>-</td>
+</tr>
+</table>
 
 ## About the project
 

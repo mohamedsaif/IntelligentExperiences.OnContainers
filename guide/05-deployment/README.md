@@ -311,3 +311,5 @@ You can even monitory your deployments of the crowd-analytics platform:
 ![aks-deployments](aks-assets/aks-deployments.png)
 
 You have issue and you need to stream live the logs, either use ```kubectl logs``` or leverage Azure Monitor to connect to the pod and stream the logs right inside Azure Portal by clicking the "View live data" button.
+
+>NOTE: You must provision access to Azure Monitor to access the essential cluster information in order for most of the above capabilities to be functioning. Refer back to the AKS guide for details.

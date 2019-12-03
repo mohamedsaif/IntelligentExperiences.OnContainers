@@ -57,14 +57,14 @@ I'm really excited to share with you the great journey I took to build such syst
 
 ## Workshop Agenda
 
-1. Dev Environment Setup
+1. [Dev Environment Setup](guide/00-setup/README.md)
     - Visual Studio Code
     - Azure CLI
     - Other tools
-2. Solution Whiteboarding & Architecture
+2. [Solution Whiteboarding & Architecture](/guide/01-architecture/README.md)
     - Walkthrough the system objectives
     - Review Azure architecture
-3. Creating Azure Prerequisites
+3. [Creating Azure Prerequisites](guide/02-prerequisites/README.md)
     - Resource Group
     - Storage Account
     - Cosmos DB
@@ -74,15 +74,15 @@ I'm really excited to share with you the great journey I took to build such syst
     - Virtual Network
     - Log Analytics
     - App Insights for each app
-4. AKS Cluster
+4. [AKS Cluster](guide/03-aks/README.md)
     - Essential kubernetes cluster provisioning
     - Kubernetes cluster preparations
-5. Creating IoT Hub and IoT Edge Device
+5. [Creating IoT Hub and IoT Edge Device](guide/04-iot/README.md)
     - IoT Hub Provisioning
     - Message Routing to Service Bus
     - Device Options
     - Workshop Device Setup
-6. Services Deployment & Testing
+6. [Services Deployment & Testing](guide/05-deployment/README.md)
     - Connecting to Azure
     - Source Code
     - Continuos Integration
@@ -97,6 +97,8 @@ I'm really excited to share with you the great journey I took to build such syst
         - Virtual Nodes
         - Application Gateway Ingress Controller
         - Azure Firewall and Egress Lockdown
+    - API Management
+    - Azure AD Integration
     - Realtime Communication
         - Cosmos DB Change Feed
         - SignalR client communication

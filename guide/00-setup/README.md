@@ -97,4 +97,4 @@ Follow [Dapr Installation Instructions](https://github.com/dapr/docs/blob/master
 
 Congratulations on completing this section. Let's move to the next step:
 
-[Next Step](/guide/02-prerequisites/README.md)
+[Next Step](/guide/01-architecture/README.md/README.md)

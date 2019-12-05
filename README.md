@@ -88,7 +88,13 @@ I'm really excited to share with you the great journey I took to build such syst
     - Continuos Integration
     - Continuos Delivery
     - Testing
-7. BONUS Tracks (coming soon)
+7. [Data Visualization](guide/06-dashboard/README.md)
+    - Power BI Desktop
+    - Connecting to Cosmos Db
+    - Query edit and data prep
+    - Design the report
+    - Publish the report
+8. BONUS Tracks (coming soon)
     - Advanced AKS Provisioning
         - AKS Preview Features
         - Azure AD Integration

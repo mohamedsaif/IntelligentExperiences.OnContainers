@@ -85,9 +85,11 @@ chocolatey install jq
 
 For information on installing it, refer to [jq documentation](https://stedolan.github.io/jq/download/)
 
-## Dapr
+## Dapr (Optional)
 
 Dapr is an open-source, portable, event-driven runtime that makes it easy for enterprise developers to build resilient, microservice stateless and stateful applications that run on the cloud and edge and embraces the diversity of languages and developer frameworks.
+
+>NOTE: In the context of this workshop, Azure Functions on containers where leveraged to provide the event driven development runtime which can be also replaced with Dapr.
 
 Follow [Dapr Installation Instructions](https://github.com/dapr/docs/blob/master/getting-started/environment-setup.md#prerequisites) to prepare your dev environment.
 

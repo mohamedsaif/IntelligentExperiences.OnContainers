@@ -298,7 +298,7 @@ If you configured app insights keys for each service, you can visit the app insi
 
 One of the cool things about **Application Insights** is the dependency mapping. Check the Application Map to see how is your service dependencies are performing:
 
-![app map](ai-assets/ai-cog-rochestrator.png)
+![app map](assets/ai-cog-orchestrator.png)
 
 #### AKS Insights
 
@@ -310,7 +310,7 @@ Take a look into these metrics by selecting your kubernetes cluster -> Insights
 
 You can even monitory your deployments of the crowd-analytics platform:
 
-![aks-deployments](aks-assets/aks-deployments.png)
+![aks-deployments](assets/aks-deployments.png)
 
 You have issue and you need to stream live the logs, either use ```kubectl logs``` or leverage Azure Monitor to connect to the pod and stream the logs right inside Azure Portal by clicking the "View live data" button.
 

@@ -121,6 +121,8 @@ CONGRATULATIONS! You first pipeline is now being built.
 
 Please repeat the above steps for each pipeline mentioned (only the template files will not be included. These files end with angular, webapp, nuget and tests)
 
+Check out additional guide on developing [KEDA powered Azure Functions](../../src/services/README.md) in this workshop.
+
 >NOTE: My Azure Artifacts repo used in public, so you shouldn't face problems restoring the packages I've pushed their. If you received errors in the build, it is worth mentioning that you might need to setup an Azure Artifacts repo, push the Workshop NuGet packages to and then try to build again after updating your nuget.config files with the new source.
 
 >NOTE: Check [Azure Artifacts](https://docs.microsoft.com/en-us/azure/devops/artifacts/get-started-nuget?view=azure-devops) documentations for more information or check our a blog post about [Public Azure Artifacts Feeds](https://devblogs.microsoft.com/devops/new-with-azure-artifacts-public-and-project-scoped-feeds/)

@@ -24,7 +24,14 @@ namespace Cam.Device.Web.Repos
                 throw new NullReferenceException("Device client failed to initialize");
         }
 
-        public async Task UploadFile(string fileName, FileStream fileStream)
+        /// <summary>
+        /// Upload file through IoT Hub File Upload endpoint. 
+        /// Please note that this will be uploaded in a folder with the device name
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="fileStream"></param>
+        /// <returns></returns>
+        public async Task UploadFile(string fileName, Stream fileStream)
         {
             await _deviceClient.UploadToBlobAsync(fileName, fileStream);
         }

@@ -14,6 +14,7 @@ using Cam.Device.Web.AI;
 using Cam.Device.Web.Repos;
 using Newtonsoft.Json;
 using CoreLib.Abstractions;
+using System.IO;
 
 namespace Cam.Device.Web.Controllers
 {
@@ -139,7 +140,13 @@ namespace Cam.Device.Web.Controllers
 
         private void SendFrame(string filePath, int detectedFaces)
         {
+            // Using Azure Storage SDK to upload the file is another option
             _storageRepo.CreateFileAsync(Path.GetFileName(filePath), System.IO.File.ReadAllBytes(filePath)).Wait();
+
+            // IoT Hub has built-in support for blobs upload.
+            // File will be uploaded to a folder with the device name. This might required some code changes
+            //_iotHub.UploadFile(Path.GetFileName(filePath), new MemoryStream(System.IO.File.ReadAllBytes(filePath))).Wait();
+
             CognitiveRequest req = new CognitiveRequest
             {
                 CreatedAt = DateTime.UtcNow,

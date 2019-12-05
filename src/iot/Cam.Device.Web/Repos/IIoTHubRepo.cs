@@ -7,6 +7,6 @@ namespace Cam.Device.Web.Repos
     public interface IIoTHubRepo
     {
         Task SendEventAsync(string message, Dictionary<string, string> properties);
-        Task UploadFile(string fileName, FileStream fileStream);
+        Task UploadFile(string fileName, Stream fileStream);
     }
 }

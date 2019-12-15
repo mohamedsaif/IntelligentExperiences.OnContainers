@@ -129,6 +129,7 @@ FRAMES_STORAGE_CONN=$(az storage account show-connection-string \
 echo $FRAMES_STORAGE_CONN
 
 # Creating a blob container for our Camera Frames (name must be all small letters)
+#In case of keep getting Authentication Failure, Most probably its due to Date/Time not in sync between WSL2 and Host, try "sudo hwclock -s"
 FRAMES_STORAGE_CONTAINER="camframefiles"
 az storage container create \
     --account-name $FRAMES_STORAGE \

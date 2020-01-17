@@ -1,0 +1,13 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: crowd-analytics-servicebus
+spec:
+  type: pubsub.azure.servicebus
+  metadata:
+  - name: connectionString
+    secretKeyRef:
+      name: crowd-analytics-servicebus-connection
+      value: connectionString
+auth:
+  secretStore: kubernetes

@@ -267,7 +267,7 @@ SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule create \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_ORCH \
     --name $SB_TOPIC_ORCH-sas \
-    --rights Manage \
+    --rights Manage Send Listen \
     --query primaryConnectionString --output tsv)
 
 SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
@@ -275,7 +275,7 @@ SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CAM \
     --name $SB_TOPIC_CAM-sas \
-    --rights Manage \
+    --rights Manage Send Listen \
     --query primaryConnectionString --output tsv)
 
 SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
@@ -283,7 +283,7 @@ SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD-sas \
-    --rights Manage \
+    --rights Manage Send Listen \
     --query primaryConnectionString --output tsv)
 
 echo $SB_TOPIC_ORCH_CONNECTION

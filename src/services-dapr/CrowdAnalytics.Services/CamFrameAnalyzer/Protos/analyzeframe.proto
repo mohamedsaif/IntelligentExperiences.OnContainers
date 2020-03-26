@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option csharp_namespace = "CamFrameAnalyzer";
+
+package frameanalyzer;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+service FrameAnalyzer {
+  // Sends a greeting
+  rpc Analyze (CognitiveRequest) returns (CamFrameAnalysis);
+}
+
+message CognitiveRequest
+{
+    string FileUrl  = 1;
+    string DeviceId  = 2;
+    string TakenAt  = 3;
+    string ProcessedAt  = 4;
+    string TargetAction  = 5;
+    string Status  = 6;
+    bool IsProcessed  = 7;
+    bool IsActive  = 8;
+}
+
+message CamFrameAnalysis
+{
+    string TimeKey  = 1;
+    bool IsSuccessful  = 2;
+    bool IsDetectionSuccessful  = 3;
+    bool IsIdentificationSuccessful  = 4;
+    bool IsSimilaritiesSuccessful  = 5;
+    string Status  = 6;
+
+    //Milliseconds
+    int32 TotalProcessingTime  = 7;
+
+    CognitiveRequest Request  = 8;
+    //IEnumerable<DetectedFace> DetectedFaces  = 1;
+    //IEnumerable<Tuple<DetectedFace, IdentifiedPerson>> IdentifiedPersons  = 1;
+    //IEnumerable<SimilarFaceMatch> SimilarFaces  = 1;
+    //CamFrameSummary Summary  = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}

@@ -3,9 +3,11 @@ using CoreLib.Abstractions;
 using CoreLib.Repos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CognitiveOrchestrator.API.Controllers
@@ -36,11 +38,10 @@ namespace CognitiveOrchestrator.API.Controllers
         /// Uploads a document to Azure storage
         /// </summary>
         /// <returns>The result of the uploaded document</returns>
-        /// <param name="ownerId">Document owner Id</param>
-        /// <param name="docType">One of the following ID, StoreShelf, Face, Generic, Unidentified which will determine the cognitive operations to be executed</param>
-        /// <param name="isAsync">Flag to indicate if operations need to execute immediately or will be queued</param>
+        /// <param name="deviceId">Device id where the submitted doc originated from</param>
+        /// <param name="docType">This flag will be used to determine the cognitive operations to be executed</param>
         /// <param name="doc">The binary of the document being processed</param>
-        [HttpPost("{ownerId}/{docType}/{isAsync}")]
+        [HttpPost("{deviceId}/{docType}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> SubmitDoc(string deviceId, string docType, IFormFile doc)
         {
@@ -88,7 +89,8 @@ namespace CognitiveOrchestrator.API.Controllers
                 TargetAction = proposedDocType.ToString()
             };
 
-            var result = await serviceBusRepository.PublishMessage(new Microsoft.Azure.ServiceBus.Message());
+            var sbMessage = new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(req)));
+            var result = await serviceBusRepository.PublishMessage(sbMessage);
 
             return Ok(result);
         }

@@ -2,6 +2,8 @@
 
 # IoT Hub IoT Device and IoT Edge Device
 
+>**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **04-iot.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
+
 Azure IoT Hub is a managed service, hosted in the cloud, that acts as a central message hub for bi-directional 
 communication between your IoT application and the devices it manages. You can use Azure IoT Hub to build 
 IoT solutions with reliable and secure communications between millions of IoT devices and a cloud-hosted 
@@ -85,9 +87,19 @@ az iot hub show --name $IOT_HUB_NAME
 
 ```
 
-## IoT Hub Routing to Service Bus
+## Where IoT Hub fit in the big picture
 
 Crowd Analytics core services leverages Service Bus Topics to orchestrate event driven processing of captured frames.
+
+Below is the steps of executing a single camera frame analysis:
+
+1. IoT Device send both the frame captured to Azure Storage and publish and event to event hub
+2. IoT Hub based on event filter will route the message to service topic ```cognitive-request```
+3. Cognitive Orchestrator will pickup the message and publish an event to the relevant topic (in this case it is ```camframe-analysis``` topic)
+4. CamraFrame-Analyzer function will pickup the event published on the ```camframe-analysis``` topic, process it and publish event to ```crowd-analysis``` topic
+5. Crowd-Analyzer function will pickup the event published on the ```crowd-analysis``` topic, process it and publish event and conclude the process.
+
+## IoT Hub Routing to Service Bus
 
 Creating IoT Hub messages route to Service Bus Topic will instruct received messages in IoT Hub that have a specific filter (```CognitiveAction=CamFrameAnalysis```) to be routed to ```cognitive-request``` Service Bus Topic.
 
@@ -147,7 +159,7 @@ Gateway patterns in this article only refer to characteristics of downstream dev
 In the workshop, I've wanted to have the IoT Hub Client as close as possible to a production development. I've decided to put 2 components to work:
 
 1. **Camera Device:** A simple ASP .NET Core website that uses your dev machine camera and save it to disk using a predefine FPS (frame per second). It will always capture and save the image and send a device-to-cloud message/upload the files to IoT Hub.
-2. OPTIONAL: **IoT Edge Device:** Check out [IoT-Edge Runtime Guide](IOT-EDGE.md) if you are interested to have an IoT Edge Device for details.
+2. EXPERIMENTAL OPTION: **IoT Edge Device:** Check out [IoT-Edge Runtime Guide](IOT-EDGE.md) if you are interested to have an IoT Edge Device for details.
 
 What will be doing is:
 

@@ -1,4 +1,8 @@
 
+### NOTES
+# 1. Make sure that you are in the right active folder (scripts) in the terminal
+# 2. Make sure that you have downloaded all scripts and supported files
+
 ### Login
 # A browser window will open to complete the authentication :)
 az login
@@ -29,7 +33,7 @@ clear
 # Please update the values if you need to use other values but make sure these are unique
 # Also make sure to use only lower case to avoid conflict with recourses that requires that.
 
-PREFIX="ie${RANDOM}"
+PREFIX="cad${RANDOM}"
 RG="${PREFIX}-rg"
 LOCATION="westeurope"
 FRAMES_STORAGE="${PREFIX}framesstg"
@@ -163,6 +167,13 @@ az servicebus topic subscription create \
     --topic-name $SB_TOPIC_DEMOGRAPHIC \
     --name $SB_TOPIC_DEMOGRAPHIC_SUB
 
+# Create new authorization rule to use it to connect to the service bus
+az servicebus namespace authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name cognitive-orchestrator-key \
+    --rights Manage Send Listen
+
 # Retrieve namespace primary connection string:
 SB_NAMESPACE_CONNECTION=$(az servicebus namespace authorization-rule keys list \
     --resource-group $RG \
@@ -176,41 +187,64 @@ echo $SB_NAMESPACE_CONNECTION
 # Creating a Shared Access Signature (SAS) for each topic to be used by KEDA
 # (KEDA Service Bus trigger needed a single entity scope SAS in order to work as I write this script)
 # KEDA needs manage permission to be able to read the topic telemetry
-SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_ORCH \
     --name $SB_TOPIC_ORCH-sas \
     --rights Manage Send Listen \
-    --query primaryConnectionString --output tsv)
+    --query primaryConnectionString --output tsv
+SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_ORCH \
+    --name $SB_TOPIC_ORCH-sas \
+    --query primaryConnectionString \
+    --output tsv)
 
-SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CAM \
     --name $SB_TOPIC_CAM-sas \
-    --rights Manage Send Listen \
+    --rights Manage Send Listen
+SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CAM \
+    --name $SB_TOPIC_CAM-sas \
     --query primaryConnectionString --output tsv)
 
-SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD-sas \
-    --rights Manage Send Listen \
+    --rights Manage Send Listen
+SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CROWD \
+    --name $SB_TOPIC_CROWD-sas \
     --query primaryConnectionString --output tsv)
 
-SB_TOPIC_DEMOGRAPHIC_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_DEMOGRAPHIC \
     --name $SB_TOPIC_DEMOGRAPHIC-sas \
-    --rights Manage Send Listen \
+    --rights Manage Send Listen
+SB_TOPIC_DEMOGRAPHIC_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_DEMOGRAPHIC \
+    --name $SB_TOPIC_DEMOGRAPHIC-sas \
     --query primaryConnectionString --output tsv)
 
 echo $SB_TOPIC_ORCH_CONNECTION
 echo $SB_TOPIC_CAM_CONNECTION
 echo $SB_TOPIC_CROWD_CONNECTION
+echo $SB_TOPIC_DEMOGRAPHIC_CONNECTION
 
 ### Cognitive Services
 # Creating a multi-service cognitive services account
@@ -349,7 +383,7 @@ echo $AKS_VNSUBNET_ID
 
 ### Log Analytics
 # Creating Azure Log Analytics workspace
-
+# >NOTE: Must run in the folder scripts of this workshop as it requires the json deployment deployment
 # We will use Azure Resource Manager json template to deploy the workspace.
 # Make sure that the active directory is set to scripts (where the .json file is located)
 # First we update the workspace template with our custom name and location (using Linux stream edit)
@@ -369,6 +403,7 @@ WORKSPACE=$(az group deployment create \
 
 echo $WORKSPACE
 SHARED_WORKSPACE_ID=$(echo $WORKSPACE | jq -r '.properties["outputResources"][].id')
+echo $SHARED_WORKSPACE_ID
 
 ### Application Insights
 # In addition to Azure Monitor for containers, you can deploy app insights to your application code
@@ -377,35 +412,35 @@ SHARED_WORKSPACE_ID=$(echo $WORKSPACE | jq -r '.properties["outputResources"][].
 # Check Kubernetes apps with no instrumentation and service mesh: https://docs.microsoft.com/en-us/azure/azure-monitor/app/kubernetes
 # Create App Insights to be used within your apps:
 
-APP_NAME="${PREFIX}-cognitive-orchestrator-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_ORCH="${PREFIX}-cognitive-orchestrator-insights"
+APPINSIGHTS_KEY_ORCH=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_ORCH
 
-APP_NAME="${PREFIX}-camframe-analyzer-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_CAM="${PREFIX}-camframe-analyzer-insights"
+APPINSIGHTS_KEY_CAM=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_CAM
 
-APP_NAME="${PREFIX}-crowd-analyzer-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_CRWD="${PREFIX}-crowd-analyzer-insights"
+APPINSIGHTS_KEY_CRWD=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_CRWD
 
 ### AKS Service Principal
 # Docs: https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/aks/kubernetes-service-principal.md
@@ -505,6 +540,8 @@ echo export SB_TOPIC_DEMOGRAPHIC=$SB_TOPIC_DEMOGRAPHIC >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC_SUB=$SB_TOPIC_DEMOGRAPHIC_SUB >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION=$SB_TOPIC_DEMOGRAPHIC_CONNECTION >> ./crowdanalytics
 
+echo export CS_ACCOUNT_KEY=$CS_ACCOUNT_KEY >> ./crowdanalytics
+
 echo export VNET_ADDRESS_SPACE=$VNET_ADDRESS_SPACE >> ./crowdanalytics
 echo export AKSSUBNET_NAME=$AKSSUBNET_NAME >> ./crowdanalytics
 echo export SVCSUBNET_NAME=$SVCSUBNET_NAME >> ./crowdanalytics
@@ -525,7 +562,14 @@ echo export AKS_VNSUBNET_ID=$AKS_VNSUBNET_ID >> ./crowdanalytics
 
 echo export SHARED_WORKSPACE_ID=$SHARED_WORKSPACE_ID >> ./crowdanalytics
 
+echo export APPINSIGHTS_KEY_ORCH=$APPINSIGHTS_KEY_ORCH >> ./crowdanalytics
+echo export APPINSIGHTS_KEY_CAM=$APPINSIGHTS_KEY_CAM >> ./crowdanalytics
+echo export APPINSIGHTS_KEY_CRWD=$APPINSIGHTS_KEY_CRWD >> ./crowdanalytics
+
 echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
 echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
+
+# If you need to load variables previously saved:
+# source ./crowdanalytics

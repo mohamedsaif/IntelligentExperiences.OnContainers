@@ -82,6 +82,26 @@ This is a snapshot that you can update and include in your local.settings.json:
 
 In order to leverage KEDA in any Kubernetes cluster, you need to deploy KEDA components first.
 
+>**NOTE:** You can check the documentation of [KEDA deployment](https://keda.sh/deploy/) for more information.
+
+#### Using Helm 3 (recommended)
+
+I'm using Helm 3 to perform the deployment.
+
+```bash
+# Adding KEDA repo
+helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
+
+# Installing KEDA in keda namespace
+kubectl create namespace keda
+helm install keda kedacore/keda --namespace keda
+
+
+```
+
+#### Using Azure Functions CLI
+
 Azure Functions Core Tools make it easy using the following command:
 
 ```bash
@@ -91,6 +111,8 @@ func kubernetes install --namespace keda
 ```
 
 >NOTE: Make sure your ```kubectl``` context is set to the target kubernetes cluster
+
+### Validate KEDA installation
 
 Review that installation was successful and in running state:
 
@@ -112,17 +134,9 @@ kubectl get customresourcedefinition
 
 ```
 
->NOTE: If you deployed Azure Firewall in a secure AKS deployment, make sure that a rule to allow osiris images to be pulled from osiris.azurecr.io/osiris:6b69328 or the pods will fail to start
+>NOTE: If you deployed Azure Firewall in a secure AKS deployment, make sure that a rule to allow osiris images to be pulled from osiris.azurecr.io/osiris:6b69328 or the pods will fail to start.
 
-If you faced issues in deploying KEDA, you can remove the deployment and consult the [KEDA documentations](https://keda.sh/)
-
->NOTE: [Deploying KEDA](https://keda.sh/deploy/) shows how you can leverage helm in deploying KEDA (instead of using Azure Functions Core Tools).
-
-```bash
-
-func kubernetes remove --namespace keda
-
-```
+If you have challenges, refer to the diagnostic section below.
 
 ### Generating Kubernetes Deployment Manifest
 
@@ -166,6 +180,30 @@ If something is not going right, you can check directly KEDA logs:
 ```bash
 
 kubectl logs $REPLACE_WITH_KEDA_POD_NAME -n keda
+
+```
+
+#### Uninstalling KEDA
+
+If you faced issues in deploying KEDA, you can remove the deployment and consult the [KEDA documentations](https://keda.sh/)
+
+>NOTE: [Deploying KEDA](https://keda.sh/deploy/) shows how you can leverage helm in deploying KEDA (instead of using Azure Functions Core Tools).
+
+Using Helm 3:
+
+```bash
+
+helm uninstall -n keda keda
+kubectl delete -f https://raw.githubusercontent.com/kedacore/keda/master/deploy/crds/keda.k8s.io_scaledobjects_crd.yaml
+kubectl delete -f https://raw.githubusercontent.com/kedacore/keda/master/deploy/crds/keda.k8s.io_triggerauthentications_crd.yaml
+
+```
+
+Using Azure Functions CLI:
+
+```bash
+
+func kubernetes remove --namespace keda
 
 ```
 

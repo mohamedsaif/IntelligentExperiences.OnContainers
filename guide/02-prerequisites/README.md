@@ -6,14 +6,12 @@ Now we are ready to setup our initial Azure resources that will be needed.
 
 >NOTE: You can use the Azure Portal to perform these actions, but I prefer to use scripts as it offer repeatable steps and clear status.
 
-All scripts to provision the entire resources in this guide will have the prefix **azure-prerequisites-XYZ.sh** under [scripts](**../../src/scripts) folder
+All scripts to provision the entire resources in this guide are in a single script named **02-prerequisites.sh** under [scripts](**../../src/scripts) folder
 
 >NOTE: You need to have Azure CLI installed to be able to execute the below commands. If you don't have that in hand, you can use [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) directly from Azure Portal.
 ![cloud-shell](assets/cloud-shell.png)
 
 ## Azure CLI sign in
-
->CODE: [azure-prerequisites-login.sh](../../src/scripts/azure-prerequisites-login.sh)
 
 Fire up your favorite bash terminal and execute the following commands:
 
@@ -36,13 +34,11 @@ echo $SUBSCRIPTION_ACCOUNT
 TENANT_ID=$(echo $SUBSCRIPTION_ACCOUNT | jq -r .tenantId)
 # or use TENANT_ID=$(az account show --query tenantId -o tsv)
 echo $TENANT_ID
-echo export TENANT_ID=$TENANT_ID >> ~/.bashrc
 
 # Get the subscription ID
 SUBSCRIPTION_ID=$(echo $SUBSCRIPTION_ACCOUNT | jq -r .id)
 # or use TENANT_ID=$(az account show --query tenantId -o tsv)
 echo $SUBSCRIPTION_ID
-echo export SUBSCRIPTION_ID=$SUBSCRIPTION_ID >> ~/.bashrc
 
 clear
 
@@ -51,8 +47,6 @@ clear
 ```
 
 ## Setting up deployment variables
-
->CODE: [azure-prerequisites-variables.sh](../../src/scripts/azure-prerequisites-variables.sh)
 
 I use variables to easily change my deployment parameters across multiple scripts and sessions.
 
@@ -73,18 +67,6 @@ CONTAINER_REGISTRY_NAME="${PREFIX}contosoacr"
 VNET_NAME="${PREFIX}-network"
 WORKSPACE_NAME="${PREFIX}-logs"
 
-#If you wish to have these values persist across sessions use:
-echo export PREFIX=$PREFIX >> ~/.bashrc
-echo export RG=$RG >> ~/.bashrc
-echo export LOCATION=$LOCATION >> ~/.bashrc
-echo export FRAMES_STORAGE=$FRAMES_STORAGE >> ~/.bashrc
-echo export COSMOSDB_ACCOUNT=$COSMOSDB_ACCOUNT >> ~/.bashrc
-echo export SB_NAMESPACE=$SB_NAMESPACE >> ~/.bashrc
-echo export CS_ACCOUNT=$CS_ACCOUNT >> ~/.bashrc
-echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ~/.bashrc
-echo export VNET_NAME=$VNET_NAME >> ~/.bashrc
-echo export WORKSPACE_NAME=$WORKSPACE_NAME >> ~/.bashrc
-
 ```
 
 ## Creating Resource Group
@@ -99,8 +81,6 @@ az group create --name $RG --location $LOCATION
 ```
 
 ## Storage Account
-
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 [Azure Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview) offers a cloud storage for your blobs, files, disks,... We will used it to store captured frames from the connected cameras.
 
@@ -142,8 +122,6 @@ az storage container create \
 
 ## Cosmos DB
 
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
-
 ```bash
 
 # Creating Cosmos DB account to store all system data
@@ -165,8 +143,6 @@ echo $COSMOSDB_PRIMARY_CONN
 
 ## Service Bus
 
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
-
 Service Bus will be used to offer scalable distributed messaging platform.
 
 ```bash
@@ -177,6 +153,13 @@ az servicebus namespace create \
    --name $SB_NAMESPACE \
    --location $LOCATION \
    --sku Standard
+
+# Create new authorization rule to use it to connect to the service bus
+az servicebus namespace authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --name cognitive-orchestrator-key \
+    --rights Manage Send Listen
 
 # We will be using Service Bus's topic/subscription (aka pub/sub pattern) to build our middleware messaging.
 # Let's create the topics and subscriptions
@@ -255,41 +238,65 @@ echo $SB_NAMESPACE_CONNECTION
 # Creating a Shared Access Signature (SAS) for each topic to be used by KEDA
 # (KEDA Service Bus trigger needed a single entity scope SAS in order to work as I write this script)
 # KEDA needs manage permission to be able to read the topic telemetry
-SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_ORCH \
     --name $SB_TOPIC_ORCH-sas \
     --rights Manage Send Listen \
-    --query primaryConnectionString --output tsv)
+    --query primaryConnectionString --output tsv
+SB_TOPIC_ORCH_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_ORCH \
+    --name $SB_TOPIC_ORCH-sas \
+    --query primaryConnectionString \
+    --output tsv)
 
-SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CAM \
     --name $SB_TOPIC_CAM-sas \
-    --rights Manage Send Listen \
+    --rights Manage Send Listen
+SB_TOPIC_CAM_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CAM \
+    --name $SB_TOPIC_CAM-sas \
     --query primaryConnectionString --output tsv)
 
-SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule create \
+az servicebus topic authorization-rule create \
     --resource-group $RG \
     --namespace-name $SB_NAMESPACE \
     --topic-name $SB_TOPIC_CROWD \
     --name $SB_TOPIC_CROWD-sas \
-    --rights Manage Send Listen \
+    --rights Manage Send Listen
+SB_TOPIC_CROWD_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_CROWD \
+    --name $SB_TOPIC_CROWD-sas \
     --query primaryConnectionString --output tsv)
 
-echo $SB_TOPIC_ORCH_CONNECTION
-echo $SB_TOPIC_CAM_CONNECTION
-echo $SB_TOPIC_CROWD_CONNECTION
+az servicebus topic authorization-rule create \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_DEMOGRAPHIC \
+    --name $SB_TOPIC_DEMOGRAPHIC-sas \
+    --rights Manage Send Listen
+SB_TOPIC_DEMOGRAPHIC_CONNECTION=$(az servicebus topic authorization-rule keys list \
+    --resource-group $RG \
+    --namespace-name $SB_NAMESPACE \
+    --topic-name $SB_TOPIC_DEMOGRAPHIC \
+    --name $SB_TOPIC_DEMOGRAPHIC-sas \
+    --query primaryConnectionString --output tsv)
 
 ```
 
 >NOTE: If you wish to have a client to test your service bus, check out [Service Bus Explorer](https://github.com/paolosalvatori/ServiceBusExplorer) open source project created by Paolo Salvatori. Please note it will require Manage permission as well (the above connection string does not allow management).
 
 ## Cognitive Service
-
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 Azure Cognitive Services are a set of pre-trained AI models that solve common AI requirements like vision, text and speech.
 
@@ -334,8 +341,6 @@ echo $CS_ACCOUNT_KEY
 ```
 
 ## Container Registry
-
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 As you build your containerized solution, you need a reliable and enterprise ready container registry, we will be using Azure Container Registry to accomplish that.
 
@@ -390,8 +395,6 @@ az acr login --name $CONTAINER_REGISTRY_NAME
 Read more about [ACR Authentication](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-docker-cli).
 
 ## Virtual Network
-
->CODE: [azure-prerequisites-network.sh](../../src/scripts/azure-prerequisites-network.sh)
 
 Networking is an important part of your cloud-native platform that look after services routing, security and other important aspects of the deployment.
 
@@ -506,8 +509,6 @@ echo $AKS_VNSUBNET_ID
 
 ## Log Analytics Workspace (AKS and Firewall Telemetry)
 
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
-
 Azure Log Analytics Workspace is part of Azure Monitor and offers scalable storage and queries for our systems telemetry.
 
 [Read more here](https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/get-started-portal)
@@ -533,12 +534,12 @@ WORKSPACE=$(az group deployment create \
     --template-file logs-workspace-deployment-updated.json)
 
 echo $WORKSPACE
+SHARED_WORKSPACE_ID=$(echo $WORKSPACE | jq -r '.properties["outputResources"][].id')
+echo $SHARED_WORKSPACE_ID
 
 ```
 
 ## Application Insights
-
->CODE: [azure-prerequisites-services.sh](../../src/scripts/azure-prerequisites-services.sh)
 
 Getting application performance telemetry is essential to keep track of how your code is performing (in dev or prod).
 
@@ -554,41 +555,39 @@ App Insights offers app-specific telemetry that are tightly integrated with your
 # Check Kubernetes apps with no instrumentation and service mesh: https://docs.microsoft.com/en-us/azure/azure-monitor/app/kubernetes
 # Create App Insights to be used within your apps:
 
-APP_NAME="${PREFIX}-cognitive-orchestrator-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_ORCH="${PREFIX}-cognitive-orchestrator-insights"
+APPINSIGHTS_KEY_ORCH=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_ORCH
 
-APP_NAME="${PREFIX}-camframe-analyzer-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_CAM="${PREFIX}-camframe-analyzer-insights"
+APPINSIGHTS_KEY_CAM=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_CAM
 
-APP_NAME="${PREFIX}-crowd-analyzer-insights"
-APPINSIGHTS_KEY=$(az resource create \
+APP_NAME_CRWD="${PREFIX}-crowd-analyzer-insights"
+APPINSIGHTS_KEY_CRWD=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
     --name ${APP_NAME} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
-echo $APPINSIGHTS_KEY
+echo $APPINSIGHTS_KEY_CRWD
 
 ```
 
 ## Service Principal Account
-
->CODE: [azure-prerequisites-sp.sh](../../src/scripts/azure-prerequisites-sp.sh)
 
 AKS needs a Service Principal account to authenticate against Azure ARM APIs so it can manage its resources (like worker VMs for example)
 
@@ -680,6 +679,97 @@ az role assignment list \
 
 
 ```
+
+## Saving all variables
+
+All variables created in this guide, are session bound. If you closed the session and reopen it, you will lose all values.
+
+If you want to presist all varaibles to a file to be used later, execute the following:
+
+```bash
+
+# Saving variables to a file
+#If you wish to have these values persist across sessions use:
+echo export SUBSCRIPTION_ID=$SUBSCRIPTION_ID >> ./crowdanalytics
+echo export TENANT_ID=$TENANT_ID >> ./crowdanalytics
+echo export PREFIX=$PREFIX >> ./crowdanalytics
+echo export RG=$RG >> ./crowdanalytics
+echo export LOCATION=$LOCATION >> ./crowdanalytics
+echo export FRAMES_STORAGE=$FRAMES_STORAGE >> ./crowdanalytics
+echo export COSMOSDB_ACCOUNT=$COSMOSDB_ACCOUNT >> ./crowdanalytics
+echo export SB_NAMESPACE=$SB_NAMESPACE >> ./crowdanalytics
+echo export CS_ACCOUNT=$CS_ACCOUNT >> ./crowdanalytics
+echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
+echo export VNET_NAME=$VNET_NAME >> ./crowdanalytics
+echo export WORKSPACE_NAME=$WORKSPACE_NAME >> ./crowdanalytics
+
+echo export FRAMES_STORAGE_KEY=$FRAMES_STORAGE_KEY
+echo export FRAMES_STORAGE_CONN=$FRAMES_STORAGE_CONN
+echo export FRAMES_STORAGE_CONTAINER=$FRAMES_STORAGE_CONTAINER >> ./crowdanalytics
+
+echo export COSMOSDB_PRIMARY_CONN=$COSMOSDB_PRIMARY_CONN >> ./crowdanalytics
+
+echo export SB_NAMESPACE_CONNECTION=$SB_NAMESPACE_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_ORCH=$SB_TOPIC_ORCH >> ./crowdanalytics
+echo export SB_TOPIC_ORCH_SUB=$SB_TOPIC_ORCH_SUB >> ./crowdanalytics
+echo export SB_TOPIC_ORCH_CONNECTION=$SB_TOPIC_ORCH_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_CAM=$SB_TOPIC_CAM >> ./crowdanalytics
+echo export SB_TOPIC_CAM_SUB=$SB_TOPIC_CAM_SUB >> ./crowdanalytics
+echo export SB_TOPIC_CAM_CONNECTION=$SB_TOPIC_CAM_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_CROWD=$SB_TOPIC_CROWD >> ./crowdanalytics
+echo export SB_TOPIC_CROWD_SUB=$SB_TOPIC_CROWD_SUB >> ./crowdanalytics
+echo export SB_TOPIC_CROWD_CONNECTION=$SB_TOPIC_CROWD_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_DEMOGRAPHIC=$SB_TOPIC_DEMOGRAPHIC >> ./crowdanalytics
+echo export SB_TOPIC_DEMOGRAPHIC_SUB=$SB_TOPIC_DEMOGRAPHIC_SUB >> ./crowdanalytics
+echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION=$SB_TOPIC_DEMOGRAPHIC_CONNECTION >> ./crowdanalytics
+
+echo export CS_ACCOUNT_KEY=$CS_ACCOUNT_KEY >> ./crowdanalytics
+
+echo export VNET_ADDRESS_SPACE=$VNET_ADDRESS_SPACE >> ./crowdanalytics
+echo export AKSSUBNET_NAME=$AKSSUBNET_NAME >> ./crowdanalytics
+echo export SVCSUBNET_NAME=$SVCSUBNET_NAME >> ./crowdanalytics
+echo export AGW_SUBNET_NAME=$AGW_SUBNET_NAME >> ./crowdanalytics
+echo export FWSUBNET_NAME=$FWSUBNET_NAME >> ./crowdanalytics
+echo export VNSUBNET_NAME=$VNSUBNET_NAME >> ./crowdanalytics
+echo export AKSSUBNET_IP_PREFIX=$AKSSUBNET_IP_PREFIX >> ./crowdanalytics
+echo export SVCSUBNET_IP_PREFIX=$SVCSUBNET_IP_PREFIX >> ./crowdanalytics
+echo export AGW_SUBNET_IP_PREFIX=$AGW_SUBNET_IP_PREFIX >> ./crowdanalytics
+echo export FWSUBNET_IP_PREFIX=$FWSUBNET_IP_PREFIX >> ./crowdanalytics
+echo export VNSUBNET_IP_PREFIX=$VNSUBNET_IP_PREFIX >> ./crowdanalytics
+echo export VNET_ID=$VNET_ID >> ./crowdanalytics
+echo export AKS_SUBNET_ID=$AKS_SUBNET_ID >> ./crowdanalytics
+echo export AKS_SVCSUBNET_ID=$AKS_SVCSUBNET_ID >> ./crowdanalytics
+echo export AKS_AGWSUBNET_ID=$AKS_AGWSUBNET_ID >> ./crowdanalytics
+echo export AKS_FWSUBNET_ID=$AKS_FWSUBNET_ID >> ./crowdanalytics
+echo export AKS_VNSUBNET_ID=$AKS_VNSUBNET_ID >> ./crowdanalytics
+
+echo export SHARED_WORKSPACE_ID=$SHARED_WORKSPACE_ID >> ./crowdanalytics
+
+echo export APPINSIGHTS_KEY_ORCH=$APPINSIGHTS_KEY_ORCH >> ./crowdanalytics
+echo export APPINSIGHTS_KEY_CAM=$APPINSIGHTS_KEY_CAM >> ./crowdanalytics
+echo export APPINSIGHTS_KEY_CRWD=$APPINSIGHTS_KEY_CRWD >> ./crowdanalytics
+
+echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
+echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
+
+echo export ACR_ID=$ACR_ID >> ./crowdanalytics
+
+```
+
+If you want to load the variable file:
+
+```bash
+
+# If you need to load variables previously saved:
+source ./crowdanalytics
+
+```
+
+## Results
+
+If everything provisioned successfully, you should end up with something like this:
+
+![azure-resources](assets/azure-resources.png)
 
 ## Next step
 

@@ -704,8 +704,8 @@ echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
 echo export VNET_NAME=$VNET_NAME >> ./crowdanalytics
 echo export WORKSPACE_NAME=$WORKSPACE_NAME >> ./crowdanalytics
 
-echo export FRAMES_STORAGE_KEY=$FRAMES_STORAGE_KEY
-echo export FRAMES_STORAGE_CONN=$FRAMES_STORAGE_CONN
+echo export FRAMES_STORAGE_KEY=$FRAMES_STORAGE_KEY >> ./crowdanalytics
+echo export FRAMES_STORAGE_CONN=$FRAMES_STORAGE_CONN >> ./crowdanalytics
 echo export FRAMES_STORAGE_CONTAINER=$FRAMES_STORAGE_CONTAINER >> ./crowdanalytics
 
 echo export COSMOSDB_PRIMARY_CONN=$COSMOSDB_PRIMARY_CONN >> ./crowdanalytics
@@ -753,7 +753,12 @@ echo export APPINSIGHTS_KEY_CRWD=$APPINSIGHTS_KEY_CRWD >> ./crowdanalytics
 echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
 echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
+echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
+echo export CONTAINER_REGISTRY_URL=https://$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
+echo export ACR_ID=$ACR_ID >> ./crowdanalytics
+echo export ACR_SP_ID=$ACR_SP_ID >> ./crowdanalytics
+echo export ACR_SP_PASSWORD=$ACR_SP_PASSWORD >> ./crowdanalytics
 
 ```
 

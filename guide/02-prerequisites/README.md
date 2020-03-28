@@ -2,11 +2,12 @@
 
 # Creating Azure Prerequisites
 
+>**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **02-prerequisites.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
+
+
 Now we are ready to setup our initial Azure resources that will be needed.
 
 >NOTE: You can use the Azure Portal to perform these actions, but I prefer to use scripts as it offer repeatable steps and clear status.
-
-All scripts to provision the entire resources in this guide are in a single script named **02-prerequisites.sh** under [scripts](**../../src/scripts) folder
 
 >NOTE: You need to have Azure CLI installed to be able to execute the below commands. If you don't have that in hand, you can use [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) directly from Azure Portal.
 ![cloud-shell](assets/cloud-shell.png)

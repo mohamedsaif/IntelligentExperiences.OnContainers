@@ -33,7 +33,7 @@ clear
 # Please update the values if you need to use other values but make sure these are unique
 # Also make sure to use only lower case to avoid conflict with recourses that requires that.
 
-PREFIX="cad${RANDOM}"
+PREFIX="cap${RANDOM}"
 RG="${PREFIX}-rg"
 LOCATION="westeurope"
 FRAMES_STORAGE="${PREFIX}framesstg"
@@ -553,6 +553,7 @@ echo export SVCSUBNET_IP_PREFIX=$SVCSUBNET_IP_PREFIX >> ./crowdanalytics
 echo export AGW_SUBNET_IP_PREFIX=$AGW_SUBNET_IP_PREFIX >> ./crowdanalytics
 echo export FWSUBNET_IP_PREFIX=$FWSUBNET_IP_PREFIX >> ./crowdanalytics
 echo export VNSUBNET_IP_PREFIX=$VNSUBNET_IP_PREFIX >> ./crowdanalytics
+
 echo export VNET_ID=$VNET_ID >> ./crowdanalytics
 echo export AKS_SUBNET_ID=$AKS_SUBNET_ID >> ./crowdanalytics
 echo export AKS_SVCSUBNET_ID=$AKS_SVCSUBNET_ID >> ./crowdanalytics
@@ -570,6 +571,7 @@ echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
 echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
-
+echo export ACR_SP_ID=$ACR_SP_ID >> ./crowdanalytics
+echo export ACR_SP_PASSWORD=$ACR_SP_PASSWORD >> ./crowdanalytics
 # If you need to load variables previously saved:
 # source ./crowdanalytics

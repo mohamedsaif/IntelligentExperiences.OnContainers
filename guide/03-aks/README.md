@@ -31,6 +31,9 @@ echo $AKS_VERSION
 # Save the selected version
 echo export AKS_VERSION=$AKS_VERSION >> ./crowdanalytics
 
+# Name our cluster
+CLUSTER_NAME=$PREFIX-aks
+
 # Giving a friendly name to our default node pool
 AKS_DEFAULT_NODEPOOL=npdefault
 
@@ -73,7 +76,6 @@ AKS needs a Service Principal account to authenticate against Azure ARM APIs so 
 
 az aks create \
     --resource-group $RG \
-    --node-resource-group $RG_NODES \
     --name $CLUSTER_NAME \
     --location $LOCATION \
     --kubernetes-version $AKS_VERSION \
@@ -151,13 +153,21 @@ Installing KEDA on AKS is super simple. We will use ```keda``` namespace for our
 
 ```bash
 
+# Installing KEDA
 # Adding KEDA repo
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
+# If you receive permission-denied error running the above commands, you can try them with sudo before each command
 
 # Installing KEDA in keda namespace
 kubectl create namespace keda
 helm install keda kedacore/keda --namespace keda
+
+# Validating the KEDA instllation
+kubectl get po -n keda
+# NAME                                               READY   STATUS    RESTARTS   AGE
+# keda-operator-dbfbd6bdb-qnn6g                      1/1     Running   0          35s
+# keda-operator-metrics-apiserver-8678f8c5d9-nhw2l   1/1     Running   0          35s
 
 ```
 

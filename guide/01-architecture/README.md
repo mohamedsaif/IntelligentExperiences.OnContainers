@@ -108,4 +108,4 @@ Connecting all the above technologies in an architecture to see how each system 
 
 Congratulations on completing this section. Let's move to the next step:
 
-[Next Step](/guide/02-prerequisites/README.md)
+[Next Step](../02-prerequisites/README.md)

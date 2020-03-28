@@ -92,7 +92,7 @@ namespace CognitiveOrchestrator.API.Controllers
             var sbMessage = new Microsoft.Azure.ServiceBus.Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(req)));
             var result = await serviceBusRepository.PublishMessage(sbMessage);
 
-            return Ok(result);
+            return Ok(req);
         }
     }
 }

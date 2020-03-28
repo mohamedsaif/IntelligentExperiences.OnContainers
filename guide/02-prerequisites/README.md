@@ -560,7 +560,7 @@ APP_NAME_ORCH="${PREFIX}-cognitive-orchestrator-insights"
 APPINSIGHTS_KEY_ORCH=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
-    --name ${APP_NAME} \
+    --name ${APP_NAME_ORCH} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
@@ -570,7 +570,7 @@ APP_NAME_CAM="${PREFIX}-camframe-analyzer-insights"
 APPINSIGHTS_KEY_CAM=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
-    --name ${APP_NAME} \
+    --name ${APP_NAME_CAM} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")
@@ -580,7 +580,7 @@ APP_NAME_CRWD="${PREFIX}-crowd-analyzer-insights"
 APPINSIGHTS_KEY_CRWD=$(az resource create \
     --resource-group ${RG} \
     --resource-type "Microsoft.Insights/components" \
-    --name ${APP_NAME} \
+    --name ${APP_NAME_CRWD} \
     --location ${LOCATION} \
     --properties '{"Application_Type":"web"}' \
     | grep -Po "\"InstrumentationKey\": \K\".*\"")

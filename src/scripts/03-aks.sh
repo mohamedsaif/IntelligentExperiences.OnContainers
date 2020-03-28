@@ -1,20 +1,3 @@
-![banner](assets/banner.png)
-
-# AKS Cluster Provisioning
-
->**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **03-aks.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
-
-Now it is time to provision the star of the show, Azure Kubernetes Service cluster.
-
->NOTE: I have built an end-to-end [AKS cluster provisioning with advanced configuration](https://aka.ms/aks-adv-provision) that you can check out for more details.
-
-## Essential Cluster Provisioning
-
-### Variables
-
-First we setup some AKS specific variables including the AKS version
-
-```bash
 
 # Have a look at the available versions first :)
 az aks get-versions -l ${LOCATION} -o table
@@ -34,16 +17,6 @@ echo export AKS_VERSION=$AKS_VERSION >> ./crowdanalytics
 # Giving a friendly name to our default node pool
 AKS_DEFAULT_NODEPOOL=npdefault
 
-```
-
-### Service Principal Account
-
-AKS needs a Service Principal account to authenticate against Azure ARM APIs so it can manage its resources (like worker VMs for example)
-
-```bash
-
-#***** Prepare Service Principal for AKS *****
-
 # AKS Service Principal
 # Docs: https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/aks/kubernetes-service-principal.md
 # AKS provision Azure resources based on the cluster needs, 
@@ -58,18 +31,6 @@ AKS needs a Service Principal account to authenticate against Azure ARM APIs so 
 #     --reset-service-principal \
 #     --service-principal $AKS_SP_ID \
 #     --client-secret $AKS_SP_PASSWORD
-
-#***** END Prepare Service Principal for AKS *****
-
-```
-
-### AKS Provisioning
-
-```bash
-
-# Be patient as the CLI provision the cluster :) maybe it is time to refresh your cup of coffee
-# or append --no-wait then check the cluster provisioning status via:
-# az aks list -o table
 
 az aks create \
     --resource-group $RG \
@@ -93,64 +54,16 @@ az aks create \
     --service-principal $AKS_SP_ID \
     --client-secret $AKS_SP_PASSWORD
 
-```
-
-### Getting AKS Credentials
-
-Now let's download kubectl context for our AKS cluster and test that it works
-
-```bash
-
 # Connecting to AKS via kubectl
 az aks get-credentials --resource-group $RG --name $CLUSTER_NAME
 
 # Test the connection
 kubectl get nodes
 
-```
-
-### Crowd Analytics Namespace
-
-Crowd Analytics main services will be deployed to ```crowd-analytics``` namespace. So let's created now:
-
-```bash
-
+# Crowd Analytics main services will be deployed to ```crowd-analytics``` namespace. So let's created now:
 kubectl create namespace crowd-analytics
 
-```
-
-### Helm 3
-
-Helm is the kubernetes native package manager that is widely used by the community.
-
-KEDA is one of the framework that support installing it through Helm 3 (or even Helm 2).
-
-To install Helm, you can run the following:
-
-```bash
-
-# Helm 3 Installation Docs (https://helm.sh/docs/intro/install/)
-wget https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-chmod -R +x .
-./get-helm-3
-
-# OR
-# curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | sudo bash
-
-helm version
-# You should get something like:
-# version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
-
-```
-
-### KEDA
-
-KEDA offer event driven auto scaler based on how large is the messages in the queue that needs to be handled.
-
-Installing KEDA on AKS is super simple. We will use ```keda``` namespace for our installation:
-
-```bash
-
+# Installing KEDA
 # Adding KEDA repo
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
@@ -159,10 +72,3 @@ helm repo update
 kubectl create namespace keda
 helm install keda kedacore/keda --namespace keda
 
-```
-
-## Next step
-
-Congratulations on completing this section. Let's move to the next step:
-
-[Next Step](../04-iot/)

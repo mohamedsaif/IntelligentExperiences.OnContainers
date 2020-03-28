@@ -89,6 +89,7 @@ In order to leverage KEDA in any Kubernetes cluster, you need to deploy KEDA com
 I'm using Helm 3 to perform the deployment.
 
 ```bash
+
 # Adding KEDA repo
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update

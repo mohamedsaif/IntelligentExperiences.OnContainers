@@ -58,7 +58,7 @@ az iot hub update \
 
 az iot hub update \
     --name $IOT_HUB_NAME \
-    --add properties.storageEndpoints.'$default'.connectionString="$FRAMES_STORAGE_CONN"
+    --set properties.storageEndpoints.'$default'.connectionString="$FRAMES_STORAGE_CONN"
 
 # Set storage container name
 az iot hub update \
@@ -72,15 +72,15 @@ az iot hub update \
 
 # Enable upload notification
 az iot hub update --name $IOT_HUB_NAME \
-  --set properties.enableFileUploadNotifications=true
+    --set properties.enableFileUploadNotifications=true
 
 # Maximum number of times the IoT Hub attempts to deliver a file upload notification. Set to 10 by default
 az iot hub update --name $IOT_HUB_NAME \
-  --set properties.messagingEndpoints.fileNotifications.maxDeliveryCount=100
+    --set properties.messagingEndpoints.fileNotifications.maxDeliveryCount=10
 
 # Notification Time to Live (one day by default)
 az iot hub update --name $IOT_HUB_NAME \
-  --set properties.messagingEndpoints.fileNotifications.ttlAsIso8601=PT1H0M0S
+    --set properties.messagingEndpoints.fileNotifications.ttlAsIso8601=PT1H0M0S
 
 # Review the IoT Hub updated settings:
 az iot hub show --name $IOT_HUB_NAME
@@ -173,15 +173,19 @@ We will use a manually registered IoT Hub device connection to provision and con
 
 ```bash
 
-WEB_DEVICE_ID="WebCam001"
+WEB_DEVICE_ID="Device-Web-Sim-001"
 
-# Create new Edge Device in IoT Hub
+# Create new device in IoT Hub
 az iot hub device-identity create \
     --device-id $WEB_DEVICE_ID \
     --hub-name $IOT_HUB_NAME
 
 # List devices in IoT Hub. You should EdgeCam device with disconnected state
-az iot hub device-identity list --hub-name $IOT_HUB_NAME
+az iot hub device-identity list --hub-name $IOT_HUB_NAME --output table
+# output might looklike this:
+# AuthenticationType    CloudToDeviceMessageCount    ConnectionState    DeviceEtag    DeviceId            LastActivityTime      Status    StatusUpdateTime      Version
+# --------------------  ---------------------------  -----------------  ------------  ------------------  --------------------  --------  --------------------  ---------
+# sas                   0                            Disconnected       Nzk4OTEzMTE5  Device-Web-Sim-001  0001-01-01T00:00:00Z  enabled   0001-01-01T00:00:00Z  2
 
 # Retrieve device connection string. Take note of that as we will use it during the runtime provisioning
 WEBCAM_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \

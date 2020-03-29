@@ -318,6 +318,13 @@ az cognitiveservices account create \
     --sku S0 \
     --yes
 
+CS_ACCOUNT_ENDPOINT=$(az cognitiveservices account show \
+    -n $CS_ACCOUNT \
+    -g $RG \
+    --query endpoint \
+    -o tsv)
+echo $CS_ACCOUNT_ENDPOINT
+
 # Get the access keys for our app deployment
 CS_ACCOUNT_KEY=$(az cognitiveservices account keys list \
     -n $CS_ACCOUNT \
@@ -696,20 +703,16 @@ echo export TENANT_ID=$TENANT_ID >> ./crowdanalytics
 echo export PREFIX=$PREFIX >> ./crowdanalytics
 echo export RG=$RG >> ./crowdanalytics
 echo export LOCATION=$LOCATION >> ./crowdanalytics
-echo export FRAMES_STORAGE=$FRAMES_STORAGE >> ./crowdanalytics
-echo export COSMOSDB_ACCOUNT=$COSMOSDB_ACCOUNT >> ./crowdanalytics
-echo export SB_NAMESPACE=$SB_NAMESPACE >> ./crowdanalytics
-echo export CS_ACCOUNT=$CS_ACCOUNT >> ./crowdanalytics
-echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
-echo export VNET_NAME=$VNET_NAME >> ./crowdanalytics
-echo export WORKSPACE_NAME=$WORKSPACE_NAME >> ./crowdanalytics
 
+echo export FRAMES_STORAGE=$FRAMES_STORAGE >> ./crowdanalytics
 echo export FRAMES_STORAGE_KEY=$FRAMES_STORAGE_KEY >> ./crowdanalytics
 echo export FRAMES_STORAGE_CONN=$FRAMES_STORAGE_CONN >> ./crowdanalytics
 echo export FRAMES_STORAGE_CONTAINER=$FRAMES_STORAGE_CONTAINER >> ./crowdanalytics
 
+echo export COSMOSDB_ACCOUNT=$COSMOSDB_ACCOUNT >> ./crowdanalytics
 echo export COSMOSDB_PRIMARY_CONN=$COSMOSDB_PRIMARY_CONN >> ./crowdanalytics
 
+echo export SB_NAMESPACE=$SB_NAMESPACE >> ./crowdanalytics
 echo export SB_NAMESPACE_CONNECTION=$SB_NAMESPACE_CONNECTION >> ./crowdanalytics
 echo export SB_TOPIC_ORCH=$SB_TOPIC_ORCH >> ./crowdanalytics
 echo export SB_TOPIC_ORCH_SUB=$SB_TOPIC_ORCH_SUB >> ./crowdanalytics
@@ -724,8 +727,11 @@ echo export SB_TOPIC_DEMOGRAPHIC=$SB_TOPIC_DEMOGRAPHIC >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC_SUB=$SB_TOPIC_DEMOGRAPHIC_SUB >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION=$SB_TOPIC_DEMOGRAPHIC_CONNECTION >> ./crowdanalytics
 
+echo export CS_ACCOUNT=$CS_ACCOUNT >> ./crowdanalytics
 echo export CS_ACCOUNT_KEY=$CS_ACCOUNT_KEY >> ./crowdanalytics
+echo export CS_ACCOUNT_ENDPOINT=$CS_ACCOUNT_ENDPOINT >> ./crowdanalytics
 
+echo export VNET_NAME=$VNET_NAME >> ./crowdanalytics
 echo export VNET_ADDRESS_SPACE=$VNET_ADDRESS_SPACE >> ./crowdanalytics
 echo export AKSSUBNET_NAME=$AKSSUBNET_NAME >> ./crowdanalytics
 echo export SVCSUBNET_NAME=$SVCSUBNET_NAME >> ./crowdanalytics
@@ -737,6 +743,7 @@ echo export SVCSUBNET_IP_PREFIX=$SVCSUBNET_IP_PREFIX >> ./crowdanalytics
 echo export AGW_SUBNET_IP_PREFIX=$AGW_SUBNET_IP_PREFIX >> ./crowdanalytics
 echo export FWSUBNET_IP_PREFIX=$FWSUBNET_IP_PREFIX >> ./crowdanalytics
 echo export VNSUBNET_IP_PREFIX=$VNSUBNET_IP_PREFIX >> ./crowdanalytics
+
 echo export VNET_ID=$VNET_ID >> ./crowdanalytics
 echo export AKS_SUBNET_ID=$AKS_SUBNET_ID >> ./crowdanalytics
 echo export AKS_SVCSUBNET_ID=$AKS_SVCSUBNET_ID >> ./crowdanalytics
@@ -744,6 +751,7 @@ echo export AKS_AGWSUBNET_ID=$AKS_AGWSUBNET_ID >> ./crowdanalytics
 echo export AKS_FWSUBNET_ID=$AKS_FWSUBNET_ID >> ./crowdanalytics
 echo export AKS_VNSUBNET_ID=$AKS_VNSUBNET_ID >> ./crowdanalytics
 
+echo export WORKSPACE_NAME=$WORKSPACE_NAME >> ./crowdanalytics
 echo export SHARED_WORKSPACE_ID=$SHARED_WORKSPACE_ID >> ./crowdanalytics
 
 echo export APPINSIGHTS_KEY_ORCH=$APPINSIGHTS_KEY_ORCH >> ./crowdanalytics
@@ -754,7 +762,7 @@ echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
 echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
 echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
-echo export CONTAINER_REGISTRY_URL=https://$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
+echo export CONTAINER_REGISTRY_URL=$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
 echo export ACR_SP_ID=$ACR_SP_ID >> ./crowdanalytics

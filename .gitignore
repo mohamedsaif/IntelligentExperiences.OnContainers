@@ -4,3 +4,4 @@
 content-prep.md
 src/apis/ConitiveOrchestrator.API/appsettings.Development.json
 src/scripts/crowdanalytics
+crowdanalytics

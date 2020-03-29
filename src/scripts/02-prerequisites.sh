@@ -256,6 +256,13 @@ az cognitiveservices account create \
     --sku S0 \
     --yes
 
+CS_ACCOUNT_ENDPOINT=$(az cognitiveservices account show \
+    -n $CS_ACCOUNT \
+    -g $RG \
+    --query endpoint \
+    -o tsv)
+echo $CS_ACCOUNT_ENDPOINT
+
 # Get the access keys for our app deployment
 CS_ACCOUNT_KEY=$(az cognitiveservices account keys list \
     -n $CS_ACCOUNT \
@@ -541,6 +548,7 @@ echo export SB_TOPIC_DEMOGRAPHIC_SUB=$SB_TOPIC_DEMOGRAPHIC_SUB >> ./crowdanalyti
 echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION=$SB_TOPIC_DEMOGRAPHIC_CONNECTION >> ./crowdanalytics
 
 echo export CS_ACCOUNT_KEY=$CS_ACCOUNT_KEY >> ./crowdanalytics
+echo export CS_ACCOUNT_ENDPOINT=$CS_ACCOUNT_ENDPOINT >> ./crowdanalytics
 
 echo export VNET_ADDRESS_SPACE=$VNET_ADDRESS_SPACE >> ./crowdanalytics
 echo export AKSSUBNET_NAME=$AKSSUBNET_NAME >> ./crowdanalytics
@@ -571,10 +579,11 @@ echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
 echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
 echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
-echo export CONTAINER_REGISTRY_URL=https://$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
+echo export CONTAINER_REGISTRY_URL=$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
 echo export ACR_SP_ID=$ACR_SP_ID >> ./crowdanalytics
 echo export ACR_SP_PASSWORD=$ACR_SP_PASSWORD >> ./crowdanalytics
+
 # If you need to load variables previously saved:
 # source ./crowdanalytics

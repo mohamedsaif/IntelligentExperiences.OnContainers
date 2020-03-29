@@ -118,7 +118,7 @@ Select (GitHub YAML) or (Azure Repos Git YAML) based on where is your code:
 ![azure-pipelines-connect](assets/azure-newpipeline-connect.png)
 
 >NOTE: Selecting GitHub for the first time, you will need to connect Azure DevOps to your GitHub account. If you have challenges, you can review the following lab [Integrate Your GitHub Projects With Azure Pipelines](https://azuredevopslabs.com//labs/azuredevops/github-integration/)
-****
+
 Next you select the project repo. It will differ based on you selection in the previous step (**I**'m using GitHub to host the code):
 
 ![azure-pipelines-repo](assets/azure-newpipeline-repo.png)
@@ -141,7 +141,7 @@ Finally review the content of the yaml file and click on Run to queue a new buil
 
 CONGRATULATIONS! You first pipeline is now being built.
 
-Please repeat the above steps for each pipeline mentioned.
+Please repeat the above steps for each pipeline yaml definitions mentioned above.
 
 >NOTE: This repo includes various template files that are leveraged by the main pipeline definition mentioned here (azure-pipelines-cognitive-orchestrator.yml). These template files will not be used to create pipelines directly. Template files end with angular, webapp, nuget and tests)
 
@@ -166,11 +166,15 @@ Now if you added all 5 pipelines (3 services and 2 NuGet packages), you will end
 
 Confusing a bit! You can now update the names of each pipeline to reflect each pipeline function. 
 
-Select **Rename** from the elipses beside the build definition to update:
+Select **Rename** from the ellipses beside the build definition to update:
 
 ![rename](assets/azure-pipelines-rename.png)
 
 Now you can end up with something more relevant like:
+
+- CrowdAnalytics-Svc-CognitiveOrchestrator-CI
+- CrowdAnalytics-Svc-CamFrameAnalyzer-CI
+- CrowdAnalytics-Svc-CrowdAnalyzer-CI
 
 ![renamed](assets/azure-pipelines-renamed.png)
 
@@ -210,11 +214,11 @@ Head to the tasks under the (Dev) stage in the release designer.
 
 ![release stage](assets/release-dev-stage.png)
 
-Configure the agent properties as per the following:
+Configure the agent properties as per the following (Agen Pool: Azure Pipelines, Agent Specification: Ubuntu-18.04):
 
 ![release agent](assets/release-agent.png)
 
-Now update the Kubernetes task to use the previously created service connection to Kubernetes cluster:
+Now update the Kubernetes task to use the previously created service connection to your Kubernetes cluster:
 
 ![agent kube](assets/release-kube.png)
 
@@ -222,23 +226,67 @@ Final thing is the update the pipeline variables as the Kubernetes deployment fi
 
 ![release variables](assets/release-vars.png)
 
->NOTE: Variable values must be ```base64``` encoded before saving them to the pipeline (except the acrName variable). You can use the auto generated deployment file from Azure Functions Core Tools. Refer to [Services Guide](src/../../../src/services/README.md) for more information.
+To make it easier, below is the mapping of script saved variables (you should have ```crowdanalytics``` file generated during the script execution):
+
+##### CrowdAnalytics-Svc-CognitiveOrchestrator-CI Variables
+
+| Pipeline Variable        | Script Variable          | Description                                                    |
+|--------------------------|--------------------------|----------------------------------------------------------------|
+| acrName                  | CONTAINER_REGISTRY_URL   | YOURCONTAINERNAME.azurecr.io                                   |
+| appInsightsKey           | APPINSIGHTS_KEY_ORCH     | Application Insights instrumentation key                       |
+| funcRuntime              | dotnet                   | For Azure Functions runtime                                    |
+| funcStorage              | FRAMES_STORAGE_CONN      | Used by Azure Functions                                        |
+| kedaServiceBusConnection | SB_TOPIC_ORCH_CONNECTION | Connection string specific to single topic (cognitive-request) |
+| serviceBusConnection     | SB_NAMESPACE_CONNECTION  | Root connection string to your Service Bus                     |
 
 Now click save, then click create release to run the pipeline.
 
 Now you can repeat the above steps for each service and NuGet library part of this solution.
 
-## Testing
+Here is the other pipeline variable mapping as well:
 
-Now you are ready to check as experienced SRE (Site Reliability Engineering) that the deployed components are up and healthy.
+##### CrowdAnalytics-Svc-CamFrameAnalyzer-CI
+
+| Pipeline Variable         | Script Variable         | Description                                                                      |
+|---------------------------|-------------------------|----------------------------------------------------------------------------------|
+| acrName                   | CONTAINER_REGISTRY_URL  | YOURCONTAINERNAME.azurecr.io                                                     |
+| appInsightsKey            | APPINSIGHTS_KEY_CAM     | Application Insights instrumentation key                                         |
+| camFrameStorageConnection | FRAMES_STORAGE_CONN     | This is the storage account the camera frames are uploaded to                    |
+| cognitiveEndpoint         | CS_ACCOUNT_ENDPOINT     | Usually in the format (https://AZURE-REGION.api.cognitive.microsoft.com)         |
+| cognitiveKey              | CS_ACCOUNT_KEY          | Your cognitive services access key                                               |
+| cosmosDbEndpoint          | COSMOSDB_PRIMARY_CONN   | Take only the part after AccountEndpoint in the connection                       |
+| cosmosDbKey               | COSMOSDB_PRIMARY_CONN   | Copy only the part after AccountKey in the connection                            |
+| faceWorkspaceDataFilter   | Contoso.CrowdAnalytics  | This is a static value represent the person group (for identified faces feature) |
+| funcRuntime               | dotnet                  | For Azure Functions runtime                                                      |
+| funcStorage               | FRAMES_STORAGE_CONN     | Used by Azure Functions                                                          |
+| kedaServiceBusConnection  | SB_TOPIC_CAM_CONNECTION | Connection string specific to single topic (camframe-analysis)                   |
+| serviceBusConnection      | SB_NAMESPACE_CONNECTION | Root connection string to your Service Bus                                       |
+
+##### CrowdAnalytics-Svc-CrowdAnalyzer-CI
+
+| Pipeline Variable        | Script Variable           | Description                                                                      |
+|--------------------------|---------------------------|----------------------------------------------------------------------------------|
+| acrName                  | CONTAINER_REGISTRY_URL    | YOURCONTAINERNAME.azurecr.io                                                     |
+| appInsightsKey           | APPINSIGHTS_KEY_CAM       | Application Insights instrumentation key                                         |
+| checkForDbConsistency    | true                      | A flag so used when updating the cosmos db crowd data                            |
+| cosmosDbEndpoint         | COSMOSDB_PRIMARY_CONN     | Take only the part after AccountEndpoint in the connection                       |
+| cosmosDbKey              | COSMOSDB_PRIMARY_CONN     | Copy only the part after AccountKey in the connection                            |
+| faceWorkspaceDataFilter  | Contoso.CrowdAnalytics    | This is a static value represent the person group (for identified faces feature) |
+| funcRuntime              | dotnet                    | For Azure Functions runtime                                                      |
+| funcStorage              | FRAMES_STORAGE_CONN       | Used by Azure Functions                                                          |
+| kedaServiceBusConnection | SB_TOPIC_CROWD_CONNECTION | Connection string specific to single topic (crowd-analysis)                      |
+| serviceBusConnection     | SB_NAMESPACE_CONNECTION   | Root connection string to your Service Bus                                       |
+| origin                   | CrowdAnalyzer.V1.0.0      | Static value indicate the originating crowd calculations                         |
+
+## Running Crowd Analytics Platform
+
+Now you are ready to check that the deployed components are up and healthy.
 
 ### Kubernetes Services Test
 
 Let's check that every part of the deployment works
 
-#### Crowd Analytics Components
-
-##### AKS
+#### AKS Services
 
 You have mainly 3 components running on AKS:
 
@@ -252,13 +300,34 @@ All services are deployed to AKS in a namespace called [crowd-analytics]. Let's 
 
 # Get everything deployed to the namespace (crowd-analytics)
 kubectl get all -n crowd-analytics
+# Healthy output should look like this:
+# NAME                                          READY   STATUS    RESTARTS   AGE
+# pod/cognitive-orchestrator-54db94b464-tgkcp   1/1     Running   0          6h3m
+
+# NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+# deployment.apps/camframe-analyzer        0/0     0            0           5h16m
+# deployment.apps/cognitive-orchestrator   1/1     1            1           18h
+# deployment.apps/crowd-analyzer           0/0     0            0           4h35m
+
+# NAME                                                DESIRED   CURRENT   READY   AGE
+# replicaset.apps/camframe-analyzer-6cf5cfcb8b        0         0         0       5h16m
+# replicaset.apps/camframe-analyzer-b944997f9         0         0         0       4h42m
+# replicaset.apps/camframe-analyzer-f9699db64         0         0         0       5h13m
+# replicaset.apps/cognitive-orchestrator-54db94b464   1         1         1       6h3m
+# replicaset.apps/cognitive-orchestrator-76fb5f684c   0         0         0       18h
+# replicaset.apps/cognitive-orchestrator-f77777956    0         0         0       7h8m
+# replicaset.apps/crowd-analyzer-5f69ff4b4b           0         0         0       4h35m
+
+# NAME                                                                  REFERENCE                           TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+# horizontalpodautoscaler.autoscaling/keda-hpa-camframe-analyzer        Deployment/camframe-analyzer        <unknown>/10 (avg)   1         50     
+# horizontalpodautoscaler.autoscaling/keda-hpa-cognitive-orchestrator   Deployment/cognitive-orchestrator   0/10 (avg)           1         20     
+# horizontalpodautoscaler.autoscaling/keda-hpa-crowd-analyzer           Deployment/crowd-analyzer           <unknown>/10 (avg)   1         50
 
 kubectl get deployment -n crowd-analytics
-
 # Results could look like this:
 # NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
-# camframe-analyzer        0/0     0            0           93m
-# cognitive-orchestrator   1/1     1            1           14h
+# camframe-analyzer        0/0     0            0           12m
+# cognitive-orchestrator   1/1     1            1           11m
 # crowd-analyzer           0/0     0            0           12m
 
 # You can get details about a specific deployment using:
@@ -269,7 +338,12 @@ kubectl get pods -n crowd-analytics
 
 # In addition to the above, you can access KEDA scaler logs as well:
 kubectl get pods -n keda
+# Output should look like
+# NAME                                               READY   STATUS    RESTARTS   AGE
+# keda-operator-dbfbd6bdb-qnn6g                      1/1     Running   0          22h
+# keda-operator-metrics-apiserver-8678f8c5d9-nhw2l   1/1     Running   0          22h
 
+# To access the logs of the main KEDA operator, you can execute (replace with the actual KEDA pod name)
 kubectl logs REPLACE_KEDA_POD_NAME -n keda
 
 # Save logs to a file
@@ -279,13 +353,13 @@ kubectl logs REPLACE_KEDA_POD_NAME -n keda > keda.logs
 
 One of the amazing aspects of KEDA's ```ScaledObject``` that it can scale down to 0 and scale up to N based on the event trigger (in this case we are using Service Bus trigger).
 
->NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1)
+>NOTE: In KEDA ```ScaledObject``` definition for each service, you can set the ```minReplicaCount``` to 0 like in camframe-analyzer. I've set the cognitive-orchestrator minimum to 1 (that is why it show 1/1). ```ScaledObject``` definition is found in each service source code under the deployment folder.
 
-##### Cam Device Web
+##### Cam Device Web (Simulated)
 
 Open the [src/iot/Cam.Device.Web/Cam.Device.Web.csproj](cam.../../src/iot/Cam.Device.Web/Cam.Device.Web.csproj) project in Visual Studio or Visual Studio code.
 
-Update the following settings in (appSettings.json) before running the project:
+Update the following settings #{VARIABLE}# in (appSettings.json) with your values before running the project:
 
 ```json
 
@@ -299,7 +373,7 @@ Update the following settings in (appSettings.json) before running the project:
   },
   "AllowedHosts": "*",
   "AppSettings": {
-    "DeviceId": "Device-Simulated-001",
+    "DeviceId": "Device-Web-Sim-001",
     "DeviceConnectionString": "#{DeviceConnectionString}#",
     "IsEdgeModeEnabled": false,
     "StorageConnection": "#{StorageConnection}#",
@@ -313,9 +387,11 @@ Now build and run the ASP .NET Core website locally. Grant permission to the cam
 
 ![device](assets/device.png)
 
+By default, every 15 seconds a javascript code take a snap of the camera. Camera frame are then uploaded to Azure Storage and a new IoT Hub event is sent.
+
 **Cleanup Quick Tips:**
 
-In the script below, you can find some usful tips:
+In the script below, you can find some useful tips:
 
 ```bash
 

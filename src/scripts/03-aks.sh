@@ -49,7 +49,7 @@ az aks create \
     --nodepool-name $AKS_DEFAULT_NODEPOOL \
     --node-count 3 \
     --max-pods 30 \
-    --node-vm-size "Standard_D4s_v3" \
+    --node-vm-size "Standard_B2s" \
     --vm-set-type VirtualMachineScaleSets \
     --workspace-resource-id $SHARED_WORKSPACE_ID \
     --attach-acr $ACR_ID \

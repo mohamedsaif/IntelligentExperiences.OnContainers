@@ -4,25 +4,26 @@
 
 ## Overview
 
-Crowd analytics (also known as footfall analytics) is about understanding who (age, gender, emotion,...) visit your location, when and how many.
+Crowd analytics (also known as footfall analytics) is about understanding who (age, gender, emotion,...) are visiting your location, when and how many.
 
 Crowd analytics scenario can be used in:
 
 1. Retail shops in many industry (like telecom shops, consumer goods retailers, malls…)
 2. Public and Private Parks
 3. Events
-4. Any many other scenarios
+4. Building safety and evacuation readiness
+5. Any many other scenarios
 
-Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
+Using advanced cloud native technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 
 ### Process Flow
 
 1. Camera Device capture frames and send it a central location
 2. Devices Hub receive the camera frame message and route it to designated system for processing
 3. An orchestrator service receive the request and route it based on the required target analysis
-4. Camera frame service perform AI-powered face detection and store the results
-5. Analysis service pick up the AI-powered analysis and convert it to useful insights that then stored in a database
-6. User friendly dashboard visualize the crowd analytics platform insights.
+4. Camera frame analysis service perform AI-powered face detection and store the results in NoSQL database
+5. Analysis service pick up the AI-powered analysis and convert it to useful insights that then stored in a database (aggregating results)
+6. Business stakeholder access the dashboard with visualized crowd analytics insights.
 
 ![dashboard](assets/dashboard.png)
 
@@ -41,7 +42,7 @@ Let's start by understanding Crowd Analytics platform requirements scope without
   - Ability to support multiple device communication protocols (HTTPS, AMQP,...)
 - **Cognitive Orchestrator Service**
   - Ability to route different AI requests to the appropriate service
-    - In our case, a single cognitive type is used (Cam-Frame-Analysis)
+    - In our case, a single cognitive type is used (CamFrame-Analysis)
     - Allow for future expansion to route a submitted request to different AI service (like face authentication request)
   - You can integrate any transformation here (receiving one format from devices and transform it to a new format to be consumable by target service)
 - **Camera Frame Analyzer Service**
@@ -64,6 +65,7 @@ Let's start by understanding Crowd Analytics platform requirements scope without
   - Provide auto healing and fault recovery
   - Enterprise grade container registry
 - **Integration Service Bus**
+  - Microservice architecture depends on messaging and eventual consistency
   - Ability to handle distributed messages at scale
   - Support Pub/Sub pattern
 - **Auto Scaler based on Demand**

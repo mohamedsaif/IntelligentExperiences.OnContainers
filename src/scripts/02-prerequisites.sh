@@ -278,7 +278,7 @@ az acr create \
     -n $CONTAINER_REGISTRY_NAME \
     --sku Basic
 
-# Create a SP to be used to access ACR
+# Create a SP to be used to access ACR (this will be used by Azure DevOps to push images to the registry)
 ACR_SP_NAME="${PREFIX}-acr-sp"
 ACR_SP=$(az ad sp create-for-rbac -n $ACR_SP_NAME --skip-assignment)
 echo $ACR_SP | jq

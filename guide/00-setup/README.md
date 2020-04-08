@@ -12,7 +12,7 @@ You can leverage an organization provided subscription or [Visual Studio subscri
 
 If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free) before you begin.
 
-### Azure Permissions and Resource Providers
+### Azure Permissions
 
 If you are running the workshop under a restricted subscription (provided by your organization), you need to perform the pre-flight permissions checks.
 
@@ -23,10 +23,16 @@ If you are running the workshop under a restricted subscription (provided by you
    1. AKS Service principal needs to have "Contributor" access on the project resource group.
 3. Azure Container Register (ACR) Service Principal: in order to integrate Azure DevOps with ACR, we need a Service Principal (created or existing) should be provided
    1. ACR Service principal needs to have "AcrPull" and "AcrPush" permissions on the project ACR
-4. Some subscription don't have all Azure services resource providers registered.
-   1. For example if the subscription don't have "Microsoft.DocumentDB" provider registered, you will not be able to create Cosmos DB.
-   2. A script to make sure all needed resource providers are registered is available here [00-resource-providers.sh](../../src/scripts/00-resource-providers.sh). Note this require a subscription owner account to execute.
-   3. Resource providers registration is a one time job at the subscription level and don't have any cost implications (just enabling the subscription to use certain services like ACR, AKS, Cosmos DB,...)
+
+### Resource Providers
+
+Some subscription don't have all Azure services resource providers registered.
+
+For example if the subscription don't have "Microsoft.DocumentDB" provider registered, you will not be able to create Cosmos DB.
+
+A script to make sure all needed resource providers are registered is available here [00-resource-providers.sh](../../src/scripts/00-resource-providers.sh). Note this require a subscription owner account to execute.
+
+>NOTE: Resource providers registration is a one time job at the subscription level and don't have any cost implications (just enabling the subscription to use certain services like ACR, AKS, Cosmos DB,...)
 
 ### Azure Subscription Limits
 

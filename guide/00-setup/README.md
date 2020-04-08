@@ -12,9 +12,11 @@ You can leverage an organization provided subscription or [Visual Studio subscri
 
 If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free) before you begin.
 
-### Azure Permissions
+### Azure Permissions and Resource Providers
 
 If you are running the workshop under a restricted subscription (provided by your organization), you need to perform the pre-flight permissions checks.
+
+>NOTE: To validate that you are able execute the workshop under restricted subscription, I highly recommend executing the [prerequisites guide steps](../02-prerequisites/README.md) ahead of the workshop.
 
 1. Your Azure Account should have "Owner" permission on a Resource Group
 2. Azure Kubernetes Service (AKS) Service Principal: in order to be able to provision AKS, a Service Principal (created or existing) should be provided.
@@ -25,8 +27,6 @@ If you are running the workshop under a restricted subscription (provided by you
    1. For example if the subscription don't have "Microsoft.DocumentDB" provider registered, you will not be able to create Cosmos DB.
    2. A script to make sure all needed resource providers are registered is available here [00-resource-providers.sh](../../src/scripts/00-resource-providers.sh). Note this require a subscription owner account to execute.
    3. Resource providers registration is a one time job at the subscription level and don't have any cost implications (just enabling the subscription to use certain services like ACR, AKS, Cosmos DB,...)
-
-To validate that you are able to that, I highly recommend executing the [Prerequisites Guide](../02-prerequisites/README.md) ahead of the workshop.
 
 ### Azure Subscription Limits
 

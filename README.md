@@ -14,22 +14,23 @@ Hands-on workshop to create containers-based backend platform that exposes async
 
 ## Overview
 
-Almost all retail shops already include a networked CCTV cameras all over the store. Why not extend these cameras capability to include some useful intelligence on top of it to improve customers experiences trough innovation and AI.
+Almost all enterprises already operate networked CCTV cameras all over buildings and stores. Crowd Analytics Platform extend these cameras capability to include some useful intelligence on top of it to improve customers experiences and safety trough AI.
 
->NOTE: Leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)
+>NOTE: It is important to mention before diving into the platform that leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)
 
 ### Crowd Analytics
 
-This workshop walks through the steps to deploy a connected, secure and reliable **Crowd Analytics** platform leveraging cloud native solution.
+Crowd analytics (also known as footfall analytics) is about understanding who (age, gender,...) are visiting your location, when and how many.
 
-Crowd analytics (also known as footfall analytics) is about understanding who (age, gender, emotion,...) visit your location, when and how many.
+This workshop walks through a guided deployment of a connected, secure and reliable **Crowd Analytics** platform leveraging cloud native technologies.
 
 Crowd analytics scenario can be used in:
 
 1. Retail shops in many industry (like telecom shops, consumer goods retailers, malls…)
 2. Public and Private Parks
 3. Events
-4. Any many other scenarios
+4. Building safety and evacuation readiness
+5. Any many other scenarios
 
 Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
 

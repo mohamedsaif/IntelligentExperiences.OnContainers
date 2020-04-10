@@ -12,6 +12,14 @@ You can leverage an organization provided subscription or [Visual Studio subscri
 
 If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free) before you begin.
 
+## WSL on Windows 10 PC
+
+As you build software that leverage Open Source, and you still in love with your Windows 10 PC, I would highly recommend Enabling [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+Please follow the instruction in the documentation above to get started.
+
+>NOTE: If you want to use the new WSL 2, follow these documentation [Installing WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install)
+
 ## Azure CLI
 
 Download and install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your relevant OS.
@@ -39,14 +47,6 @@ az aks install-cli
 ```
 
 Follow the [documentation here](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to install on your target OS.
-
-## WSL on Windows 10 PC
-
-As you build software that leverage Open Source, and you still in love with your Windows 10 PC, I would highly recommend Enabling [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-
-Please follow the instruction in the documentation above to get started.
-
->NOTE: If you want to use the new WSL 2, follow these documentation [Installing WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install)
 
 ## VS Code
 

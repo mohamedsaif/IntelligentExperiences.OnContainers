@@ -4,13 +4,15 @@
 
 These are the steps of one of the ways to start developing and deploying cloud-native solutions targeting Azure.
 
-## Azure Account
+## Azure Subscription
 
 To complete this how-to, you need an Azure subscription.
 
 You can leverage an organization provided subscription or [Visual Studio subscription](https://my.visualstudio.com/) benefit.
 
 If you don't have an Azure subscription, create a [free account](https://azure.microsoft.com/free) before you begin.
+
+Once you are good with Azure Subscription, you can visit [Azure Portal](https://portal.azure.com) to access your subscription anytime.
 
 ## WSL on Windows 10 PC
 
@@ -24,15 +26,7 @@ Please follow the instruction in the documentation above to get started.
 
 Download and install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your relevant OS.
 
->NOTE: At the time of writing the code, I used version 2.1.0. Make sure you are running same or later version. Check with ```az --version```
-
->NOTE: If you are using Git Bash command line under Windows (instead of CMD), you might need to run ```az.cmd" $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} > "C:\Program Files\Git\mingw64\bin\az"``` in CMD (admin elevated) to avoid using ```az.cmd``` instead for the normal ```az``` command
-
-## Docker Desktop
-
-[Docker Desktop](https://www.docker.com/products/docker-desktop) is the way to go to build cloud-ready on your desktop.
-
->NOTE: Docker Desktop install a version of kubectl as well
+>NOTE: At the time of writing the code, I used version 2.3.0. Make sure you are running same or later version. Check with ```az --version```
 
 ## Kubectl
 
@@ -48,30 +42,7 @@ az aks install-cli
 
 Follow the [documentation here](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to install on your target OS.
 
-## VS Code
-
-Download and install [VS Code](https://code.visualstudio.com/)
-
->NOTE: You can also use the full fledge Visual Studio 2019 or later
-
-### VS Code Extension
-
-I would highly recommend installing the following extensions:
-
-- [C#](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
-- [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
-- [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
-- [Azure IoT Tools](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
-
-### Azure Functions Core Tools
-
-As we will be using [KEDA (Kubernetes-based Event Driven Autoscaling)](https://github.com/kedacore/keda) to deploy event driven APIs as part of the platform services, we will be using Azure Functions Core tools to help with the needed development time and kubernetes deployment tooling.
-
-Follow [the installation guide](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) to make sure it is installed on your target dev environment.
-
->NOTE: At the time of writing the code, I used version 2.7.1846
-
-### jq Installation
+## jq Installation
 
 jq is a json data management lib that can make json manipulation very easy.
 
@@ -86,6 +57,40 @@ sudo apt-get install jq
 ```
 
 For information on installing it on other platforms like Mac OSX, refer to [jq documentation](https://stedolan.github.io/jq/download/)
+
+## Docker Desktop
+
+[Docker Desktop](https://www.docker.com/products/docker-desktop) is the way to go to build cloud-ready on your desktop.
+
+>NOTE: Docker Desktop install a version of kubectl as well
+
+## .NET Core SDK
+
+As the microservices in the workshop are written in C#, you need to install [.NET Core SDK here](https://dotnet.microsoft.com/download/dotnet-core/sdk-for-vs-code?utm_source=vs-code&amp;utm_medium=referral&amp;utm_campaign=sdk-install)
+
+## VS Code
+
+Download and install [VS Code](https://code.visualstudio.com/)
+
+>NOTE: You can also use the full fledge Visual Studio 2019 or later
+
+### VS Code Extension
+
+I would highly recommend installing the following extensions:
+
+- [Remote WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
+- [C#](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
+- [Kubernetes](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
+- [Azure Functions](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+- [Azure IoT Tools](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
+
+## Azure Functions Core Tools
+
+Follow [the installation guide](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) to make sure it is installed on your target dev environment.
+
+As we will be using [KEDA (Kubernetes-based Event Driven Autoscaling)](https://github.com/kedacore/keda) to deploy event driven APIs as part of the platform services, we will be using Azure Functions Core tools to help with the needed development time and kubernetes deployment tooling.
+
+>NOTE: At the time of writing the code, I used version 2.7.1846
 
 ## Azure Account Check
 

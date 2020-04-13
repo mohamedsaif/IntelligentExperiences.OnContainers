@@ -2,15 +2,51 @@
 
 # Creating Azure Prerequisites
 
->**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **02-prerequisites.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
-
-
 Now we are ready to setup our initial Azure resources that will be needed.
 
 >NOTE: You can use the Azure Portal to perform these actions, but I prefer to use scripts as it offer repeatable steps and clear status.
 
->NOTE: You need to have Azure CLI installed to be able to execute the below commands. If you don't have that in hand, you can use [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) directly from Azure Portal.
+## Prepare your development environment
+
+If you didn't yet finish the recommend setup for this workshop, head to [Setup](../00-setup/README.md) to prepare your development machine for the workshop tasks.
+
+To execute the steps mentioned in this guide, I would recommend strongly using VS Code (and if you are using Windows, to have WSL installed and configured).
+
+If you don't have that ready but you want get started, you can use [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/overview) directly from Azure Portal.
+
 ![cloud-shell](assets/cloud-shell.png)
+
+## Get the workshop code
+
+I would recommend forking the workshop repo to your GitHub account, then clone it to your development machine.
+
+![fork](assets/github-fork.png)
+
+If you are using Azure Cloud Shell, type this command in the bash session:
+
+```bash
+
+# You can use my repo, or your forked repo url
+git clone https://github.com/mohamedsaif/IntelligentExperiences.OnContainers.git
+
+cd IntelligentExperiences.OnContainers
+
+# This will open an online version of VS Code
+code .
+
+```
+
+If you are using VS Code, first create a folder to have your code clone to, then in VS Code press Ctrl+P and enter:
+
+```bash
+
+>Git: Clone
+
+```
+
+Then follow the guided steps to clone the repo to a folder in your development machine.
+
+>**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **02-prerequisites.sh** under [src/scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
 
 ## Azure CLI sign in
 

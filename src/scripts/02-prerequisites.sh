@@ -522,26 +522,26 @@ echo export LOCATION=$LOCATION >> ./crowdanalytics
 
 echo export FRAMES_STORAGE=$FRAMES_STORAGE >> ./crowdanalytics
 echo export FRAMES_STORAGE_KEY=$FRAMES_STORAGE_KEY >> ./crowdanalytics
-echo export FRAMES_STORAGE_CONN=$FRAMES_STORAGE_CONN >> ./crowdanalytics
+echo export FRAMES_STORAGE_CONN="\"$FRAMES_STORAGE_CONN\"" >> ./crowdanalytics
 echo export FRAMES_STORAGE_CONTAINER=$FRAMES_STORAGE_CONTAINER >> ./crowdanalytics
 
 echo export COSMOSDB_ACCOUNT=$COSMOSDB_ACCOUNT >> ./crowdanalytics
-echo export COSMOSDB_PRIMARY_CONN=$COSMOSDB_PRIMARY_CONN >> ./crowdanalytics
+echo export COSMOSDB_PRIMARY_CONN="\"$COSMOSDB_PRIMARY_CONN\"" >> ./crowdanalytics
 
 echo export SB_NAMESPACE=$SB_NAMESPACE >> ./crowdanalytics
-echo export SB_NAMESPACE_CONNECTION=$SB_NAMESPACE_CONNECTION >> ./crowdanalytics
+echo export SB_NAMESPACE_CONNECTION="\"$SB_NAMESPACE_CONNECTION\"" >> ./crowdanalytics
 echo export SB_TOPIC_ORCH=$SB_TOPIC_ORCH >> ./crowdanalytics
 echo export SB_TOPIC_ORCH_SUB=$SB_TOPIC_ORCH_SUB >> ./crowdanalytics
-echo export SB_TOPIC_ORCH_CONNECTION=$SB_TOPIC_ORCH_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_ORCH_CONNECTION="\"$SB_TOPIC_ORCH_CONNECTION\"" >> ./crowdanalytics
 echo export SB_TOPIC_CAM=$SB_TOPIC_CAM >> ./crowdanalytics
 echo export SB_TOPIC_CAM_SUB=$SB_TOPIC_CAM_SUB >> ./crowdanalytics
-echo export SB_TOPIC_CAM_CONNECTION=$SB_TOPIC_CAM_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_CAM_CONNECTION="\"$SB_TOPIC_CAM_CONNECTION\"" >> ./crowdanalytics
 echo export SB_TOPIC_CROWD=$SB_TOPIC_CROWD >> ./crowdanalytics
 echo export SB_TOPIC_CROWD_SUB=$SB_TOPIC_CROWD_SUB >> ./crowdanalytics
-echo export SB_TOPIC_CROWD_CONNECTION=$SB_TOPIC_CROWD_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_CROWD_CONNECTION="\"$SB_TOPIC_CROWD_CONNECTION\"" >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC=$SB_TOPIC_DEMOGRAPHIC >> ./crowdanalytics
 echo export SB_TOPIC_DEMOGRAPHIC_SUB=$SB_TOPIC_DEMOGRAPHIC_SUB >> ./crowdanalytics
-echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION=$SB_TOPIC_DEMOGRAPHIC_CONNECTION >> ./crowdanalytics
+echo export SB_TOPIC_DEMOGRAPHIC_CONNECTION="\"$SB_TOPIC_DEMOGRAPHIC_CONNECTION\"" >> ./crowdanalytics
 
 echo export CS_ACCOUNT=$CS_ACCOUNT >> ./crowdanalytics
 echo export CS_ACCOUNT_KEY=$CS_ACCOUNT_KEY >> ./crowdanalytics
@@ -574,8 +574,8 @@ echo export APPINSIGHTS_KEY_ORCH=$APPINSIGHTS_KEY_ORCH >> ./crowdanalytics
 echo export APPINSIGHTS_KEY_CAM=$APPINSIGHTS_KEY_CAM >> ./crowdanalytics
 echo export APPINSIGHTS_KEY_CRWD=$APPINSIGHTS_KEY_CRWD >> ./crowdanalytics
 
-echo export echo AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
-echo export echo AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
+echo export AKS_SP_ID=$AKS_SP_ID >> ./crowdanalytics
+echo export AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 
 echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
 echo export CONTAINER_REGISTRY_URL=$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics

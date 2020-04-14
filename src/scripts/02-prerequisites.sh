@@ -394,7 +394,7 @@ echo $AKS_VNSUBNET_ID
 # We will use Azure Resource Manager json template to deploy the workspace.
 # Make sure that the active directory is set to scripts (where the .json file is located)
 # First we update the workspace template with our custom name and location (using Linux stream edit)
-sed logs-workspace-deployment.json \
+sed src/scripts/logs-workspace-deployment.json \
     -e s/WORKSPACE-NAME/$WORKSPACE_NAME/g \
     -e s/DEPLOYMENT-LOCATION/$LOCATION/g \
     > logs-workspace-deployment-updated.json

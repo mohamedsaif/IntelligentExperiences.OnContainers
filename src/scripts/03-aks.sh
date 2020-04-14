@@ -66,6 +66,15 @@ kubectl get nodes
 kubectl create namespace crowd-analytics
 
 # Installing KEDA
+
+# Making sure I have helm 3 installed
+helm version
+# You should get something like:
+# version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
+
+# If helm is not installed, you can exeucte:
+# curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | sudo bash
+
 # Adding KEDA repo
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update

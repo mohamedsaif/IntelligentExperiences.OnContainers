@@ -22,6 +22,12 @@ Please follow the instruction in the documentation above to get started.
 
 >NOTE: If you want to use the new WSL 2, follow these documentation [Installing WSL 2](https://docs.microsoft.com/en-us/windows/wsl/wsl2-install)
 
+## Git for Windows
+
+If this is the first time to Git on your dev machine, you might need to install Windows Git on your system.
+
+You can download and install Git from [here](https://git-scm.com/downloads)
+
 ## Azure CLI
 
 Download and install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) for your relevant OS.
@@ -41,6 +47,36 @@ az aks install-cli
 ```
 
 Follow the [documentation here](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to install on your target OS.
+
+## Helm 3
+
+Helm is the kubernetes native package manager that is widely used by the community.
+
+>NOTE: We need KEDA (Kubernetes Event-Drive Autoscaler) for our platform. KEDA will be installed on AKS through Helm 3.
+
+To install Helm, you can run the following:
+
+```bash
+
+# Helm 3 Installation Docs (https://helm.sh/docs/intro/install/)
+
+# Check first if you have helm 3 installed
+helm version
+
+# If you got command not found, then you need to install it (or if you get helm 2 version you need to upgrade)
+# Installing helm 3
+curl -sL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | sudo bash
+
+# OR
+# wget https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+# chmod -R +x .
+# ./get-helm-3
+
+helm version
+# You should get something like:
+# version.BuildInfo{Version:"v3.1.2", GitCommit:"d878d4d45863e42fd5cff6743294a11d28a9abce", GitTreeState:"clean", GoVersion:"go1.13.8"}
+
+```
 
 ## jq Installation
 
@@ -90,7 +126,7 @@ Follow [the installation guide](https://docs.microsoft.com/en-us/azure/azure-fun
 
 As we will be using [KEDA (Kubernetes-based Event Driven Autoscaling)](https://github.com/kedacore/keda) to deploy event driven APIs as part of the platform services, we will be using Azure Functions Core tools to help with the needed development time and kubernetes deployment tooling.
 
->NOTE: At the time of writing the code, I used version 2.7.1846
+>NOTE: At the time of writing the code, I used Azure Functions Core Tools version 2.7.1948
 
 ## Azure Account Check
 

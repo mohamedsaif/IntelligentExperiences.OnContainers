@@ -35,7 +35,7 @@ clear
 
 PREFIX="cap${RANDOM}"
 RG="${PREFIX}-rg"
-LOCATION="westeurope"
+LOCATION="eastus"
 FRAMES_STORAGE="${PREFIX}framesstg"
 COSMOSDB_ACCOUNT="${PREFIX}telemetrydb"
 SB_NAMESPACE="${PREFIX}-ns"

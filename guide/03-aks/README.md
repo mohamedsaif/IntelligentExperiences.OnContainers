@@ -2,13 +2,13 @@
 
 # AKS Cluster Provisioning
 
->**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **03-aks.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
-
 Now it is time to provision the star of the show, Azure Kubernetes Service cluster.
 
 >NOTE: I have built an end-to-end [AKS cluster provisioning with advanced configuration](https://aka.ms/aks-adv-provision) that you can check out for more details.
 
 ## Essential Cluster Provisioning
+
+>**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **03-aks.sh** under [scripts](../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
 
 ### Variables
 

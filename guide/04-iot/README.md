@@ -2,10 +2,10 @@
 
 # IoT Hub IoT Device and IoT Edge Device
 
->**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **04-iot.sh** under [scripts](**../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
-
 Azure IoT Hub is a managed service, hosted in the cloud, that acts as a central message hub for bi-directional 
-communication between your IoT application and the devices it manages. You can use Azure IoT Hub to build 
+communication between your IoT application and the devices it manages. 
+
+You can use Azure IoT Hub to build 
 IoT solutions with reliable and secure communications between millions of IoT devices and a cloud-hosted 
 solution backend. You can connect virtually any device to IoT Hub.
 
@@ -14,6 +14,8 @@ solution backend. You can connect virtually any device to IoT Hub.
 Azure IoT Edge is a fully managed service built on Azure IoT Hub which allows you to deploy your cloud workloads—artificial intelligence, Azure and third-party services, or your own business logic—to run on Internet of Things (IoT) edge devices via standard containers (like a Raspberry PI type device). By moving certain workloads to the edge of the network, your devices spend less time communicating with the cloud, react more quickly to local changes, and operate reliably even in extended offline periods.
 
 [Read more about IoT Edge](https://azure.microsoft.com/en-us/services/iot-edge/)
+
+>**SCRIPT:** All scripts to provision the entire resources in this guide are in a single script named **04-iot.sh** under [scripts](../../src/scripts) folder. Please note that you need to execute the scripts after copying it to your terminal and move the active folder to src/scripts
 
 ## Azure CLI Extension for IoT
 

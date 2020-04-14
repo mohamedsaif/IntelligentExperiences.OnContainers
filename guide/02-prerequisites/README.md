@@ -95,7 +95,7 @@ I use variables to easily change my deployment parameters across multiple script
 
 PREFIX="ie${RANDOM}"
 RG="${PREFIX}-rg"
-LOCATION="westeurope"
+LOCATION="eastus"
 FRAMES_STORAGE="${PREFIX}framesstg"
 COSMOSDB_ACCOUNT="${PREFIX}telemetrydb"
 SB_NAMESPACE="${PREFIX}-ns"

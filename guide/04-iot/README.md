@@ -196,6 +196,8 @@ WEBCAM_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
     --query connectionString -o tsv)
 echo $WEBCAM_DEVICE_CONNECTION
 
+echo export WEBCAM_DEVICE_CONNECTION="\"$WEBCAM_DEVICE_CONNECTION\"" >> ./crowdanalytics
+
 ```
 
 >NOTE: In production scenarios, there are options for automating the device provision to support at scale provisions. Check the [documentation](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-automatic-device-management-cli) for more information.

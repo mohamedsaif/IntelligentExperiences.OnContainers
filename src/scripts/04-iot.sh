@@ -120,5 +120,5 @@ WEBCAM_DEVICE_CONNECTION=$(az iot hub device-identity show-connection-string \
     --query connectionString -o tsv)
 echo $WEBCAM_DEVICE_CONNECTION
 
-# Saving variables
-echo export WEBCAM_DEVICE_CONNECTION=$WEBCAM_DEVICE_CONNECTION >> ./crowdanalytics
+# Saving device connection
+echo export WEBCAM_DEVICE_CONNECTION="\"$WEBCAM_DEVICE_CONNECTION\"" >> ./crowdanalytics

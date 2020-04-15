@@ -207,3 +207,9 @@ echo export WEBCAM_DEVICE_CONNECTION="\"$WEBCAM_DEVICE_CONNECTION\"" >> ./crowda
 Don't forget to update the  ```appsettings.json``` with the relevant values.
 
 You can simply open it in VS Code or Visual Studio and run it.
+
+## Next step
+
+Congratulations on completing this section. Let's move to the next step:
+
+[Next Step](../05-deployment/README.md)

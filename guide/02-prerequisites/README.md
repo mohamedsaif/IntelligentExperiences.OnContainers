@@ -800,7 +800,6 @@ echo export AKS_SP_PASSWORD=$AKS_SP_PASSWORD >> ./crowdanalytics
 echo export CONTAINER_REGISTRY_NAME=$CONTAINER_REGISTRY_NAME >> ./crowdanalytics
 echo export CONTAINER_REGISTRY_URL=$CONTAINER_REGISTRY_NAME.azurecr.io >> ./crowdanalytics
 echo export ACR_ID=$ACR_ID >> ./crowdanalytics
-echo export ACR_ID=$ACR_ID >> ./crowdanalytics
 echo export ACR_SP_ID=$ACR_SP_ID >> ./crowdanalytics
 echo export ACR_SP_PASSWORD=$ACR_SP_PASSWORD >> ./crowdanalytics
 

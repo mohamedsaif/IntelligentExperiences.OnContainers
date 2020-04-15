@@ -175,4 +175,4 @@ kubectl get po -n keda
 
 Congratulations on completing this section. Let's move to the next step:
 
-[Next Step](../04-iot/)
+[Next Step](../04-iot/README.md)

@@ -2,7 +2,7 @@
 
 # Services Deployment
 
-Now it is time to deploy and activate the solution.
+Now it is time to deploy and activate the Crowd Analytics Platform.
 
 ## DevOps Setup
 
@@ -187,6 +187,8 @@ Creating Release Pipelines to actually deliver the target services to your Azure
 #### Azure DevOps Release Pipelines
 
 We will use Azure DevOps Release exported definitions as a starting point and then configure them.
+
+>**IMPORTANT:** Release Pipelines in this workshop depend on an external components called [Replace Tokens](https://marketplace.visualstudio.com/items?itemName=qetza.replacetokens). Please make sure your installed it on your Azure DevOps organization before importing the new release pipelines.
 
 You can find the templates in [src/devops-cd](../../src/devops-cd). Make sure you have them downloaded to your machine.
 

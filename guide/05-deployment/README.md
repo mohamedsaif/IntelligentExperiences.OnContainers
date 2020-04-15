@@ -230,7 +230,7 @@ Final thing is the update the pipeline variables as the Kubernetes deployment fi
 
 To make it easier, below is the mapping of script saved variables (you should have ```crowdanalytics``` file generated during the script execution):
 
-##### CrowdAnalytics-Svc-CognitiveOrchestrator-CI Variables
+##### CrowdAnalytics-Svc-CognitiveOrchestrator-CD Variables
 
 | Pipeline Variable        | Script Variable          | Description                                                    |
 |--------------------------|--------------------------|----------------------------------------------------------------|
@@ -247,7 +247,7 @@ Now you can repeat the above steps for each service and NuGet library part of th
 
 Here is the other pipeline variable mapping as well:
 
-##### CrowdAnalytics-Svc-CamFrameAnalyzer-CI
+##### CrowdAnalytics-Svc-CamFrameAnalyzer-CD Variables
 
 | Pipeline Variable         | Script Variable         | Description                                                                      |
 |---------------------------|-------------------------|----------------------------------------------------------------------------------|
@@ -264,7 +264,7 @@ Here is the other pipeline variable mapping as well:
 | kedaServiceBusConnection  | SB_TOPIC_CAM_CONNECTION | Connection string specific to single topic (camframe-analysis)                   |
 | serviceBusConnection      | SB_NAMESPACE_CONNECTION | Root connection string to your Service Bus                                       |
 
-##### CrowdAnalytics-Svc-CrowdAnalyzer-CI
+##### CrowdAnalytics-Svc-CrowdAnalyzer-CD Variables
 
 | Pipeline Variable        | Script Variable           | Description                                                                      |
 |--------------------------|---------------------------|----------------------------------------------------------------------------------|
@@ -293,7 +293,7 @@ Let's check that every part of the deployment works
 You have mainly 3 components running on AKS:
 
 - Cognitive Orchestrator: gets any new messages coming from IoT Hub and send them to the appropriate processor. Currently we have only [Camera Frame Analyzer] service.
-- CamFrame Analyzer: look for faces in image, persist similar faces and identify any faces agains a predefined list and then publish frame analysis results with basic demographics information.
+- CamFrame Analyzer: look for faces in image, persist similar faces and identify any faces against a predefined list and then publish frame analysis results with basic demographics information.
 - Crowd Analyzer: taking an analyzed Camera Frame and produced 1-hour demographics view (total males, total females, age groups, emotions,...) and persist the results in db so it can be displayed in a dashboard.
 
 All services are deployed to AKS in a namespace called [crowd-analytics]. Let's check all deployments:

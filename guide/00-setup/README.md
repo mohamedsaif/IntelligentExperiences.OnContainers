@@ -94,15 +94,37 @@ sudo apt-get install jq
 
 For information on installing it on other platforms like Mac OSX, refer to [jq documentation](https://stedolan.github.io/jq/download/)
 
+## .NET Core SDK
+
+If you will be using this workshop to run some components locally, it is highly recommended that you install .NET Core SDK.
+
+As the microservices in the workshop are written in C#, you need to install [.NET Core SDK here](https://dotnet.microsoft.com/download/dotnet-core/sdk-for-vs-code?utm_source=vs-code&amp;utm_medium=referral&amp;utm_campaign=sdk-install)
+
+Below is the installation for Linux:
+
+```bash
+
+# Adding microsoft packages
+wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+
+# Installing .NET Core SDK
+sudo add-apt-repository universe
+sudo apt-get update
+sudo apt-get install apt-transport-https
+sudo apt-get update
+sudo apt-get install dotnet-sdk-3.1
+
+```
+
+>NOTE: If you will be running the simulated camera device locally on your machine, you need to have .NET Core SDK as the camera device app is an ASP .NET Core application that runs on your browser.
+
 ## Docker Desktop
 
 [Docker Desktop](https://www.docker.com/products/docker-desktop) is the way to go to build cloud-ready on your desktop.
 
 >NOTE: Docker Desktop install a version of kubectl as well
 
-## .NET Core SDK
-
-As the microservices in the workshop are written in C#, you need to install [.NET Core SDK here](https://dotnet.microsoft.com/download/dotnet-core/sdk-for-vs-code?utm_source=vs-code&amp;utm_medium=referral&amp;utm_campaign=sdk-install)
 
 ## VS Code
 

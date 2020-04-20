@@ -387,33 +387,22 @@ Update the following settings #{VARIABLE}# in (appSettings.json) with your value
 
 Now build and run the ASP .NET Core website locally. Grant permission to the camera to allow it to collect the frames.
 
+>NOTE: To run this locally, you need to have the .NET Core SDK installed.
+
+To run in VS Code:
+
+- On Windows machines only: switch to Command Prompt terminal by Click View -> Command Palette and type ```>Terminal: select Default Shell``` and select Command Prompt
+- Right click on the device web simulator folder [src/iot/Cam.Device.Web](src/iot/Cam.Device.Web) and select Open in Terminal
+- Type ```dotnet run``` in the terminal and then click on the displayed http://localhost:5000 or https://localhost:5001 to open the web app in browser
+
+To run in Visual Studio:
+
+- Open the project file in Visual Sutdio [src/iot/Cam.Device.Web/Cam.Device.Web.csproj](../../src/iot/Cam.Device.Web/Cam.Device.Web.csproj)
+- Click Debug or press F5
+
 ![device](assets/device.png)
 
 By default, every 15 seconds a javascript code take a snap of the camera. Camera frame are then uploaded to Azure Storage and a new IoT Hub event is sent.
-
-**Cleanup Quick Tips:**
-
-In the script below, you can find some useful tips:
-
-```bash
-
-# Manually cleaning the deployed services:
-kubectl delete deployment camframe-analyzer -n crowd-analytics
-kubectl delete deployment cognitive-orchestrator -n crowd-analytics
-kubectl delete deployment crowd-analyzer -n crowd-analytics
-
-kubectl delete secret camframe-analyzer -n crowd-analytics
-kubectl delete secret crowd-analyzer -n crowd-analytics
-kubectl delete secret cognitive-orchestrator -n crowd-analytics
-
-kubectl delete ScaledObject camframe-analyzer -n crowd-analytics
-kubectl delete ScaledObject crowd-analyzer -n crowd-analytics
-kubectl delete ScaledObject cognitive-orchestrator -n crowd-analytics
-
-# Delete everything in a namespace :)
-kubectl delete all --all -n crowd-analytics
-
-```
 
 ### Azure Monitor & App Insights
 
@@ -444,6 +433,30 @@ You can even monitory your deployments of the crowd-analytics platform:
 You have issue and you need to stream live the logs, either use ```kubectl logs``` or leverage Azure Monitor to connect to the pod and stream the logs right inside Azure Portal by clicking the "View live data" button.
 
 >NOTE: You must provision access to Azure Monitor to access the essential cluster information in order for most of the above capabilities to be functioning. Refer back to the AKS guide for details.
+
+**Cleanup Quick Tips:**
+
+In the script below, you can find some useful tips:
+
+```bash
+
+# Manually cleaning the deployed services:
+kubectl delete deployment camframe-analyzer -n crowd-analytics
+kubectl delete deployment cognitive-orchestrator -n crowd-analytics
+kubectl delete deployment crowd-analyzer -n crowd-analytics
+
+kubectl delete secret camframe-analyzer -n crowd-analytics
+kubectl delete secret crowd-analyzer -n crowd-analytics
+kubectl delete secret cognitive-orchestrator -n crowd-analytics
+
+kubectl delete ScaledObject camframe-analyzer -n crowd-analytics
+kubectl delete ScaledObject crowd-analyzer -n crowd-analytics
+kubectl delete ScaledObject cognitive-orchestrator -n crowd-analytics
+
+# Delete everything in a namespace :)
+kubectl delete all --all -n crowd-analytics
+
+```
 
 ## Next step
 

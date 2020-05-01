@@ -7,3 +7,4 @@ src/scripts/crowdanalytics
 crowdanalytics
 **/*.Development.json
 **/*-internal.*
+**/*-aks-kubeconfig

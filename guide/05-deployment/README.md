@@ -62,7 +62,7 @@ As you will be deploying the platform services on AKS, I've opted to create anot
 
 You can use Kubeconfig, Kubernetes Service Account or Azure Subscription. Azure Subscription is the easiest option as again all the configuration will handled on your behalf.
 
->NOTE: Azure Subscription require some elevated permissions in order for it to retrieve a list of all AKS deployments in the subscription. If you faced an error, you can use KUBECONFIG option.
+>NOTE: Azure Subscription require some elevated permissions in order for it to retrieve a list of all AKS deployments in the subscription. If you faced an error, you can use KUBECONFIG option. You should have generated CLUSTER_NAME-aks-kubeconfig as part of the script executio, copy the content of the file to the service connection KubeConfig entry box.
 
 #### Kubernetes Service Connection
 

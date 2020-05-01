@@ -16,6 +16,7 @@ echo export AKS_VERSION=$AKS_VERSION >> ./crowdanalytics
 
 # Name our cluster
 CLUSTER_NAME=$PREFIX-aks
+echo export CLUSTER_NAME=$CLUSTER_NAME >> ./crowdanalytics
 
 # Giving a friendly name to our default node pool
 AKS_DEFAULT_NODEPOOL=npdefault
@@ -59,6 +60,9 @@ az aks create \
 # Connecting to AKS via kubectl
 az aks get-credentials --resource-group $RG --name $CLUSTER_NAME
 
+# If you want to connect Azure DevOps to this AKS cluster via kubeconfig, you can run the following:
+az aks get-credentials --resource-group $RG --name $CLUSTER_NAME --file $CLUSTER_NAME-kubeconfig
+
 # Test the connection
 kubectl get nodes
 
@@ -78,7 +82,7 @@ helm version
 # Adding KEDA repo
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
-# If you receive permission-denied error running the above commands, you can try them with sudo before each command
+# NOTE: If you receive permission-denied error running the above and below commands, you can try them with sudo added before each command
 
 # Installing KEDA in keda namespace
 kubectl create namespace keda

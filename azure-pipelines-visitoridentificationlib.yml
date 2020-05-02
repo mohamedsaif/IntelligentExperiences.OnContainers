@@ -1,0 +1,23 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - 'src/core/PersonIdentificationLib'
+      - 'azure-pipelines-visitoridentificationlib.yml'
+      - 'azure-pipelines-nuget.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-nuget.yml
+  parameters:
+    Name: 'VisitorIdentificationLib'
+    WorkingDirectory: 'src/core/PersonIdentificationLib'
+    RestoreBuildProjects: '**/PersonIdentificationLib.csproj'
+    ArtifactName: 'PersonIdentificationLib-NuGet'

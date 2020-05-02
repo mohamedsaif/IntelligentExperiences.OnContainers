@@ -28,10 +28,12 @@ namespace CognitiveOrchestrator.API.Controllers
         /// Check the health of the service
         /// </summary>
         /// <returns>The status message</returns>
+        /// <response code="200">Service is running</response>
         [HttpGet]
+        [ProducesResponseType(typeof(string), 200)]
         public IActionResult Get()
         {
-            return Ok("{\"status\": \"Orchestrator apis working...\"}");
+            return Ok("{\"status\": \"Orchestrator APIs working...\"}");
         }
 
         /// <summary>
@@ -43,9 +45,10 @@ namespace CognitiveOrchestrator.API.Controllers
         /// <param name="doc">The binary of the document being processed</param>
         [HttpPost("{deviceId}/{docType}")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> SubmitDoc(string deviceId, string docType, IFormFile doc)
+        [ProducesResponseType(typeof(CognitiveRequest), 200)]
+        public async Task<IActionResult> SubmitDoc(string deviceId, string docType, [FromForm]string docUTCTime, IFormFile doc)
         {
-
+            // Validation of input
             if (doc == null || doc.Length == 0)
                 return BadRequest("file not selected");
 
@@ -53,6 +56,11 @@ namespace CognitiveOrchestrator.API.Controllers
             var isValidType = Enum.TryParse<CognitiveTargetAction>(docType, out proposedDocType);
             if (!isValidType || proposedDocType == CognitiveTargetAction.Unidentified)
                 return BadRequest("Invalid document type");
+            DateTime takenAt = DateTime.UtcNow;
+            var isValidTimeProvided = DateTime.TryParse(docUTCTime, out takenAt);
+
+            if (!isValidTimeProvided)
+                takenAt = DateTime.UtcNow;
 
             long size = doc.Length;
 
@@ -65,7 +73,7 @@ namespace CognitiveOrchestrator.API.Controllers
                 using (var stream = doc.OpenReadStream())
                 {
                     var docExtention = doc.FileName.Substring(doc.FileName.LastIndexOf('.'));
-                    docName = $"{deviceId}-{DateTime.UtcNow.ToString("ddMMyyHHmmss")}{docExtention}";
+                    docName = $"{deviceId}-{takenAt.ToString("ddMMyyHHmmss")}{docExtention}";
                     docUri = await storageRepository.CreateFileAsync(docName, stream);
                 }
             }
@@ -85,7 +93,7 @@ namespace CognitiveOrchestrator.API.Controllers
                 IsProcessed = false,
                 Origin = "CognitiveOrchestrator.API.V1.0.0",
                 Status = "Submitted",
-                TakenAt = DateTime.UtcNow,
+                TakenAt = takenAt,
                 TargetAction = proposedDocType.ToString()
             };
 

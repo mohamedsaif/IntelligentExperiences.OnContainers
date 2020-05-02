@@ -8,7 +8,7 @@ trigger:
   paths:
     include:
       - 'src/core/PersonIdentificationLib'
-      - 'azure-pipelines-visitoridentificationlib.yml'
+      - 'azure-pipelines-personidentificationlib.yml'
       - 'azure-pipelines-nuget.yml'
 
 variables:
@@ -17,7 +17,7 @@ variables:
 jobs:
 - template: azure-pipelines-nuget.yml
   parameters:
-    Name: 'VisitorIdentificationLib'
+    Name: 'PersonIdentificationLib'
     WorkingDirectory: 'src/core/PersonIdentificationLib'
     RestoreBuildProjects: '**/PersonIdentificationLib.csproj'
     ArtifactName: 'PersonIdentificationLib-NuGet'

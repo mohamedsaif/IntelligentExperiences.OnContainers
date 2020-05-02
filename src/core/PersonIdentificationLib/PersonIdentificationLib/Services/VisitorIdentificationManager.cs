@@ -3,6 +3,7 @@ using CoreLib.Abstractions;
 using CoreLib.Repos;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
 using Microsoft.Azure.Documents.Client;
+using PersonIdentificationLib.Abstractions;
 using PersonIdentificationLib.Models;
 using PersonIdentificationLib.Repos;
 using System;
@@ -14,16 +15,16 @@ using System.Threading.Tasks;
 
 namespace PersonIdentificationLib.Services
 {
-    public class VisitorIdentificationManager
+    public class VisitorIdentificationManager : IVisitorIdentificationManager
     {
         private string key = string.Empty;
         private string endpoint = string.Empty;
         private string faceWorkspaceDataFilter;
 
         private IStorageRepository filesStorageRepo;
-        
+
         //private ICamFrameAnalysisRepository camFrameAnalysisRepo;
-        
+
         private IAzureServiceBusRepository serviceBusRepo;
         private CognitiveFacesAnalyzer cognitiveFacesAnalyzer;
         private IdentifiedVisitorRepo identifiedVisitorRepo;
@@ -32,8 +33,8 @@ namespace PersonIdentificationLib.Services
 
         private byte[] photoData;
 
-        public VisitorIdentificationManager(string cognitiveKey, 
-            string cognitiveEndpoint, 
+        public VisitorIdentificationManager(string cognitiveKey,
+            string cognitiveEndpoint,
             string faceFilter,
             string cosmosDbEndpoint,
             string cosmosDbKey,
@@ -99,14 +100,14 @@ namespace PersonIdentificationLib.Services
             var cognitivePerson = await FaceServiceHelper.CreatePersonAsync(identifiedVisitor.GroupId, identifiedVisitor.Id);
             identifiedVisitor.PersonDetails = cognitivePerson;
 
-            foreach(var photo in identifiedVisitor.Photos)
+            foreach (var photo in identifiedVisitor.Photos)
             {
-                if(!photo.IsSaved)
+                if (!photo.IsSaved)
                 {
                     photoData = photo.PhotoData;
                     var photoFileExtension = Path.GetExtension(photo.Name);
                     var newPhotoFileName = $"{identifiedVisitor.Id}-{identifiedVisitor.Photos.IndexOf(photo) + 1}-{photoFileExtension}";
-                    
+
                     //Upload the new photo to storage
                     var photoUrl = await storageRepo.CreateFileAsync(newPhotoFileName, photo.PhotoData);
 
@@ -134,7 +135,7 @@ namespace PersonIdentificationLib.Services
 
             //Save the new identified visitor details to database
             var result = await identifiedVisitorRepo.AddAsync(identifiedVisitor);
-            
+
             return result;
         }
 

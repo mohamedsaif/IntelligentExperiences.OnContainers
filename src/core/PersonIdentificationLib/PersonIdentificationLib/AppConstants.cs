@@ -9,6 +9,7 @@ namespace PersonIdentificationLib
     public static class AppConstants
     {
         public const string DbColIdentifiedVisitor = "identified-visitors";
+        public const string DbColIdentifiedVisitorGroup = "identified-visitors-groups";
         public const string DbColIdentifiedVisitorPartitionKey = "ParitionKey";
     }
 }

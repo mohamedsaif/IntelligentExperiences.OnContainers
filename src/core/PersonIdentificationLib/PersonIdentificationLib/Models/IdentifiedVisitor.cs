@@ -1,6 +1,7 @@
 ﻿using CognitiveServiceHelpers.Models;
 using CoreLib.Models;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ namespace PersonIdentificationLib.Models
 {
     public class IdentifiedVisitor : BaseModel
     {
-        public IdentifiedPerson PersonDetails { get; set; }
+        public Person PersonDetails { get; set; }
+        public string GroupId { get; set; }
 
         public string PartitionKey { get; set; }
 
@@ -33,7 +35,11 @@ namespace PersonIdentificationLib.Models
 
     public class VisitorPhoto
     {
+        public string Name { get; set; }
         public string Url { get; set; }
         public bool IsSaved { get; set; }
+        [JsonIgnore]
+        public byte[] PhotoData { get; set; }
+        public string Status { get; set; }
     }
 }

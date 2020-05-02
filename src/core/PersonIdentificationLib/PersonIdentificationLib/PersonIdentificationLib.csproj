@@ -4,4 +4,9 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CognitiveServiceHelpers" Version="1.0.20200403.2" />
+    <PackageReference Include="CoreLib" Version="1.0.20200403.2" />
+  </ItemGroup>
+
 </Project>

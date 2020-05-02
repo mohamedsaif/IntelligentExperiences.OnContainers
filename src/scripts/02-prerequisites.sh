@@ -79,6 +79,13 @@ az storage container create \
     --account-key $FRAMES_STORAGE_KEY \
     --name $FRAMES_STORAGE_CONTAINER
 
+# Creating a container for person identification feature
+PERSONS_STORAGE_CONTAINER="personsphotos"
+az storage container create \
+    --account-name $FRAMES_STORAGE \
+    --account-key $FRAMES_STORAGE_KEY \
+    --name $PERSONS_STORAGE_CONTAINER
+
 ### Cosmos DB
 # Creating Cosmos DB account to store all system data
 az cosmosdb create \

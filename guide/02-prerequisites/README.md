@@ -153,6 +153,13 @@ az storage container create \
     --account-key $FRAMES_STORAGE_KEY \
     --name $FRAMES_STORAGE_CONTAINER
 
+# Creating a container for person identification feature
+PERSONS_STORAGE_CONTAINER="personsphotos"
+az storage container create \
+    --account-name $FRAMES_STORAGE \
+    --account-key $FRAMES_STORAGE_KEY \
+    --name $PERSONS_STORAGE_CONTAINER
+
 ```
 
 >NOTE: We are simplifying the storage access by using the keys and connection strings. In production, you should consider leveraging [Stored Access Policies](https://docs.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy) along with [Shared Access Signature](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature) that is specific to the object being accessed (entire container or a particular file).

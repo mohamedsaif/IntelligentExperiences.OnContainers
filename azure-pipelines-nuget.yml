@@ -21,6 +21,8 @@ jobs:
     displayName: DotNet Restore
     inputs:
       command: restore
+      feedsToUse: config
+      nugetConfigPath: '${{ Parameters.WorkingDirectory }}/nuget.config'
       projects: ${{ Parameters.RestoreBuildProjects }}
 
   - task: DotNetCoreCLI@2

@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["CognitiveOrchestrator.API.csproj", ""]
-RUN dotnet restore "./CognitiveOrchestrator.API.csproj"
+RUN dotnet restore "./CognitiveOrchestrator.API.csproj" --configfile nuget.config
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "CognitiveOrchestrator.API.csproj" -c Release -o /app/build

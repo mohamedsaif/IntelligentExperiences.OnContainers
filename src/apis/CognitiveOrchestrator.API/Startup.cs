@@ -31,9 +31,7 @@ namespace ConitiveOrchestrator.API
         {
             services.AddControllers();
 
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-            var settings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+            var settings = Configuration.Get<AppSettings>();
             var camFrameStorageConnection = settings.StorageConnection;
             var camFrameStorageContainer = settings.StorageContainer;
             var serviceBusConnection = settings.ServiceBusConnection;

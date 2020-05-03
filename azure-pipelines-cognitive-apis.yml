@@ -17,7 +17,7 @@ variables:
 jobs:
 - template: azure-pipelines-webapp-containers.yml
   parameters:
-    Name: CognitiveOrchestrator.API
+    Name: CognitiveOrchestratorAPI
     RestoreBuildProjects: '**/CognitiveOrchestrator.API.csproj'
     BuildConfiguration: 'Release'
     WorkingDirectory: 'src/apis/CognitiveOrchestrator.API'

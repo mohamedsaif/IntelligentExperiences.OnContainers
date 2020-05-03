@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CognitiveOrchestrator.API.Health;
 using CognitiveOrchestrator.API.Models;
 using CoreLib.Abstractions;
 using CoreLib.Repos;
@@ -32,20 +33,15 @@ namespace ConitiveOrchestrator.API
             services.AddControllers();
 
             var settings = Configuration.Get<AppSettings>();
-            var camFrameStorageConnection = settings.StorageConnection;
-            var camFrameStorageContainer = settings.StorageContainer;
-            var serviceBusConnection = settings.ServiceBusConnection;
-            var serviceBusTopic = settings.ServiceBusTopic;
-            var serviceBusSubscription = settings.ServiceBusSubscription;
             
             services.AddSingleton<IStorageRepository>((s) =>
             {
-                return new AzureBlobStorageRepository(camFrameStorageConnection, camFrameStorageContainer);
+                return new AzureBlobStorageRepository(settings.StorageConnection, settings.StorageContainer);
             });
 
             services.AddSingleton<IAzureServiceBusRepository>((s) =>
             {
-                return new AzureServiceBusRepository(serviceBusConnection, serviceBusTopic, serviceBusSubscription);
+                return new AzureServiceBusRepository(settings.ServiceBusConnection, settings.ServiceBusTopic, settings.ServiceBusSubscription);
             });
 
             services.AddTransient<IVisitorIdentificationManager>((s) =>
@@ -59,6 +55,9 @@ namespace ConitiveOrchestrator.API
                     settings.StorageConnection, 
                     settings.PersonsStorageContainer);
             });
+
+            services.AddHealthChecks()
+                .AddCheck<ServiceHealthCheck>("Service_Health_Check");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,6 +84,7 @@ namespace ConitiveOrchestrator.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }

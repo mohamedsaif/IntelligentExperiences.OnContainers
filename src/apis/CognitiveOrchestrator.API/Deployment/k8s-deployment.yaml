@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cognitive-apis
+  namespace: crowd-analytics
+  labels:
+    app: cognitive-apis
+spec:
+  selector:
+    matchLabels:
+      app: cognitive-apis
+  template:
+    metadata:
+      labels:
+        app: cognitive-apis
+    spec:
+      containers:
+      - name: cognitive-apis
+        image: #{acrName}#/crowdanalytics/cognitive-apis:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: cognitive-apis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cognitive-apis-service
+  labels:
+    app: cognitive-apis
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  #   service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "SVCSUBNET"
+spec:
+  # You can change it to NodePort if you are planning to use the service only through App Gateway
+  type: LoadBalancer
+  ports:
+    - port: 80
+  selector:
+    app: cognitive-apis
+---

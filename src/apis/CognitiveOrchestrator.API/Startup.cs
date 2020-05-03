@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PersonIdentificationLib.Abstractions;
+using PersonIdentificationLib.Services;
 
 namespace ConitiveOrchestrator.API
 {
@@ -46,6 +48,18 @@ namespace ConitiveOrchestrator.API
             services.AddSingleton<IAzureServiceBusRepository>((s) =>
             {
                 return new AzureServiceBusRepository(serviceBusConnection, serviceBusTopic, serviceBusSubscription);
+            });
+
+            services.AddTransient<IVisitorIdentificationManager>((s) =>
+            {
+                return new VisitorIdentificationManager(settings.CognitiveKey, 
+                    settings.CognitiveEndpoint,
+                    settings.FaceWorkspaceDataFilter, 
+                    settings.CosmosDbEndpoint, 
+                    settings.CosmosDbKey, 
+                    settings.CosmosDBName, 
+                    settings.StorageConnection, 
+                    settings.PersonsStorageContainer);
             });
         }
 

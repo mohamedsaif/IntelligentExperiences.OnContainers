@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cognitive-apis
-        image: #{acrName}#/crowdanalytics/cognitive-apis:#{Build.BuildId}#
+        image: #{acrName}#/crowdanalytics/cognitive-orchestrator-api:#{Build.BuildId}#
         imagePullPolicy: IfNotPresent
         envFrom:
         - secretRef:

@@ -1,0 +1,36 @@
+{
+	"PersonDetails": null,
+	"GroupId": null,
+	"PartitionKey": null,
+	"Name": "Mohamed Saif",
+	"Title": "Technical Architect",
+	"Company": "Microsoft",
+	"Email": "name@company.com",
+	"ContactPhone": "123456789",
+	"IsConsentGranted": true,
+	"Photos": [
+		{
+			"Name": "photo1",
+			"Url": null,
+			"IsSaved": false,
+			"Status": null
+		},
+		{
+			"Name": "photo2",
+			"Url": null,
+			"IsSaved": false,
+			"Status": null
+		}
+	],
+	"Age": 36,
+	"AgeGroup": null,
+	"Gender": null,
+	"LastVisits": null,
+	"VisitsCount": 0,
+	"IsActive": false,
+	"Notes": null,
+	"id": "4c95e731-0e8c-4ff8-98c5-be28380bc406",
+	"createdAt": "0001-01-01T00:00:00",
+	"isDeleted": false,
+	"origin": "Postman"
+}

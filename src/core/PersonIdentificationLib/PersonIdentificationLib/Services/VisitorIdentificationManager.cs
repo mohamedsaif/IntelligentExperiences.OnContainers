@@ -72,8 +72,10 @@ namespace PersonIdentificationLib.Services
             //serviceBusRepo = new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
         }
 
-        public async Task CreateVisitorGroupAsync(string groupId, string groupName)
+        public async Task<IdentifiedVisitorGroup> CreateVisitorGroupAsync(string groupId, string groupName)
         {
+            IdentifiedVisitorGroup result = null;
+
             try
             {
                 var newItem = new IdentifiedVisitorGroup
@@ -85,12 +87,14 @@ namespace PersonIdentificationLib.Services
 
                 await FaceServiceHelper.CreatePersonGroupAsync(newItem.GroupId, newItem.Name, newItem.Filter);
 
-                await identifiedVisitorGroupRepo.AddAsync(newItem);
+                result = await identifiedVisitorGroupRepo.AddAsync(newItem);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+
+            return result;
         }
 
         public async Task<IdentifiedVisitor> CreateVisitorAsync(IdentifiedVisitor identifiedVisitor)

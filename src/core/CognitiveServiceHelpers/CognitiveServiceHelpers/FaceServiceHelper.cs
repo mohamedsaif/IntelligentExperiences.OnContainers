@@ -268,6 +268,11 @@ namespace CognitiveServiceHelpers
             return await RunTaskWithAutoRetryOnQuotaLimitExceededError(async () => await faceClient.PersonGroupPerson.CreateAsync(personGroupId, name));
         }
 
+        public static async Task<Person> CreatePersonAsync(string personGroupId, string name, string userData)
+        {
+            return await RunTaskWithAutoRetryOnQuotaLimitExceededError(async () => await faceClient.PersonGroupPerson.CreateAsync(personGroupId, name, userData: userData));
+        }
+
         public static async Task<Person> GetPersonAsync(string personGroupId, Guid personId)
         {
             return await RunTaskWithAutoRetryOnQuotaLimitExceededError(() => faceClient.PersonGroupPerson.GetAsync(personGroupId, personId));

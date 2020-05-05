@@ -12,20 +12,16 @@ namespace PersonIdentificationLib.Repos
 {
     public class IdentifiedVisitorGroupRepo : CosmosDbRepository<IdentifiedVisitorGroup>, IIdentifiedVisitorGroupRepository
     {
-        private static string dbCollectionName;
-
         //public IdentifiedVisitorRepo(ICosmosDbClientFactory cosmosDbClientFactory) : base(cosmosDbClientFactory) { }
 
-        public IdentifiedVisitorGroupRepo(ICosmosDbClientFactory cosmosDbClientFactory, string collectionName) : base(cosmosDbClientFactory) 
-        {
-            dbCollectionName = collectionName;
-        }
+        public IdentifiedVisitorGroupRepo(ICosmosDbClientFactory cosmosDbClientFactory) : base(cosmosDbClientFactory) 
+        { }
 
-        public override string CollectionName { get; } = dbCollectionName;
+        public override string CollectionName { get; } = AppConstants.DbColIdentifiedVisitorGroup;
 
-        public override string GenerateId(IdentifiedVisitorGroup entity) => $"{Guid.NewGuid()}";
+        public override string GenerateId(IdentifiedVisitorGroup entity) => $"{Guid.NewGuid()}:{entity.PartitionKey}";
 
         // Initially I opted to use month-year as the partition key. You can partition the data in different way.
-        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf('-') + 1)}");
+        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf(':') + 1)}");
     }
 }

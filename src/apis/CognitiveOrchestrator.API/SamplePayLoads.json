@@ -1,6 +1,6 @@
 {
 	"PersonDetails": null,
-	"GroupId": null,
+	"GroupId": "1",
 	"PartitionKey": null,
 	"Name": "Mohamed Saif",
 	"Title": "Technical Architect",

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -47,6 +49,53 @@ namespace CoreLib.Repos
         {
             return await _documentClient.DeleteDocumentAsync(
                 UriFactory.CreateDocumentUri(_databaseName, _collectionName, documentId), options, cancellationToken);
+        }
+
+        public async Task<List<Document>> ReadAllDocumentsInCollection(int maxItemCount = 10,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var result = new List<Document>();
+            
+            string continuationToken = null;
+
+            var options = new FeedOptions { MaxItemCount = maxItemCount, RequestContinuation = continuationToken, EnableCrossPartitionQuery = true };
+
+            do
+            {
+                var feed = await _documentClient.ReadDocumentFeedAsync(
+                    UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName),
+                    options);
+                continuationToken = feed.ResponseContinuation;
+                result.AddRange(from Document document in feed
+                                select document);
+            } while (continuationToken != null);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from">Use the target entity name like Employees or Products for example</param>
+        /// <param name="whereFilter">SQL compliant where conditions like Employee.id=@EmployeeId AND Employee.Department.Name=@DepartmentName</param>
+        /// <param name="filterParams">A collection that provides values for declared parameters in the whereFilter. Like @EmployeeId and @DepartmentName</param>
+        /// <returns></returns>
+        public async Task<List<dynamic>> QueryDocumentsAsync(string from, string whereFilter, SqlParameterCollection filterParams)
+        {
+            var options = new FeedOptions { EnableCrossPartitionQuery = true };
+            string queryText = $"SELECT * FROM {_collectionName} WHERE {whereFilter}";
+
+            var query = _documentClient.CreateDocumentQuery(
+                UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName),
+                new SqlQuerySpec()
+                {
+                    QueryText = queryText,
+                    Parameters = filterParams,
+                }, options);
+            
+            var result = query.ToList();
+            
+            return result;
         }
     }
 }

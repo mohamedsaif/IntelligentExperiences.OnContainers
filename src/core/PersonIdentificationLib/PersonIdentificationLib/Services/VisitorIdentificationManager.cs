@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PersonIdentificationLib.Services
@@ -32,6 +33,8 @@ namespace PersonIdentificationLib.Services
         private AzureBlobStorageRepository storageRepo;
 
         private byte[] photoData;
+
+        List<FaceAttributeType> faceAttributes = new List<FaceAttributeType> { FaceAttributeType.Age, FaceAttributeType.Gender };
 
         public VisitorIdentificationManager(string cognitiveKey,
             string cognitiveEndpoint,
@@ -55,17 +58,15 @@ namespace PersonIdentificationLib.Services
                 cosmosDbKey,
                 new ConnectionPolicy { EnableEndpointDiscovery = false });
 
-            var dbVisitorFactory = new CosmosDbClientFactory(
+            var dbFactory = new CosmosDbClientFactory(
                     cosmosDbName,
-                    new Dictionary<string, string> { { AppConstants.DbColIdentifiedVisitor, AppConstants.DbColIdentifiedVisitorPartitionKey } },
+                    new Dictionary<string, string> { 
+                        { AppConstants.DbColIdentifiedVisitor, AppConstants.DbColIdentifiedVisitorPartitionKey },
+                        { AppConstants.DbColIdentifiedVisitorGroup, AppConstants.DbColIdentifiedVisitorPartitionKey }
+                    },
                     dbClient);
-            identifiedVisitorRepo = new IdentifiedVisitorRepo(dbVisitorFactory, AppConstants.DbColIdentifiedVisitor);
-
-            var dbVisitorGroupFactory = new CosmosDbClientFactory(
-                    cosmosDbName,
-                    new Dictionary<string, string> { { AppConstants.DbColIdentifiedVisitor, AppConstants.DbColIdentifiedVisitorPartitionKey } },
-                    dbClient);
-            identifiedVisitorGroupRepo = new IdentifiedVisitorGroupRepo(dbVisitorGroupFactory, AppConstants.DbColIdentifiedVisitorGroup);
+            identifiedVisitorRepo = new IdentifiedVisitorRepo(dbFactory);
+            identifiedVisitorGroupRepo = new IdentifiedVisitorGroupRepo(dbFactory);
 
             storageRepo = new AzureBlobStorageRepository(storageConnection, storageContainerName);
 
@@ -82,7 +83,11 @@ namespace PersonIdentificationLib.Services
                 {
                     GroupId = groupId,
                     Name = groupName,
-                    Filter = faceWorkspaceDataFilter
+                    Filter = faceWorkspaceDataFilter,
+                    PartitionKey = AppConstants.DbColIdentifiedVisitorPartitionKeyValue,
+                    IsActive = true, 
+                    CreatedAt = DateTime.UtcNow, 
+                    Origin = AppConstants.Origin
                 };
 
                 await FaceServiceHelper.CreatePersonGroupAsync(newItem.GroupId, newItem.Name, newItem.Filter);
@@ -103,20 +108,18 @@ namespace PersonIdentificationLib.Services
 
             var cognitivePerson = await FaceServiceHelper.CreatePersonAsync(identifiedVisitor.GroupId, identifiedVisitor.Id);
             identifiedVisitor.PersonDetails = cognitivePerson;
-
+            double? age = null;
+            Gender? gender = null;
             foreach (var photo in identifiedVisitor.Photos)
             {
                 if (!photo.IsSaved)
                 {
                     photoData = photo.PhotoData;
                     var photoFileExtension = Path.GetExtension(photo.Name);
-                    var newPhotoFileName = $"{identifiedVisitor.Id}-{identifiedVisitor.Photos.IndexOf(photo) + 1}-{photoFileExtension}";
-
-                    //Upload the new photo to storage
-                    var photoUrl = await storageRepo.CreateFileAsync(newPhotoFileName, photo.PhotoData);
-
+                    var newPhotoFileName = $"{identifiedVisitor.Id}-{identifiedVisitor.Photos.IndexOf(photo) + 1}{photoFileExtension}";
+                    
                     //Only accept photos with single face
-                    var detectedFaces = await FaceServiceHelper.DetectWithStreamAsync(GetPhotoStream);
+                    var detectedFaces = await FaceServiceHelper.DetectWithStreamAsync(GetPhotoStream, returnFaceAttributes: faceAttributes);
                     if (detectedFaces.Count == 0)
                     {
                         photo.Status = "Invalid: No faces detected in photo";
@@ -128,16 +131,22 @@ namespace PersonIdentificationLib.Services
                         continue;
                     }
 
-                    await AddVisitorPhotoAsync(identifiedVisitor.Id, cognitivePerson.PersonId, photo.Url, detectedFaces[0].FaceRectangle);
+                    //Upload the new photo to storage
+                    photo.Url = await storageRepo.CreateFileAsync(newPhotoFileName, photo.PhotoData);
+                    age = detectedFaces[0].FaceAttributes.Age;
+                    gender = detectedFaces[0].FaceAttributes.Gender;
+                    var persistedFace = await AddVisitorPhotoAsync(identifiedVisitor.GroupId, cognitivePerson.PersonId, photo.Url, detectedFaces[0].FaceRectangle);
 
                     //Update photo details
                     photo.IsSaved = true;
-                    photo.Url = photoUrl;
                     photo.Name = newPhotoFileName;
                 }
             }
 
             //Save the new identified visitor details to database
+            identifiedVisitor.Age = age.HasValue ? age.Value : 0;
+            identifiedVisitor.Gender = gender.HasValue ? gender.ToString() : "NA";
+            identifiedVisitor.PartitionKey = string.IsNullOrEmpty(identifiedVisitor.PartitionKey) ? "Default" : identifiedVisitor.PartitionKey;
             var result = await identifiedVisitorRepo.AddAsync(identifiedVisitor);
 
             return result;
@@ -155,7 +164,7 @@ namespace PersonIdentificationLib.Services
             TrainingStatus trainingStatus = null;
             while (waitForTrainingToComplete)
             {
-                trainingStatus = await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
+                trainingStatus = await GetVisitorGroupTrainingStatusAsync(groupId);
 
                 if (trainingStatus.Status != TrainingStatusType.Running)
                 {
@@ -166,9 +175,15 @@ namespace PersonIdentificationLib.Services
             }
         }
 
-        public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync()
+        public async Task<TrainingStatus> GetVisitorGroupTrainingStatusAsync(string groupId)
         {
-            throw new NotImplementedException();
+            return await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
+        }
+
+        public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync(string visitorId)
+        {
+            var visitor = await identifiedVisitorRepo.GetByIdAsync(visitorId);
+            return visitor;
         }
 
         private async Task<Stream> GetPhotoStream()

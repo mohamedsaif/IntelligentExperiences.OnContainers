@@ -24,8 +24,7 @@ namespace PersonIdentificationLib.Models
         public string ContactPhone { get; set; }
         public bool IsConsentGranted { get; set; }
         public List<VisitorPhoto> Photos { get; set; }
-        public int Age { get; set; }
-        public string AgeGroup { get; set; }
+        public double Age { get; set; }
         public string Gender { get; set; }
         public List<string> LastVisits { get; set; }
         public int VisitsCount { get; set; }

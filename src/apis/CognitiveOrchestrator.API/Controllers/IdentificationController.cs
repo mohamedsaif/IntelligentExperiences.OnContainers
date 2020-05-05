@@ -48,10 +48,10 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok("Group created successfully");
         }
 
-        [HttpPost("create-visitor/{groupId}")]
+        [HttpPost("create-visitor")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(IdentifiedVisitor), 200)]
-        public async Task<IActionResult> CreateVisitorAsync(string groupId, IFormCollection data)
+        public async Task<IActionResult> CreateVisitorAsync(IFormCollection data)
         {
             //var visitorSample = new IdentifiedVisitor
             //{
@@ -67,10 +67,11 @@ namespace CognitiveOrchestrator.API.Controllers
             //    Id = Guid.NewGuid().ToString(),
             //    IsConsentGranted = true,
             //    Origin = "Postman",
-            //    Title = "Technical Architect"
+            //    Title = "Technical Architect",
+            //    IsActive = true
             //};
             //var visitorSampleJson = JsonConvert.SerializeObject(visitorSample);
-
+            
             var visitorJson = data["visitor"];
             var newVisitor = JsonConvert.DeserializeObject<IdentifiedVisitor>(visitorJson);
             newVisitor.Photos = new List<VisitorPhoto>();
@@ -88,7 +89,7 @@ namespace CognitiveOrchestrator.API.Controllers
                 newVisitor.Photos.Add(newPhoto);
             }
 
-            //newVisitor = await visitorIdentificationManager.CreateVisitorAsync(newVisitor);
+            newVisitor = await visitorIdentificationManager.CreateVisitorAsync(newVisitor);
 
             return Ok(JsonConvert.SerializeObject(newVisitor));
         }

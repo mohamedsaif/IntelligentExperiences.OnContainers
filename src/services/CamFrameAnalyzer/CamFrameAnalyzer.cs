@@ -91,8 +91,9 @@ namespace CamFrameAnalyzer.Functions
                 var data = await filesStorageRepo.GetFileAsync(fileName);
 
                 // Load the analyzer with data
+                CognitiveFacesAnalyzer.PeopleGroupsUserDataFilter = faceWorkspaceDataFilter;
                 cognitiveFacesAnalyzer = new CognitiveFacesAnalyzer(data);
-
+                
                 await AnalyzeCameFrame(log);
                 
                 UpdateAnalysisSummary();

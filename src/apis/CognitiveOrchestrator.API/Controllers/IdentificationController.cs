@@ -39,13 +39,13 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok("{\"status\": \"Identification APIs working...\"}");
         }
 
-        [HttpPost("create-group/{groupId}/{groupName}")]
+        [HttpPost("create-group/{groupName}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> CreatePersonGroup(string groupId, string groupName)
+        public async Task<IActionResult> CreatePersonGroup(string groupName)
         {
             // Validation of input
-            await visitorIdentificationManager.CreateVisitorGroupAsync(groupId, groupName);
-            return Ok("Group created successfully");
+            var result = await visitorIdentificationManager.CreateVisitorGroupAsync(groupName);
+            return Ok(result);
         }
 
         [HttpPost("create-visitor")]
@@ -92,6 +92,15 @@ namespace CognitiveOrchestrator.API.Controllers
             newVisitor = await visitorIdentificationManager.CreateVisitorAsync(newVisitor);
 
             return Ok(JsonConvert.SerializeObject(newVisitor));
+        }
+
+        [HttpPost("train-group/{groupId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> TrainPersonGroup(string groupId)
+        {
+            // Validation of input
+            await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
+            return Ok("{\"status\": \"Training for group successfully completed.\"}");
         }
     }
 }

@@ -20,9 +20,9 @@ namespace PersonIdentificationLib.Repos
 
         public override string CollectionName { get; } = AppConstants.DbColIdentifiedVisitor;
 
-        public override string GenerateId(IdentifiedVisitor entity) => $"{Guid.NewGuid()}:{entity.PartitionKey}";
+        public override string GenerateId(IdentifiedVisitor entity) => $"{entity.Id ?? Guid.NewGuid().ToString() + "-" + entity.PartitionKey}";
 
         // Initially I opted to use month-year as the partition key. You can partition the data in different way.
-        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf(':') + 1)}");
+        public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf('-') + 1)}");
     }
 }

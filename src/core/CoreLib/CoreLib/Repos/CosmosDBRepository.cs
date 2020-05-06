@@ -116,5 +116,25 @@ namespace CoreLib.Repos
         public abstract string CollectionName { get; }
         public virtual string GenerateId(T entity) => Guid.NewGuid().ToString();
         public virtual PartitionKey ResolvePartitionKey(string entityId) => null;
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            try
+            {
+                var cosmosDbClient = _cosmosDbClientFactory.GetClient(CollectionName);
+                var documents = await cosmosDbClient.ReadAllDocumentsInCollection();
+
+                return JsonConvert.DeserializeObject<List<T>>(documents.ToString());
+            }
+            catch (DocumentClientException e)
+            {
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new KeyNotFoundException("Entity not found");
+                }
+
+                throw;
+            }
+        }
     }
 }

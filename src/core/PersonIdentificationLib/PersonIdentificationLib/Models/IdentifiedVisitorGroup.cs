@@ -14,5 +14,6 @@ namespace PersonIdentificationLib.Models
         public string Filter { get; set; }
         public bool IsActive { get; set; }
         public string PartitionKey { get; set; }
+        public DateTime LastTrainingDate { get; set; }
     }
 }

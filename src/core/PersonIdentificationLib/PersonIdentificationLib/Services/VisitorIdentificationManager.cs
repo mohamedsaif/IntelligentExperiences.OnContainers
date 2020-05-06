@@ -8,6 +8,7 @@ using PersonIdentificationLib.Models;
 using PersonIdentificationLib.Repos;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,15 +74,16 @@ namespace PersonIdentificationLib.Services
             //serviceBusRepo = new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
         }
 
-        public async Task<IdentifiedVisitorGroup> CreateVisitorGroupAsync(string groupId, string groupName)
+        public async Task<IdentifiedVisitorGroup> CreateVisitorGroupAsync(string groupName)
         {
             IdentifiedVisitorGroup result = null;
-
+            //var isValidGroupId = Regex.IsMatch(groupId, "^[a-z0-9-_]+");
+            //if (!isValidGroupId)
+            //    throw new InvalidExpressionException("Group id must be only alpha numeric letters with - and _");
             try
             {
                 var newItem = new IdentifiedVisitorGroup
                 {
-                    GroupId = groupId,
                     Name = groupName,
                     Filter = faceWorkspaceDataFilter,
                     PartitionKey = AppConstants.DbColIdentifiedVisitorPartitionKeyValue,
@@ -90,9 +92,9 @@ namespace PersonIdentificationLib.Services
                     Origin = AppConstants.Origin
                 };
 
-                await FaceServiceHelper.CreatePersonGroupAsync(newItem.GroupId, newItem.Name, newItem.Filter);
-
                 result = await identifiedVisitorGroupRepo.AddAsync(newItem);
+                result.GroupId = result.Id.ToLower();
+                await FaceServiceHelper.CreatePersonGroupAsync(result.GroupId, newItem.Name, newItem.Filter);
             }
             catch (Exception ex)
             {
@@ -140,6 +142,7 @@ namespace PersonIdentificationLib.Services
                     //Update photo details
                     photo.IsSaved = true;
                     photo.Name = newPhotoFileName;
+                    photo.Status = "Saved";
                 }
             }
 
@@ -160,19 +163,30 @@ namespace PersonIdentificationLib.Services
 
         public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
         {
-            await FaceServiceHelper.TrainPersonGroupAsync(groupId);
-            TrainingStatus trainingStatus = null;
-            while (waitForTrainingToComplete)
-            {
-                trainingStatus = await GetVisitorGroupTrainingStatusAsync(groupId);
-
-                if (trainingStatus.Status != TrainingStatusType.Running)
+            //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
+            //if (group != null)
+            //{
+                await FaceServiceHelper.TrainPersonGroupAsync(groupId);
+                TrainingStatus trainingStatus = null;
+                while (waitForTrainingToComplete)
                 {
-                    break;
+                    trainingStatus = await GetVisitorGroupTrainingStatusAsync(groupId);
+
+                    if (trainingStatus.Status != TrainingStatusType.Running)
+                    {
+                        break;
+                    }
+
+                    await Task.Delay(1000);
                 }
 
-                await Task.Delay(1000);
-            }
+                //group.LastTrainingDate = DateTime.UtcNow;
+                //await identifiedVisitorGroupRepo.UpdateAsync(group);
+            //}
+            //else
+            //{
+            //    throw new KeyNotFoundException($"Group ({groupId}) not found");
+            //}
         }
 
         public async Task<TrainingStatus> GetVisitorGroupTrainingStatusAsync(string groupId)
@@ -180,10 +194,9 @@ namespace PersonIdentificationLib.Services
             return await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
         }
 
-        public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync(string visitorId)
+        public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync()
         {
-            var visitor = await identifiedVisitorRepo.GetByIdAsync(visitorId);
-            return visitor;
+            throw new NotImplementedException();
         }
 
         private async Task<Stream> GetPhotoStream()

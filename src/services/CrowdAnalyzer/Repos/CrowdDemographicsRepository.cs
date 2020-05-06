@@ -16,7 +16,7 @@ namespace CrowdAnalyzer.Repos
 
         public override string CollectionName { get; } = AppConstants.DbColCrowdDemographics;
 
-        public override string GenerateId(CrowdDemographics entity) => $"{entity.Id??Guid.NewGuid().ToString()}:{entity.PartitionKey}";
+        public override string GenerateId(CrowdDemographics entity) => $"{entity.Id??Guid.NewGuid().ToString()}:{entity.DeviceId}";
 
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey($"{entityId.Substring(entityId.LastIndexOf(':') + 1)}");
     }

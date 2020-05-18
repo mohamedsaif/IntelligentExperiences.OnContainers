@@ -2,6 +2,7 @@
 using CoreLib.Abstractions;
 using CoreLib.Repos;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using PersonIdentificationLib.Abstractions;
 using PersonIdentificationLib.Models;
@@ -160,10 +161,24 @@ namespace PersonIdentificationLib.Services
             var persistedFace = await FaceServiceHelper.AddPersonFaceFromStreamAsync(groupId, cognitivePersonId, GetPhotoStream, photoUrl, faceRect);
             return persistedFace;
         }
-        public async Task GetVisitorByPersonId(Guid personId)
+        
+        public async Task<IdentifiedVisitor> GetVisitorByPersonId(Guid personId)
         {
-            throw new NotImplementedException();
+            var result = await identifiedVisitorRepo.QueryDocuments(
+                "visitor", 
+                "visitor.PersonDetails.PersonId=@PersonId", 
+                new SqlParameterCollection { 
+                    new SqlParameter { Name = "PersonId", Value = personId } 
+                });
+            
+            if(result.Any())
+            {
+                return result[0];
+            }
+
+            return null;
         }
+
         public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
         {
             //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);

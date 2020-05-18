@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="CognitiveServiceHelpers" Version="1.0.20200506.1" />
-    <PackageReference Include="CoreLib" Version="1.0.20200506.1" />
+    <PackageReference Include="CoreLib" Version="1.0.20200518.1" />
   </ItemGroup>
 
 </Project>

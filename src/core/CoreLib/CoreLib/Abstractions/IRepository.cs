@@ -1,4 +1,5 @@
 ﻿using CoreLib.Models;
+using Microsoft.Azure.Documents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,7 @@ namespace CoreLib.Abstractions
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task<List<T>> GetAllAsync();
+        Task<List<T>> QueryDocuments(string from, string whereFilter, SqlParameterCollection filterParams);
     }
 }

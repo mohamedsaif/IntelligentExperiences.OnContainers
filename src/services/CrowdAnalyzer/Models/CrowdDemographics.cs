@@ -48,7 +48,12 @@ namespace CrowdAnalyzer.Models
         public AgeGenderDistribution AgeGenderDistribution { get; set; }
         public EmotionGenderDistribution EmotionGenderDistribution { get; set; }
 
-        //System telemtry
+        //System telemetry
         public int TotalProcessingTime { get; set; }
+
+        //Identified Persons
+        public int TotalIdentifiedPersons { get; set; }
+
+        public List<string> IdentifiedPersonsIds { get; set; }
     }
 }

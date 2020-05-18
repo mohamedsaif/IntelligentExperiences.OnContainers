@@ -71,11 +71,11 @@ namespace CognitiveOrchestrator.API.Controllers
             //    IsActive = true
             //};
             //var visitorSampleJson = JsonConvert.SerializeObject(visitorSample);
-            
+
             var visitorJson = data["visitor"];
             var newVisitor = JsonConvert.DeserializeObject<IdentifiedVisitor>(visitorJson);
             newVisitor.Photos = new List<VisitorPhoto>();
-            foreach(var photo in data.Files)
+            foreach (var photo in data.Files)
             {
                 VisitorPhoto newPhoto = new VisitorPhoto
                 {
@@ -101,6 +101,15 @@ namespace CognitiveOrchestrator.API.Controllers
             // Validation of input
             await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
             return Ok("{\"status\": \"Training for group successfully completed.\"}");
+        }
+
+        [HttpPost("delete-group/{groupId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> DeletePersonGroup(string groupId)
+        {
+            // Validation of input
+            //await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
+            return Ok("{\"status\": \"Group deleted successfully completed.\"}");
         }
     }
 }

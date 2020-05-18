@@ -97,7 +97,7 @@ namespace CrowdAnalyzer.Utils
                     IsDeleted = false
                 };
             }
-
+            
             if (frameAnalysis.SimilarFaces != null)
             {
                 // Update the Visitor collection (either add new entry or update existing)
@@ -195,21 +195,56 @@ namespace CrowdAnalyzer.Utils
                 Demographics.TotalVisitors = Demographics.TotalMales + Demographics.TotalFemales;
                 Demographics.TotalProcessingTime = (int)(DateTime.UtcNow - start).TotalMilliseconds;
 
-                if (isNewDemographics)
-                {
-                    await crowdDemographicsRepo.AddAsync(Demographics);
-                    return true;
-                }
-                else if (isDemographicsChanged)
-                {
-                    await crowdDemographicsRepo.UpdateAsync(Demographics);
-                    return true;
-                }
+                //if (isNewDemographics)
+                //{
+                //    await crowdDemographicsRepo.AddAsync(Demographics);
+                //    return true;
+                //}
+                //else if (isDemographicsChanged)
+                //{
+                //    await crowdDemographicsRepo.UpdateAsync(Demographics);
+                //    return true;
+                //}
             }
             //No faces in the analysis request
             else
             {
                 log.LogWarning($"FUNC (CrowdAnalyzer): crowd-analysis found no faces in the analysis request");
+            }
+
+            // Prepare Identified persons analytics
+            if (frameAnalysis.IdentifiedPersons != null)
+            {
+                log.LogWarning($"FUNC (CrowdAnalyzer): ({frameAnalysis.SimilarFaces.Count()}) identified persons is being processed.");
+                int identifiedPersonsCount = 0;
+                Demographics.IdentifiedPersonsIds = new List<string>();
+
+                foreach (var item in frameAnalysis.IdentifiedPersons)
+                {
+                    //Check if the identification passed with acceptable confidence
+                    if(item.Item2.Confidence >= AppConstants.IdentificationConfidence)
+                    {
+                        identifiedPersonsCount++;
+                        Demographics.IdentifiedPersonsIds.Add(item.Item2.Person.PersonId.ToString());
+                    }
+                }
+            }
+
+            // Frame do not have any faces or identified persons
+            if(frameAnalysis.SimilarFaces == null && frameAnalysis.IdentifiedPersons == null)
+            {
+                return false;
+            }
+
+            if (isNewDemographics)
+            {
+                await crowdDemographicsRepo.AddAsync(Demographics);
+                return true;
+            }
+            else if (isDemographicsChanged)
+            {
+                await crowdDemographicsRepo.UpdateAsync(Demographics);
+                return true;
             }
 
             return false;

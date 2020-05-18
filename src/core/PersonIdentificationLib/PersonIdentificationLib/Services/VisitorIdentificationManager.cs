@@ -160,7 +160,10 @@ namespace PersonIdentificationLib.Services
             var persistedFace = await FaceServiceHelper.AddPersonFaceFromStreamAsync(groupId, cognitivePersonId, GetPhotoStream, photoUrl, faceRect);
             return persistedFace;
         }
-
+        public async Task GetVisitorByPersonId(Guid personId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
         {
             //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
@@ -197,6 +200,54 @@ namespace PersonIdentificationLib.Services
         public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ResultStatus> DeletePersonGroup(string groupId)
+        {
+            var result = new ResultStatus();
+            var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
+            if (group != null)
+            {
+                var visitorsInGroup = (await identifiedVisitorRepo.GetAllAsync()).Where(v => v.GroupId == group.Id);
+                foreach (var visitor in visitorsInGroup)
+                    await identifiedVisitorRepo.DeleteAsync(visitor);
+
+                await FaceServiceHelper.DeletePersonGroupAsync(groupId);
+                await identifiedVisitorGroupRepo.DeleteAsync(group);
+                result.StatusCode = "0";
+                result.Message = $"Successfully deleted group ({group.Id}) and the associated visitors ({visitorsInGroup.Count()}";
+                result.IsSuccessful = true;
+            }
+            else
+            {
+                result.StatusCode = "1";
+                result.Message = $"Group id ({group.Id}) not found!";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
+
+        public async Task<ResultStatus> DeleteVistoryAsync(string visitorId, string groupId)
+        {
+            var result = new ResultStatus();
+            var visitor = await identifiedVisitorRepo.GetByIdAsync(visitorId);
+            if(visitor != null)
+            {
+                await FaceServiceHelper.DeletePersonAsync(groupId, visitor.PersonDetails.PersonId);
+                await identifiedVisitorRepo.DeleteAsync(visitor);
+                result.StatusCode = "0";
+                result.Message = $"Successfully deleted visitor ({visitor.Id})";
+                result.IsSuccessful = true;
+            }
+            else
+            {
+                result.StatusCode = "1";
+                result.Message = $"Visitor id ({visitor.Id}) not found!";
+                result.IsSuccessful = false;
+            }
+
+            return result;
         }
 
         private async Task<Stream> GetPhotoStream()

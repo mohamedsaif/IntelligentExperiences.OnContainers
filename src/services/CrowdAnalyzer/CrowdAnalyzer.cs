@@ -40,7 +40,7 @@ namespace CrowdAnalyzer.Functions
             try
             {
                 analysis = JsonConvert.DeserializeObject<CamFrameAnalysis>(request);
-
+                
                 // Only process if there are detected faces
                 if (analysis.SimilarFaces == null)
                 {
@@ -54,7 +54,7 @@ namespace CrowdAnalyzer.Functions
                     crowdDemographicsRepo,
                     log);
                 var isDemographicsUpdated = await demographics.UpdateDemographics();
-
+                
                 log.LogInformation($"FUNC (CrowdAnalyzer): finished processing with result: {JsonConvert.SerializeObject(demographics.Demographics)}");
 
                 // If changes where made, publish changes to demographics-analysis topic

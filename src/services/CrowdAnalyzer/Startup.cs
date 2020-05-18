@@ -19,6 +19,9 @@ namespace CamFrameAnalyzer
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
+            string identificationConfidence = GlobalSettings.GetKeyValue("IdentificationConfidence");
+            if (string.IsNullOrEmpty(identificationConfidence))
+                AppConstants.IdentificationConfidence = double.Parse(identificationConfidence);
             var checkForDbConsistency = bool.Parse(GlobalSettings.GetKeyValue("checkForDbConsistency"));
             //First register the db client (which is needed for the strongly typed repos)
             var cosmosDbEndpoint = GlobalSettings.GetKeyValue("cosmosDbEndpoint");

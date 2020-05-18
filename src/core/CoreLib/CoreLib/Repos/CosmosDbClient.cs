@@ -74,12 +74,12 @@ namespace CoreLib.Repos
         }
 
         /// <summary>
-        /// 
+        /// Allows filtered query of cosmos db collection
         /// </summary>
         /// <param name="from">Use the target entity name like Employees or Products for example</param>
         /// <param name="whereFilter">SQL compliant where conditions like Employee.id=@EmployeeId AND Employee.Department.Name=@DepartmentName</param>
         /// <param name="filterParams">A collection that provides values for declared parameters in the whereFilter. Like @EmployeeId and @DepartmentName</param>
-        /// <returns></returns>
+        /// <returns>List of filtered documents</returns>
         public async Task<List<dynamic>> QueryDocumentsAsync(string from, string whereFilter, SqlParameterCollection filterParams)
         {
             var options = new FeedOptions { EnableCrossPartitionQuery = true };

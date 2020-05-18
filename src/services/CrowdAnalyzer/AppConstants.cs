@@ -24,5 +24,7 @@ namespace CrowdAnalyzer
 
         //Demographics Analysis Service Bus settings
         public const string SBTopicDemographics = "demographics-analysis";
+
+        public static double IdentificationConfidence = 0.55;
     }
 }

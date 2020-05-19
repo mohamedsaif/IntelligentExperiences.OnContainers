@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "64692d4d-25ef-42ba-8c3e-be155ed3a88a",
+		"name": "Crowd-Analytics",
+		"description": "Testing APIs for Crowd-Analytics platform APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "local",
+			"item": [
+				{
+					"name": "Orchestrator",
+					"item": [
+						{
+							"name": "CognitiveOrchestrator.API.Get",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/orchestrator",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"orchestrator"
+									]
+								},
+								"description": "Get the health status of the API"
+							},
+							"response": []
+						},
+						{
+							"name": "CognitiveOrchestrator.API.SubmitDoc",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "9b105224-e427-4b65-bb72-647fc42d23cd",
+										"exec": [
+											"const moment = require('moment');\r",
+											"pm.globals.set(\"timestamp\", moment().format(\"YYYY-MM-DDThh:mm:ss\"));"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "docUTCTime",
+											"value": "{{timestamp}}",
+											"type": "text"
+										},
+										{
+											"key": "doc",
+											"type": "file",
+											"src": "/C:/Users/mosai/Desktop/saif1.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:25581/api/orchestrator/API-Sim-001/CamFrameAnalysis",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"orchestrator",
+										"API-Sim-001",
+										"CamFrameAnalysis"
+									]
+								},
+								"description": "Get the health status of the API"
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Identification",
+					"item": [
+						{
+							"name": "identification/create-group",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "http://localhost:25581/api/identification/create-group/crowd-analytics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"create-group",
+										"crowd-analytics"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Identification/create-visitor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "visitor",
+											"value": "{\n\t\"PersonDetails\": null,\n\t\"GroupId\": \"1871649f-961b-4470-9785-add7a8fb8b2d-default\",\n\t\"PartitionKey\": \"Default\",\n\t\"Name\": \"Mohamed Saif\",\n\t\"Title\": \"Technical Architect\",\n\t\"Company\": \"Microsoft\",\n\t\"Email\": \"name@company.com\",\n\t\"ContactPhone\": \"123456789\",\n\t\"IsConsentGranted\": true,\n\t\"Photos\": [\n\t\t{\n\t\t\t\"Name\": \"photo1\",\n\t\t\t\"Url\": null,\n\t\t\t\"IsSaved\": false,\n\t\t\t\"Status\": null\n\t\t},\n\t\t{\n\t\t\t\"Name\": \"photo2\",\n\t\t\t\"Url\": null,\n\t\t\t\"IsSaved\": false,\n\t\t\t\"Status\": null\n\t\t}\n\t],\n\t\"Age\": 36,\n\t\"AgeGroup\": null,\n\t\"Gender\": null,\n\t\"LastVisits\": null,\n\t\"VisitsCount\": 0,\n\t\"IsActive\": true,\n\t\"Notes\": null,\n\t\"id\": \"4c95e731-0e8c-4ff8-98c5-be28380bc406\",\n\t\"createdAt\": \"0001-01-01T00:00:00\",\n\t\"isDeleted\": false,\n\t\"origin\": \"Postman\"\n}",
+											"type": "text"
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": "/C:/Users/mosai/Desktop/mohamed-saif.jpg"
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": "/C:/Users/mosai/Desktop/Demos/IE/mosaif_id.png"
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": "/C:/Users/mosai/Desktop/FaceAPI/Device-Web-Sim-001-050520233654.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:25581/api/identification/create-visitor",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"create-visitor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/train-group",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/train-group/1871649f-961b-4470-9785-add7a8fb8b2d-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"train-group",
+										"1871649f-961b-4470-9785-add7a8fb8b2d-default"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}

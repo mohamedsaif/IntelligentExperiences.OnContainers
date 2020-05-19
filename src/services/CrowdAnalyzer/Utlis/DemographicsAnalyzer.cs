@@ -232,9 +232,9 @@ namespace CrowdAnalyzer.Utils
                         identifiedPersonsCount++;
                         var result = await identifiedVisitorRepo.QueryDocuments(
                                                 "visitor",
-                                                "visitor.PersonDetails.PersonId=@PersonId",
+                                                "visitor.PersonDetails.personId=@personId",
                                                 new SqlParameterCollection {
-                                                    new SqlParameter { Name = "PersonId", Value = item.Item2.Person.PersonId }
+                                                    new SqlParameter { Name = "@personId", Value = item.Item2.Person.PersonId.ToString() }
                                                 });
 
                         if (result.Any())
@@ -245,6 +245,7 @@ namespace CrowdAnalyzer.Utils
                         }
                     }
                 }
+                Demographics.TotalIdentifiedPersons = identifiedPersonsCount;
             }
 
             // Frame do not have any faces or identified persons

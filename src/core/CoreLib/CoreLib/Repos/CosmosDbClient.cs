@@ -83,7 +83,7 @@ namespace CoreLib.Repos
         public async Task<List<dynamic>> QueryDocumentsAsync(string from, string whereFilter, SqlParameterCollection filterParams)
         {
             var options = new FeedOptions { EnableCrossPartitionQuery = true };
-            string queryText = $"SELECT * FROM {_collectionName} WHERE {whereFilter}";
+            string queryText = $"SELECT * FROM {from} WHERE {whereFilter}";
 
             var query = _documentClient.CreateDocumentQuery(
                 UriFactory.CreateDocumentCollectionUri(_databaseName, _collectionName),

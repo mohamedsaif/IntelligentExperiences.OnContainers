@@ -150,8 +150,8 @@ namespace CoreLib.Repos
             {
                 var cosmosDbClient = _cosmosDbClientFactory.GetClient(CollectionName);
                 var documents = await cosmosDbClient.QueryDocumentsAsync(from, whereFilter, filterParams);
-
-                return JsonConvert.DeserializeObject<List<T>>(documents.ToString());
+                var documentsJson = JsonConvert.SerializeObject(documents);
+                return JsonConvert.DeserializeObject<List<T>>(documentsJson);
             }
             catch (DocumentClientException e)
             {

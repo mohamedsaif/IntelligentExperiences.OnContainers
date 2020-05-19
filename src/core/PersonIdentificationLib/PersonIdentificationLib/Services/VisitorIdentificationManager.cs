@@ -168,7 +168,7 @@ namespace PersonIdentificationLib.Services
                 "visitor", 
                 "visitor.PersonDetails.PersonId=@PersonId", 
                 new SqlParameterCollection { 
-                    new SqlParameter { Name = "PersonId", Value = personId } 
+                    new SqlParameter { Name = "@PersonId", Value = personId } 
                 });
             
             if(result.Any())

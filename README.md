@@ -14,6 +14,8 @@ Hands-on workshop to create containers-based backend platform that exposes async
 
 ## Overview
 
+See how Crowd Analytics platform built on Azure can provides occupancy insights in workspace and other location for safety while having technical fun with AI-driven  platform on Kubernetes, with detailed walk through guide.
+
 Almost all enterprises already operate networked CCTV cameras all over buildings and stores. Crowd Analytics Platform extend these cameras capability to include some useful intelligence on top of it to improve customers experiences and safety trough AI.
 
 >NOTE: It is important to mention before diving into the platform that leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)

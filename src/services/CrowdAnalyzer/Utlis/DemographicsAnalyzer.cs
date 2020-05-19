@@ -218,36 +218,42 @@ namespace CrowdAnalyzer.Utils
             }
 
             // Prepare Identified persons analytics
-            if (frameAnalysis.IdentifiedPersons != null)
+            try
             {
-                log.LogWarning($"FUNC (CrowdAnalyzer): ({frameAnalysis.SimilarFaces.Count()}) identified persons is being processed.");
-                int identifiedPersonsCount = 0;
-                Demographics.IdentifiedPersonsIds = new List<string>();
-
-                foreach (var item in frameAnalysis.IdentifiedPersons)
+                if (frameAnalysis.IdentifiedPersons != null)
                 {
-                    //Check if the identification passed with acceptable confidence
-                    if(item.Item2.Confidence >= AppConstants.IdentificationConfidence)
-                    {
-                        identifiedPersonsCount++;
-                        var result = await identifiedVisitorRepo.QueryDocuments(
-                                                "visitor",
-                                                "visitor.PersonDetails.personId=@personId",
-                                                new SqlParameterCollection {
-                                                    new SqlParameter { Name = "@personId", Value = item.Item2.Person.PersonId.ToString() }
-                                                });
+                    log.LogWarning($"FUNC (CrowdAnalyzer): ({frameAnalysis.SimilarFaces.Count()}) identified persons is being processed.");
+                    int identifiedPersonsCount = 0;
+                    Demographics.IdentifiedPersonsIds = new List<string>();
 
-                        if (result.Any())
+                    foreach (var item in frameAnalysis.IdentifiedPersons)
+                    {
+                        //Check if the identification passed with acceptable confidence
+                        if (item.Item2.Confidence >= AppConstants.IdentificationConfidence)
                         {
-                            //TODO: Update the identified visitor records to include the last visit date
-                            var identifiedVisitor = result[0];
-                            Demographics.IdentifiedPersonsIds.Add(identifiedVisitor.Id);
+                            identifiedPersonsCount++;
+                            var result = await identifiedVisitorRepo.QueryDocuments(
+                                                    "visitor",
+                                                    "visitor.PersonDetails.personId=@personId",
+                                                    new SqlParameterCollection {
+                                                    new SqlParameter { Name = "@personId", Value = item.Item2.Person.PersonId.ToString() }
+                                                    });
+
+                            if (result.Any())
+                            {
+                                //TODO: Update the identified visitor records to include the last visit date
+                                var identifiedVisitor = result[0];
+                                Demographics.IdentifiedPersonsIds.Add(identifiedVisitor.Id);
+                            }
                         }
                     }
+                    Demographics.TotalIdentifiedPersons = identifiedPersonsCount;
                 }
-                Demographics.TotalIdentifiedPersons = identifiedPersonsCount;
             }
-
+            catch(Exception ex)
+            {
+                log.LogError($"FUNC (CrowdAnalyzer): crowd-analysis couldn't process identified visitors: {ex.Message}");
+            }
             // Frame do not have any faces or identified persons
             if(frameAnalysis.SimilarFaces == null && frameAnalysis.IdentifiedPersons == null)
             {

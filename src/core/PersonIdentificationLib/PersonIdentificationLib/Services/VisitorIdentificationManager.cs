@@ -214,7 +214,7 @@ namespace PersonIdentificationLib.Services
 
         public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync()
         {
-            throw new NotImplementedException();
+            return await identifiedVisitorRepo.GetAllAsync();
         }
 
         public async Task<ResultStatus> DeletePersonGroup(string groupId)

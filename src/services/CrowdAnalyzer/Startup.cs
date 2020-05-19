@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using CrowdAnalyzer;
+using PersonIdentificationLib.Abstractions;
+using PersonIdentificationLib.Services;
+using PersonIdentificationLib.Repos;
 
 [assembly: FunctionsStartup(typeof(CamFrameAnalyzer.Startup))]
 
@@ -37,6 +40,7 @@ namespace CamFrameAnalyzer
                     new Dictionary<string,string> { 
                         { AppConstants.DbColCrowdDemographics, AppConstants.DbColCrowdDemographicsPartitionKey },
                         { AppConstants.DbColVisitors, AppConstants.DbColVisitorsPartitionKey },
+                        { AppConstants.DbColIdentifiedVisitor, AppConstants.DbColIdentifiedVisitorPartitionKey }
                     }, 
                     dbClient);
                 if (checkForDbConsistency)
@@ -47,6 +51,19 @@ namespace CamFrameAnalyzer
             //Register our cosmos db repository :)
             builder.Services.AddSingleton<ICrowdDemographicsRepository, CrowdDemographicsRepository>();
             builder.Services.AddSingleton<IVisitorsRepository, VisitorsRepository>();
+            builder.Services.AddSingleton<IIdentifiedVisitorRepository, IdentifiedVisitorRepo>();
+
+            //builder.Services.AddTransient<IVisitorIdentificationManager>((s) =>
+            //{
+            //    return new VisitorIdentificationManager(settings.CognitiveKey,
+            //        settings.CognitiveEndpoint,
+            //        settings.FaceWorkspaceDataFilter,
+            //        settings.CosmosDbEndpoint,
+            //        settings.CosmosDbKey,
+            //        settings.CosmosDBName,
+            //        settings.StorageConnection,
+            //        settings.PersonsStorageContainer);
+            //});
 
             //If you need further control over Service Bus, you can also inject the repo for it.
             //var serviceBusConnection = GlobalSettings.GetKeyValue("serviceBusConnection");

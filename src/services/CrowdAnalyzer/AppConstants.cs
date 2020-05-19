@@ -18,6 +18,9 @@ namespace CrowdAnalyzer
         public const string DbColCrowdDemographics = "crowd-demographics";
         public const string DbColCrowdDemographicsPartitionKey = "DeviceId";
 
+        public const string DbColIdentifiedVisitor = "identified-visitors";
+        public const string DbColIdentifiedVisitorPartitionKey = "PartitionKey";
+
         //Main Service Bus settings
         public const string SBTopic = "crowd-analysis";
         public const string SBSubscription = "crowd-analyzer";

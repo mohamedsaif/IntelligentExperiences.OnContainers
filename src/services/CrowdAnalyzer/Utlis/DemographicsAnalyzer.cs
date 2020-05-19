@@ -3,7 +3,9 @@ using CoreLib.Utils;
 using CrowdAnalyzer.Abstractions;
 using CrowdAnalyzer.Models;
 using Microsoft.Azure.CognitiveServices.Vision.Face.Models;
+using Microsoft.Azure.Documents;
 using Microsoft.Extensions.Logging;
+using PersonIdentificationLib.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,7 @@ namespace CrowdAnalyzer.Utils
         private CamFrameAnalysis frameAnalysis;
         private IVisitorsRepository visitorRepo;
         private ICrowdDemographicsRepository crowdDemographicsRepo;
+        private IIdentifiedVisitorRepository identifiedVisitorRepo;
         private string origin;
         private ILogger log;
         public CrowdDemographics Demographics = null;
@@ -24,11 +27,13 @@ namespace CrowdAnalyzer.Utils
         public DemographicsAnalyzer(CamFrameAnalysis analysis,
             IVisitorsRepository vRepo,
             ICrowdDemographicsRepository cRepo,
+            IIdentifiedVisitorRepository identifiedRepo,
             ILogger logger)
         {
             frameAnalysis = analysis;
             visitorRepo = vRepo;
             crowdDemographicsRepo = cRepo;
+            identifiedVisitorRepo = identifiedRepo;
             origin = GlobalSettings.GetKeyValue("origin");
             log = logger;
         }
@@ -225,7 +230,19 @@ namespace CrowdAnalyzer.Utils
                     if(item.Item2.Confidence >= AppConstants.IdentificationConfidence)
                     {
                         identifiedPersonsCount++;
-                        Demographics.IdentifiedPersonsIds.Add(item.Item2.Person.PersonId.ToString());
+                        var result = await identifiedVisitorRepo.QueryDocuments(
+                                                "visitor",
+                                                "visitor.PersonDetails.PersonId=@PersonId",
+                                                new SqlParameterCollection {
+                                                    new SqlParameter { Name = "PersonId", Value = item.Item2.Person.PersonId }
+                                                });
+
+                        if (result.Any())
+                        {
+                            //TODO: Update the identified visitor records to include the last visit date
+                            var identifiedVisitor = result[0];
+                            Demographics.IdentifiedPersonsIds.Add(identifiedVisitor.Id);
+                        }
                     }
                 }
             }

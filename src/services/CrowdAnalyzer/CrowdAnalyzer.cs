@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using PersonIdentificationLib.Abstractions;
 
 namespace CrowdAnalyzer.Functions
 {
@@ -15,13 +16,16 @@ namespace CrowdAnalyzer.Functions
     {
         private IVisitorsRepository visitorRepo;
         private ICrowdDemographicsRepository crowdDemographicsRepo;
+        private IIdentifiedVisitorRepository identifiedVisitorRepo;
 
         public CrowdAnalyzer(
             IVisitorsRepository vRepo,
-            ICrowdDemographicsRepository cRepo)
+            ICrowdDemographicsRepository cRepo,
+            IIdentifiedVisitorRepository identifiedRepo)
         {
             visitorRepo = vRepo;
             crowdDemographicsRepo = cRepo;
+            identifiedVisitorRepo = identifiedRepo;
         }
 
         [FunctionName("CrowdAnalyzer")]
@@ -42,7 +46,7 @@ namespace CrowdAnalyzer.Functions
                 analysis = JsonConvert.DeserializeObject<CamFrameAnalysis>(request);
                 
                 // Only process if there are detected faces
-                if (analysis.SimilarFaces == null)
+                if (analysis.SimilarFaces == null && analysis.IdentifiedPersons == null)
                 {
                     log.LogWarning($"FUNC (CrowdAnalyzer): starting crowd-analysis: found no faces in the analysis request");
                     return null;
@@ -52,6 +56,7 @@ namespace CrowdAnalyzer.Functions
                     analysis,
                     visitorRepo, 
                     crowdDemographicsRepo,
+                    identifiedVisitorRepo,
                     log);
                 var isDemographicsUpdated = await demographics.UpdateDemographics();
                 

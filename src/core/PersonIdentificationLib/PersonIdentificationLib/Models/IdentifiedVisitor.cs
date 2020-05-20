@@ -26,7 +26,7 @@ namespace PersonIdentificationLib.Models
         public List<VisitorPhoto> Photos { get; set; }
         public double Age { get; set; }
         public string Gender { get; set; }
-        public List<string> LastVisits { get; set; }
+        public List<Visit> LastVisits { get; set; }
         public int VisitsCount { get; set; }
         public bool IsActive { get; set; }
         public string Notes { get; set; }

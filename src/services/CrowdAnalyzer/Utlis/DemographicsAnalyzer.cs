@@ -231,7 +231,6 @@ namespace CrowdAnalyzer.Utils
                         //Check if the identification passed with acceptable confidence
                         if (item.Item2.Confidence >= AppConstants.IdentificationConfidence)
                         {
-                            identifiedPersonsCount++;
                             var result = await identifiedVisitorRepo.QueryDocuments(
                                                     "visitor",
                                                     "visitor.PersonDetails.personId=@personId",
@@ -241,9 +240,17 @@ namespace CrowdAnalyzer.Utils
 
                             if (result.Any())
                             {
-                                //TODO: Update the identified visitor records to include the last visit date
                                 var identifiedVisitor = result[0];
+                                // Ignore already detected identified visitor if exists in the same window
+                                if (Demographics.IdentifiedPersonsIds.Contains(identifiedVisitor.Id))
+                                    continue;
+                                
                                 Demographics.IdentifiedPersonsIds.Add(identifiedVisitor.Id);
+
+                                //Update visit last visit date
+                                identifiedVisitor.LastVisits.Add(DateTime.UtcNow.ToString());
+
+                                identifiedPersonsCount++;
                             }
                         }
                     }

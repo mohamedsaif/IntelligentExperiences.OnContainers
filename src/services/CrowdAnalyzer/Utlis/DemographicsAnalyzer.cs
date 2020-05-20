@@ -248,7 +248,12 @@ namespace CrowdAnalyzer.Utils
                                 Demographics.IdentifiedPersonsIds.Add(identifiedVisitor.Id);
 
                                 //Update visit last visit date
-                                identifiedVisitor.LastVisits.Add(DateTime.UtcNow.ToString());
+                                identifiedVisitor.LastVisits.Add(new PersonIdentificationLib.Models.Visit
+                                {
+                                    Count = 1,
+                                    DetectedOnDeviceId = Demographics.DeviceId,
+                                    VisitDate = DateTime.UtcNow
+                                } );
 
                                 identifiedPersonsCount++;
                             }

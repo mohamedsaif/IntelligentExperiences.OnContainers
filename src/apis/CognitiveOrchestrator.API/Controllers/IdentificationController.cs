@@ -33,14 +33,20 @@ namespace CognitiveOrchestrator.API.Controllers
         /// <returns>The status message</returns>
         /// <response code="200">Service is running</response>
         [HttpGet]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
         public IActionResult Get()
         {
-            return Ok("{\"status\": \"Identification APIs working...\"}");
+            return Ok(new BaseResponse
+            {
+                IsSuccessful = true,
+                Message = "Service is running...",
+                StatusCode = "0"
+            });
         }
 
+        // Visitors groups
         [HttpPost("create-group/{groupName}")]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(IdentifiedVisitorGroup), 200)]
         public async Task<IActionResult> CreateVisitorsGroup(string groupName)
         {
             // Validation of input
@@ -48,6 +54,46 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("train-group/{groupId}")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        public async Task<IActionResult> TrainVisitorsGroup(string groupId)
+        {
+            // Validation of input
+            await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
+            return Ok(new BaseResponse
+            {
+                IsSuccessful = true,
+                Message = "Training successfully completed.",
+                StatusCode = "0"
+            });
+        }
+
+        [HttpPost("delete-group/{groupId}")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
+        {
+            // Validation of input
+            var result = await visitorIdentificationManager.DeleteVisitorsGroup(groupId);
+            if (result.IsSuccessful)
+            {
+                return Ok(new BaseResponse
+                {
+                    IsSuccessful = true,
+                    Message = "Group deleted successfully completed.",
+                    StatusCode = "0"
+                });
+            }
+
+            return BadRequest(new BaseResponse
+            {
+                IsSuccessful = false,
+                Message = result.Message,
+                StatusCode = result.StatusCode,
+                ErrorDetails = result.ErrorDetails
+            });
+        }
+
+        // Visitors
         [HttpPost("create-visitor")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(IdentifiedVisitor), 200)]
@@ -94,22 +140,6 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok(JsonConvert.SerializeObject(newVisitor));
         }
 
-        [HttpPost("train-group/{groupId}")]
-        [ProducesResponseType(200)]
-        public async Task<IActionResult> TrainVisitorsGroup(string groupId)
-        {
-            // Validation of input
-            await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
-            return Ok("{\"status\": \"Training for group successfully completed.\"}");
-        }
 
-        [HttpPost("delete-group/{groupId}")]
-        [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
-        {
-            // Validation of input
-            await visitorIdentificationManager
-            return Ok("{\"status\": \"Group deleted successfully completed.\"}");
-        }
     }
 }

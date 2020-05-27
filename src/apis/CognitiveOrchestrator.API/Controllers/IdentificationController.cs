@@ -44,7 +44,7 @@ namespace CognitiveOrchestrator.API.Controllers
         public async Task<IActionResult> CreateVisitorsGroup(string groupName)
         {
             // Validation of input
-            var result = await visitorIdentificationManager.CreateVisitorGroupAsync(groupName);
+            var result = await visitorIdentificationManager.CreateVisitorsGroupAsync(groupName);
             return Ok(result);
         }
 
@@ -108,7 +108,7 @@ namespace CognitiveOrchestrator.API.Controllers
         public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
         {
             // Validation of input
-            //await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
+            await visitorIdentificationManager
             return Ok("{\"status\": \"Group deleted successfully completed.\"}");
         }
     }

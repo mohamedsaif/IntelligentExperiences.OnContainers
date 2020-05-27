@@ -75,7 +75,7 @@ namespace PersonIdentificationLib.Services
             //serviceBusRepo = new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
         }
 
-        public async Task<IdentifiedVisitorGroup> CreateVisitorGroupAsync(string groupName)
+        public async Task<IdentifiedVisitorGroup> CreateVisitorsGroupAsync(string groupName)
         {
             IdentifiedVisitorGroup result = null;
             //var isValidGroupId = Regex.IsMatch(groupId, "^[a-z0-9-_]+");
@@ -162,7 +162,13 @@ namespace PersonIdentificationLib.Services
             return persistedFace;
         }
         
-        public async Task<IdentifiedVisitor> GetVisitorByPersonId(Guid personId)
+        public async Task<IdentifiedVisitor> GetVisitorByIdAsync(string id)
+        {
+            var visitor = await identifiedVisitorRepo.GetByIdAsync(id);
+            return visitor;
+        }
+
+        public async Task<IdentifiedVisitor> GetVisitorByPersonIdAsync(Guid personId)
         {
             var result = await identifiedVisitorRepo.QueryDocuments(
                 "visitor", 
@@ -179,6 +185,54 @@ namespace PersonIdentificationLib.Services
             return null;
         }
 
+        public async Task<IdentifiedVisitor> UpdateVisitorAsync(IdentifiedVisitor identifiedVisitor)
+        {
+            if (identifiedVisitor == null)
+                throw new InvalidDataException("No visitor data");
+
+            if (identifiedVisitor.Photos != null && identifiedVisitor.Photos.Count > 0)
+            {
+                double? age = null;
+                Gender? gender = null;
+
+                foreach (var photo in identifiedVisitor.Photos)
+                {
+                    if (!photo.IsSaved)
+                    {
+                        photoData = photo.PhotoData;
+                        var photoFileExtension = Path.GetExtension(photo.Name);
+                        var newPhotoFileName = $"{identifiedVisitor.Id}-{identifiedVisitor.Photos.IndexOf(photo) + 1}{photoFileExtension}";
+
+                        //Only accept photos with single face
+                        var detectedFaces = await FaceServiceHelper.DetectWithStreamAsync(GetPhotoStream, returnFaceAttributes: faceAttributes);
+                        if (detectedFaces.Count == 0)
+                        {
+                            photo.Status = "Invalid: No faces detected in photo";
+                            continue;
+                        }
+                        else if (detectedFaces.Count > 1)
+                        {
+                            photo.Status = "Invalid: More than 1 face detected in photo. Only photos with single face can be used to train";
+                            continue;
+                        }
+
+                        //Upload the new photo to storage
+                        photo.Url = await storageRepo.CreateFileAsync(newPhotoFileName, photo.PhotoData);
+                        age = detectedFaces[0].FaceAttributes.Age;
+                        gender = detectedFaces[0].FaceAttributes.Gender;
+                        var persistedFace = await AddVisitorPhotoAsync(identifiedVisitor.GroupId, identifiedVisitor.PersonDetails.PersonId, photo.Url, detectedFaces[0].FaceRectangle);
+
+                        //Update photo details
+                        photo.IsSaved = true;
+                        photo.Name = newPhotoFileName;
+                        photo.Status = "Saved";
+                    }
+                }
+            }
+            await identifiedVisitorRepo.UpdateAsync(identifiedVisitor);
+            return identifiedVisitor;
+        }
+
         public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
         {
             //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
@@ -188,7 +242,7 @@ namespace PersonIdentificationLib.Services
                 TrainingStatus trainingStatus = null;
                 while (waitForTrainingToComplete)
                 {
-                    trainingStatus = await GetVisitorGroupTrainingStatusAsync(groupId);
+                    trainingStatus = await GetVisitorsGroupTrainingStatusAsync(groupId);
 
                     if (trainingStatus.Status != TrainingStatusType.Running)
                     {
@@ -207,7 +261,7 @@ namespace PersonIdentificationLib.Services
             //}
         }
 
-        public async Task<TrainingStatus> GetVisitorGroupTrainingStatusAsync(string groupId)
+        public async Task<TrainingStatus> GetVisitorsGroupTrainingStatusAsync(string groupId)
         {
             return await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
         }
@@ -217,7 +271,7 @@ namespace PersonIdentificationLib.Services
             return await identifiedVisitorRepo.GetAllAsync();
         }
 
-        public async Task<ResultStatus> DeletePersonGroup(string groupId)
+        public async Task<ResultStatus> DeleteVisitorsGroup(string groupId)
         {
             var result = new ResultStatus();
             var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
@@ -243,7 +297,7 @@ namespace PersonIdentificationLib.Services
             return result;
         }
 
-        public async Task<ResultStatus> DeleteVistoryAsync(string visitorId, string groupId)
+        public async Task<ResultStatus> DeleteVisitorAsync(string visitorId, string groupId)
         {
             var result = new ResultStatus();
             var visitor = await identifiedVisitorRepo.GetByIdAsync(visitorId);

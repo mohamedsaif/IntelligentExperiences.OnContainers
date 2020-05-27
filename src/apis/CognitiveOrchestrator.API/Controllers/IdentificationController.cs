@@ -41,7 +41,7 @@ namespace CognitiveOrchestrator.API.Controllers
 
         [HttpPost("create-group/{groupName}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> CreatePersonGroup(string groupName)
+        public async Task<IActionResult> CreateVisitorsGroup(string groupName)
         {
             // Validation of input
             var result = await visitorIdentificationManager.CreateVisitorGroupAsync(groupName);
@@ -96,7 +96,7 @@ namespace CognitiveOrchestrator.API.Controllers
 
         [HttpPost("train-group/{groupId}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> TrainPersonGroup(string groupId)
+        public async Task<IActionResult> TrainVisitorsGroup(string groupId)
         {
             // Validation of input
             await visitorIdentificationManager.TrainVisitorGroup(groupId, true);
@@ -105,7 +105,7 @@ namespace CognitiveOrchestrator.API.Controllers
 
         [HttpPost("delete-group/{groupId}")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeletePersonGroup(string groupId)
+        public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
         {
             // Validation of input
             //await visitorIdentificationManager.TrainVisitorGroup(groupId, true);

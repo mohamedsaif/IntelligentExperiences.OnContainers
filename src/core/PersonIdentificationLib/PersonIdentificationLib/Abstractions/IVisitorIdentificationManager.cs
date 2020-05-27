@@ -10,7 +10,7 @@ namespace PersonIdentificationLib.Abstractions
     {
         Task<PersistedFace> AddVisitorPhotoAsync(string groupId, Guid cognitivePersonId, string photoUrl, FaceRectangle faceRect);
         Task<IdentifiedVisitor> CreateVisitorAsync(IdentifiedVisitor identifiedVisitor);
-        Task<IdentifiedVisitorGroup> CreateVisitorGroupAsync(string groupName);
+        Task<IdentifiedVisitorGroup> CreateVisitorsGroupAsync(string groupName);
         Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync();
         Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete);
     }

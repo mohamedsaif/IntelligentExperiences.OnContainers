@@ -62,7 +62,7 @@ namespace PersonIdentificationLib.Services
 
             var dbFactory = new CosmosDbClientFactory(
                     cosmosDbName,
-                    new Dictionary<string, string> { 
+                    new Dictionary<string, string> {
                         { AppConstants.DbColIdentifiedVisitor, AppConstants.DbColIdentifiedVisitorPartitionKey },
                         { AppConstants.DbColIdentifiedVisitorGroup, AppConstants.DbColIdentifiedVisitorPartitionKey }
                     },
@@ -75,6 +75,7 @@ namespace PersonIdentificationLib.Services
             //serviceBusRepo = new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
         }
 
+        //Groups
         public async Task<IdentifiedVisitorGroup> CreateVisitorsGroupAsync(string groupName)
         {
             IdentifiedVisitorGroup result = null;
@@ -88,8 +89,8 @@ namespace PersonIdentificationLib.Services
                     Name = groupName,
                     Filter = faceWorkspaceDataFilter,
                     PartitionKey = AppConstants.DbColIdentifiedVisitorPartitionKeyValue,
-                    IsActive = true, 
-                    CreatedAt = DateTime.UtcNow, 
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
                     Origin = AppConstants.Origin
                 };
 
@@ -105,6 +106,113 @@ namespace PersonIdentificationLib.Services
             return result;
         }
 
+        public async Task<IdentifiedVisitorGroup> GetVisitorsGroupByIdAsync(string groupId)
+        {
+            IdentifiedVisitorGroup result = null;
+            try
+            {
+                result = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public async Task<List<IdentifiedVisitorGroup>> GetAllVisitorsGroupsAsync()
+        {
+            List<IdentifiedVisitorGroup> result = null;
+            try
+            {
+                result = await identifiedVisitorGroupRepo.GetAllAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public async Task<IdentifiedVisitorGroup> GetVisitorsGroupByNameAsync(string groupName)
+        {
+            var result = await identifiedVisitorGroupRepo.QueryDocuments(
+                "visitorsGroup",
+                "visitorsGroup.Name=@GroupName",
+                new SqlParameterCollection {
+                    new SqlParameter { Name = "@GroupName", Value = groupName }
+                });
+
+            if (result.Any())
+            {
+                return result[0];
+            }
+
+            return null;
+        }
+
+        public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
+        {
+            //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
+            //if (group != null)
+            //{
+            await FaceServiceHelper.TrainPersonGroupAsync(groupId);
+            TrainingStatus trainingStatus = null;
+            while (waitForTrainingToComplete)
+            {
+                trainingStatus = await GetVisitorsGroupTrainingStatusAsync(groupId);
+
+                if (trainingStatus.Status != TrainingStatusType.Running)
+                {
+                    break;
+                }
+
+                await Task.Delay(1000);
+            }
+
+            //group.LastTrainingDate = DateTime.UtcNow;
+            //await identifiedVisitorGroupRepo.UpdateAsync(group);
+            //}
+            //else
+            //{
+            //    throw new KeyNotFoundException($"Group ({groupId}) not found");
+            //}
+        }
+
+        public async Task<TrainingStatus> GetVisitorsGroupTrainingStatusAsync(string groupId)
+        {
+            return await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
+        }
+
+        public async Task<ResultStatus> DeleteVisitorsGroup(string groupId)
+        {
+            var result = new ResultStatus();
+            var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
+            if (group != null)
+            {
+                var visitorsInGroup = (await identifiedVisitorRepo.GetAllAsync()).Where(v => v.GroupId == group.Id);
+                foreach (var visitor in visitorsInGroup)
+                    await identifiedVisitorRepo.DeleteAsync(visitor);
+
+                await FaceServiceHelper.DeletePersonGroupAsync(groupId);
+                await identifiedVisitorGroupRepo.DeleteAsync(group);
+                result.StatusCode = "0";
+                result.Message = $"Successfully deleted group ({group.Id}) and the associated visitors ({visitorsInGroup.Count()}";
+                result.IsSuccessful = true;
+            }
+            else
+            {
+                result.StatusCode = "1";
+                result.Message = $"Group id ({group.Id}) not found!";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
+
+        //Visitors
         public async Task<IdentifiedVisitor> CreateVisitorAsync(IdentifiedVisitor identifiedVisitor)
         {
             //TODO: Validate if the visitor exists
@@ -120,7 +228,7 @@ namespace PersonIdentificationLib.Services
                     photoData = photo.PhotoData;
                     var photoFileExtension = Path.GetExtension(photo.Name);
                     var newPhotoFileName = $"{identifiedVisitor.Id}-{identifiedVisitor.Photos.IndexOf(photo) + 1}{photoFileExtension}";
-                    
+
                     //Only accept photos with single face
                     var detectedFaces = await FaceServiceHelper.DetectWithStreamAsync(GetPhotoStream, returnFaceAttributes: faceAttributes);
                     if (detectedFaces.Count == 0)
@@ -161,7 +269,7 @@ namespace PersonIdentificationLib.Services
             var persistedFace = await FaceServiceHelper.AddPersonFaceFromStreamAsync(groupId, cognitivePersonId, GetPhotoStream, photoUrl, faceRect);
             return persistedFace;
         }
-        
+
         public async Task<IdentifiedVisitor> GetVisitorByIdAsync(string id)
         {
             var visitor = await identifiedVisitorRepo.GetByIdAsync(id);
@@ -171,13 +279,13 @@ namespace PersonIdentificationLib.Services
         public async Task<IdentifiedVisitor> GetVisitorByPersonIdAsync(Guid personId)
         {
             var result = await identifiedVisitorRepo.QueryDocuments(
-                "visitor", 
-                "visitor.PersonDetails.PersonId=@PersonId", 
-                new SqlParameterCollection { 
-                    new SqlParameter { Name = "@PersonId", Value = personId } 
+                "visitor",
+                "visitor.PersonDetails.PersonId=@PersonId",
+                new SqlParameterCollection {
+                    new SqlParameter { Name = "@PersonId", Value = personId }
                 });
-            
-            if(result.Any())
+
+            if (result.Any())
             {
                 return result[0];
             }
@@ -233,75 +341,16 @@ namespace PersonIdentificationLib.Services
             return identifiedVisitor;
         }
 
-        public async Task TrainVisitorGroup(string groupId, bool waitForTrainingToComplete)
-        {
-            //var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
-            //if (group != null)
-            //{
-                await FaceServiceHelper.TrainPersonGroupAsync(groupId);
-                TrainingStatus trainingStatus = null;
-                while (waitForTrainingToComplete)
-                {
-                    trainingStatus = await GetVisitorsGroupTrainingStatusAsync(groupId);
-
-                    if (trainingStatus.Status != TrainingStatusType.Running)
-                    {
-                        break;
-                    }
-
-                    await Task.Delay(1000);
-                }
-
-                //group.LastTrainingDate = DateTime.UtcNow;
-                //await identifiedVisitorGroupRepo.UpdateAsync(group);
-            //}
-            //else
-            //{
-            //    throw new KeyNotFoundException($"Group ({groupId}) not found");
-            //}
-        }
-
-        public async Task<TrainingStatus> GetVisitorsGroupTrainingStatusAsync(string groupId)
-        {
-            return await FaceServiceHelper.GetPersonGroupTrainingStatusAsync(groupId);
-        }
-
-        public async Task<List<IdentifiedVisitor>> GetIdentifiedVisitorsAsync()
+        public async Task<List<IdentifiedVisitor>> GetAllIdentifiedVisitorsAsync()
         {
             return await identifiedVisitorRepo.GetAllAsync();
-        }
-
-        public async Task<ResultStatus> DeleteVisitorsGroup(string groupId)
-        {
-            var result = new ResultStatus();
-            var group = await identifiedVisitorGroupRepo.GetByIdAsync(groupId);
-            if (group != null)
-            {
-                var visitorsInGroup = (await identifiedVisitorRepo.GetAllAsync()).Where(v => v.GroupId == group.Id);
-                foreach (var visitor in visitorsInGroup)
-                    await identifiedVisitorRepo.DeleteAsync(visitor);
-
-                await FaceServiceHelper.DeletePersonGroupAsync(groupId);
-                await identifiedVisitorGroupRepo.DeleteAsync(group);
-                result.StatusCode = "0";
-                result.Message = $"Successfully deleted group ({group.Id}) and the associated visitors ({visitorsInGroup.Count()}";
-                result.IsSuccessful = true;
-            }
-            else
-            {
-                result.StatusCode = "1";
-                result.Message = $"Group id ({group.Id}) not found!";
-                result.IsSuccessful = false;
-            }
-
-            return result;
         }
 
         public async Task<ResultStatus> DeleteVisitorAsync(string visitorId, string groupId)
         {
             var result = new ResultStatus();
             var visitor = await identifiedVisitorRepo.GetByIdAsync(visitorId);
-            if(visitor != null)
+            if (visitor != null)
             {
                 await FaceServiceHelper.DeletePersonAsync(groupId, visitor.PersonDetails.PersonId);
                 await identifiedVisitorRepo.DeleteAsync(visitor);

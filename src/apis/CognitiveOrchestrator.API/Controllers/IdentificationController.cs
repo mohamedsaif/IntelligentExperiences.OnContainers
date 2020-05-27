@@ -45,7 +45,19 @@ namespace CognitiveOrchestrator.API.Controllers
         }
 
         // Visitors groups
-        [HttpPost("create-group/{groupName}")]
+        [HttpGet("groups/get/{groupId}")]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
+        public IActionResult GetVisitrosGroupById(string groupId)
+        {
+            
+            return Ok(new BaseResponse
+            {
+                IsSuccessful = true,
+                Message = "Service is running...",
+                StatusCode = "0"
+            });
+        }
+        [HttpPost("groups/create/{groupName}")]
         [ProducesResponseType(typeof(IdentifiedVisitorGroup), 200)]
         public async Task<IActionResult> CreateVisitorsGroup(string groupName)
         {
@@ -54,7 +66,7 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("train-group/{groupId}")]
+        [HttpPost("groups/train/{groupId}")]
         [ProducesResponseType(typeof(BaseResponse), 200)]
         public async Task<IActionResult> TrainVisitorsGroup(string groupId)
         {
@@ -68,7 +80,7 @@ namespace CognitiveOrchestrator.API.Controllers
             });
         }
 
-        [HttpPost("delete-group/{groupId}")]
+        [HttpPost("groups/delete/{groupId}")]
         [ProducesResponseType(typeof(BaseResponse), 200)]
         public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
         {

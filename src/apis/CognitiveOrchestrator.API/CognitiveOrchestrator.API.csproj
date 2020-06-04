@@ -10,7 +10,7 @@
     <PackageReference Include="CognitiveServiceHelpers" Version="1.0.20200506.1" />
     <PackageReference Include="CoreLib" Version="1.0.20200519.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
-    <PackageReference Include="PersonIdentificationLib" Version="1.0.20200527.2" />
+    <PackageReference Include="PersonIdentificationLib" Version="1.0.20200527.3" />
   </ItemGroup>
 
 

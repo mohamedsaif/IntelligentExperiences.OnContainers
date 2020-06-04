@@ -124,7 +124,7 @@ namespace CoreLib.Repos
                 var cosmosDbClient = _cosmosDbClientFactory.GetClient(CollectionName);
                 var documents = await cosmosDbClient.ReadAllDocumentsInCollection();
 
-                return JsonConvert.DeserializeObject<List<T>>(documents.ToString());
+                return JsonConvert.DeserializeObject<List<T>>(JsonConvert.SerializeObject(documents));
             }
             catch (DocumentClientException e)
             {

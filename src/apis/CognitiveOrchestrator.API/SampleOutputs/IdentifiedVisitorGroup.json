@@ -1,0 +1,12 @@
+{
+	"name": "crowd-analytics",
+	"groupId": "0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default",
+	"filter": "Contoso.CrowdAnalytics",
+	"isActive": true,
+	"partitionKey": "default",
+	"lastTrainingDate": "0001-01-01T00:00:00",
+	"id": "0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default",
+	"createdAt": "2020-06-04T07:37:00.2546696Z",
+	"isDeleted": false,
+	"origin": "PersonIdentificationLib.v1.0.0"
+}

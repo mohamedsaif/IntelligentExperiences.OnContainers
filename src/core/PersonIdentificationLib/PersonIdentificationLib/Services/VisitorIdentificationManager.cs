@@ -259,6 +259,9 @@ namespace PersonIdentificationLib.Services
             identifiedVisitor.Age = age.HasValue ? age.Value : 0;
             identifiedVisitor.Gender = gender.HasValue ? gender.ToString() : "NA";
             identifiedVisitor.PartitionKey = string.IsNullOrEmpty(identifiedVisitor.PartitionKey) ? "Default" : identifiedVisitor.PartitionKey;
+            identifiedVisitor.IsActive = true;
+            identifiedVisitor.IsDeleted = false;
+            
             var result = await identifiedVisitorRepo.AddAsync(identifiedVisitor);
 
             return result;

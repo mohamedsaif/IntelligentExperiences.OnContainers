@@ -30,6 +30,7 @@ namespace PersonIdentificationLib.Models
         public int VisitsCount { get; set; }
         public bool IsActive { get; set; }
         public string Notes { get; set; }
+        public string IntegrationId { get; set; }
     }
 
     public class VisitorPhoto

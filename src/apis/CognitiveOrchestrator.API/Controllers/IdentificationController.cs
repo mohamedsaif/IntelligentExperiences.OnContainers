@@ -270,7 +270,9 @@ namespace CognitiveOrchestrator.API.Controllers
         {
             var visitorJson = data["visitor"];
             var visitor = JsonConvert.DeserializeObject<IdentifiedVisitor>(visitorJson);
-            visitor.Photos = new List<VisitorPhoto>();
+            if(visitor.Photos == null)
+                visitor.Photos = new List<VisitorPhoto>();
+
             foreach (var photo in data.Files)
             {
                 VisitorPhoto newPhoto = new VisitorPhoto
@@ -286,8 +288,8 @@ namespace CognitiveOrchestrator.API.Controllers
             }
 
             visitor = await visitorIdentificationManager.UpdateVisitorAsync(visitor);
-
-            return Ok(visitor);
+            var result = JsonConvert.SerializeObject(visitor);
+            return Ok(result);
         }
     }
 }

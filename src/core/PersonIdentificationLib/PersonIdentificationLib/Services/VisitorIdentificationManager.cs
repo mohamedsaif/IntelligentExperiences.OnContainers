@@ -216,8 +216,12 @@ namespace PersonIdentificationLib.Services
         public async Task<IdentifiedVisitor> CreateVisitorAsync(IdentifiedVisitor identifiedVisitor)
         {
             //TODO: Validate if the visitor exists
-
-            var cognitivePerson = await FaceServiceHelper.CreatePersonAsync(identifiedVisitor.GroupId, identifiedVisitor.Id);
+            identifiedVisitor.CreatedAt = DateTime.UtcNow;
+            identifiedVisitor.IsActive = true;
+            identifiedVisitor.IsDeleted = false;
+            identifiedVisitor.PartitionKey = string.IsNullOrEmpty(identifiedVisitor.PartitionKey) ? AppConstants.DbColIdentifiedVisitorPartitionKeyValue : identifiedVisitor.PartitionKey;
+            identifiedVisitor.Id = $"{Guid.NewGuid().ToString()}-{identifiedVisitor.PartitionKey}";
+            var cognitivePerson = await FaceServiceHelper.CreatePersonAsync(identifiedVisitor.GroupId, identifiedVisitor.Name, identifiedVisitor.Id);
             identifiedVisitor.PersonDetails = cognitivePerson;
             double? age = null;
             Gender? gender = null;
@@ -258,9 +262,6 @@ namespace PersonIdentificationLib.Services
             //Save the new identified visitor details to database
             identifiedVisitor.Age = age.HasValue ? age.Value : 0;
             identifiedVisitor.Gender = gender.HasValue ? gender.ToString() : "NA";
-            identifiedVisitor.PartitionKey = string.IsNullOrEmpty(identifiedVisitor.PartitionKey) ? "Default" : identifiedVisitor.PartitionKey;
-            identifiedVisitor.IsActive = true;
-            identifiedVisitor.IsDeleted = false;
             
             var result = await identifiedVisitorRepo.AddAsync(identifiedVisitor);
 

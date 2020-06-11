@@ -89,10 +89,10 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Identification",
+					"name": "Identification-Groups",
 					"item": [
 						{
-							"name": "identification/create-group",
+							"name": "identification/groups/create",
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -101,7 +101,7 @@
 									"formdata": []
 								},
 								"url": {
-									"raw": "http://localhost:25581/api/identification/create-group/crowd-analytics",
+									"raw": "http://localhost:25581/api/identification/groups/create/crowd-analytics",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -110,7 +110,8 @@
 									"path": [
 										"api",
 										"identification",
-										"create-group",
+										"groups",
+										"create",
 										"crowd-analytics"
 									]
 								}
@@ -118,7 +119,128 @@
 							"response": []
 						},
 						{
-							"name": "Identification/create-visitor",
+							"name": "identification/groups/getById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/groups/getById/0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"groups",
+										"getById",
+										"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/groups/getByName",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/groups/getByName/crowd-analytics",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"groups",
+										"getByName",
+										"crowd-analytics"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/groups/getAll",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/groups/getAll",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"groups",
+										"getAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/groups/train",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/groups/train/0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"groups",
+										"train",
+										"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/groups/delete",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/groups/delete/1871649f-961b-4470-9785-add7a8fb8b2d-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"groups",
+										"delete",
+										"1871649f-961b-4470-9785-add7a8fb8b2d-default"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Identification-Visitors",
+					"item": [
+						{
+							"name": "identification/visitors/create",
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -127,13 +249,13 @@
 									"formdata": [
 										{
 											"key": "visitor",
-											"value": "{\n\t\"PersonDetails\": null,\n\t\"GroupId\": \"1871649f-961b-4470-9785-add7a8fb8b2d-default\",\n\t\"PartitionKey\": \"Default\",\n\t\"Name\": \"Mohamed Saif\",\n\t\"Title\": \"Technical Architect\",\n\t\"Company\": \"Microsoft\",\n\t\"Email\": \"name@company.com\",\n\t\"ContactPhone\": \"123456789\",\n\t\"IsConsentGranted\": true,\n\t\"Photos\": [\n\t\t{\n\t\t\t\"Name\": \"photo1\",\n\t\t\t\"Url\": null,\n\t\t\t\"IsSaved\": false,\n\t\t\t\"Status\": null\n\t\t},\n\t\t{\n\t\t\t\"Name\": \"photo2\",\n\t\t\t\"Url\": null,\n\t\t\t\"IsSaved\": false,\n\t\t\t\"Status\": null\n\t\t}\n\t],\n\t\"Age\": 36,\n\t\"AgeGroup\": null,\n\t\"Gender\": null,\n\t\"LastVisits\": null,\n\t\"VisitsCount\": 0,\n\t\"IsActive\": true,\n\t\"Notes\": null,\n\t\"id\": \"4c95e731-0e8c-4ff8-98c5-be28380bc406\",\n\t\"createdAt\": \"0001-01-01T00:00:00\",\n\t\"isDeleted\": false,\n\t\"origin\": \"Postman\"\n}",
+											"value": "{\n\t\"PersonDetails\": null,\n\t\"GroupId\": \"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default\",\n\t\"PartitionKey\": \"default\",\n\t\"Name\": \"Mohamed Saif 2\",\n\t\"Title\": \"Technical Architect\",\n\t\"Company\": \"Contoso\",\n\t\"Email\": \"name@company.com\",\n\t\"ContactPhone\": \"123456789\",\n\t\"IsConsentGranted\": true,\n\t\"Notes\": null,\n\t\"IntegrationId\": \"visitor-hq-123\",\n\t\"origin\": \"Postman\"\n}",
 											"type": "text"
 										},
 										{
 											"key": "",
 											"type": "file",
-											"src": "/C:/Users/mosai/Desktop/mohamed-saif.jpg"
+											"src": "/C:/Users/mosai/Desktop/Demos/saif1.jpg"
 										},
 										{
 											"key": "",
@@ -143,12 +265,15 @@
 										{
 											"key": "",
 											"type": "file",
-											"src": "/C:/Users/mosai/Desktop/FaceAPI/Device-Web-Sim-001-050520233654.jpg"
+											"src": "/C:/Biz/Dev/IE.OnContainers/IntelligentExperiences.OnContainers/src/iot/Cam.Device.Web/wwwroot/CamFrames/Device-Simulated-001-170420133802.jpg"
 										}
-									]
+									],
+									"options": {
+										"formdata": {}
+									}
 								},
 								"url": {
-									"raw": "http://localhost:25581/api/identification/create-visitor",
+									"raw": "http://localhost:25581/api/identification/visitors/create",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -157,19 +282,120 @@
 									"path": [
 										"api",
 										"identification",
-										"create-visitor"
+										"visitors",
+										"create"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "identification/visitors/create",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "visitor",
+													"value": "{\n\t\"PersonDetails\": null,\n\t\"GroupId\": \"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default\",\n\t\"PartitionKey\": \"default\",\n\t\"Name\": \"Mohamed Saif\",\n\t\"Title\": \"Technical Architect\",\n\t\"Company\": \"Microsoft\",\n\t\"Email\": \"name@company.com\",\n\t\"ContactPhone\": \"123456789\",\n\t\"IsConsentGranted\": true,\n\t\"Notes\": null,\n\t\"IntegrationId\": \"visitor-hq-123\",\n\t\"origin\": \"Postman\"\n}",
+													"type": "text"
+												},
+												{
+													"key": "",
+													"type": "file",
+													"src": "/C:/Users/mosai/Desktop/mohamed-saif.jpg"
+												},
+												{
+													"key": "",
+													"type": "file",
+													"src": "/C:/Users/mosai/Desktop/Demos/IE/mosaif_id.png"
+												},
+												{
+													"key": "",
+													"type": "file",
+													"src": "/C:/Users/mosai/Desktop/FaceAPI/Device-Web-Sim-001-050520233654.jpg"
+												}
+											],
+											"options": {
+												"formdata": {}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:25581/api/identification/visitors/create",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "25581",
+											"path": [
+												"api",
+												"identification",
+												"visitors",
+												"create"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Content-Type",
+											"value": "text/plain; charset=utf-8"
+										},
+										{
+											"key": "Server",
+											"value": "Microsoft-IIS/10.0"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "ASP.NET"
+										},
+										{
+											"key": "Date",
+											"value": "Thu, 11 Jun 2020 06:31:16 GMT"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"PersonDetails\": {\n        \"personId\": \"ecf30469-1bf9-472c-a654-480874ae3ec5\",\n        \"persistedFaceIds\": null,\n        \"name\": null,\n        \"userData\": null\n    },\n    \"GroupId\": \"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default\",\n    \"PartitionKey\": \"default\",\n    \"Name\": \"Mohamed Saif\",\n    \"Title\": \"Technical Architect\",\n    \"Company\": \"Microsoft\",\n    \"Email\": \"name@company.com\",\n    \"ContactPhone\": \"123456789\",\n    \"IsConsentGranted\": true,\n    \"Photos\": [\n        {\n            \"Name\": \"e8aeb98d-2a78-4edb-9a6a-bbf3359ad814-default-1.png\",\n            \"Url\": \"https://cap24026framesstg.blob.core.windows.net/personsphotos/e8aeb98d-2a78-4edb-9a6a-bbf3359ad814-default-1.png\",\n            \"IsSaved\": true,\n            \"Status\": \"Saved\"\n        }\n    ],\n    \"Age\": 42,\n    \"Gender\": \"Male\",\n    \"LastVisits\": null,\n    \"VisitsCount\": 0,\n    \"IsActive\": true,\n    \"Notes\": null,\n    \"IntegrationId\": \"visitor-hq-123\",\n    \"id\": \"e8aeb98d-2a78-4edb-9a6a-bbf3359ad814-default\",\n    \"createdAt\": \"0001-01-01T00:00:00\",\n    \"isDeleted\": false,\n    \"origin\": \"Postman\"\n}"
+								}
+							]
+						},
+						{
+							"name": "identification/visitors/getById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:25581/api/identification/visitors/getById/60890bdf-0082-4c5b-848c-16cd04579582-default",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"visitors",
+										"getById",
+										"60890bdf-0082-4c5b-848c-16cd04579582-default"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "identification/train-group",
+							"name": "identification/visitors/getAll",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:25581/api/identification/train-group/1871649f-961b-4470-9785-add7a8fb8b2d-default",
+									"raw": "http://localhost:25581/api/identification/visitors/getAll",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -178,8 +404,60 @@
 									"path": [
 										"api",
 										"identification",
-										"train-group",
-										"1871649f-961b-4470-9785-add7a8fb8b2d-default"
+										"visitors",
+										"getAll"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "identification/visitors/update",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "visitor",
+											"value": "{\n    \"personDetails\": {\n        \"personId\": \"18b5db89-4fd5-407f-8b79-07ee65ab462c\",\n        \"persistedFaceIds\": null,\n        \"name\": null,\n        \"userData\": null\n    },\n    \"groupId\": \"0187e1e9-73b4-4636-83c5-4e515c8ddaf4-default\",\n    \"partitionKey\": \"default\",\n    \"name\": \"Mohamed Saif Updated 2\",\n    \"title\": \"Technical Architect\",\n    \"company\": \"Contoso\",\n    \"email\": \"name@company.com\",\n    \"contactPhone\": \"123456789\",\n    \"isConsentGranted\": true,\n    \"photos\": [\n        {\n            \"name\": \"60890bdf-0082-4c5b-848c-16cd04579582-default-1.jpg\",\n            \"url\": \"https://cap24026framesstg.blob.core.windows.net/personsphotos/60890bdf-0082-4c5b-848c-16cd04579582-default-1.jpg\",\n            \"isSaved\": true,\n            \"photoData\": null,\n            \"status\": \"Saved\"\n        },\n        {\n            \"name\": \"60890bdf-0082-4c5b-848c-16cd04579582-default-2.png\",\n            \"url\": \"https://cap24026framesstg.blob.core.windows.net/personsphotos/60890bdf-0082-4c5b-848c-16cd04579582-default-2.png\",\n            \"isSaved\": true,\n            \"photoData\": null,\n            \"status\": \"Saved\"\n        },\n        {\n            \"name\": \"60890bdf-0082-4c5b-848c-16cd04579582-default-3.jpg\",\n            \"url\": \"https://cap24026framesstg.blob.core.windows.net/personsphotos/60890bdf-0082-4c5b-848c-16cd04579582-default-3.jpg\",\n            \"isSaved\": true,\n            \"photoData\": null,\n            \"status\": \"Saved\"\n        }\n    ],\n    \"age\": 42,\n    \"gender\": \"Male\",\n    \"lastVisits\": null,\n    \"visitsCount\": 0,\n    \"isActive\": true,\n    \"notes\": null,\n    \"integrationId\": \"visitor-hq-123\",\n    \"id\": \"60890bdf-0082-4c5b-848c-16cd04579582-default\",\n    \"createdAt\": \"0001-01-01T00:00:00\",\n    \"isDeleted\": false,\n    \"origin\": \"Postman\"\n}",
+											"type": "text"
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": "/C:/Biz/Dev/IE.OnContainers/IntelligentExperiences.OnContainers/src/iot/Cam.Device.Web/wwwroot/CamFrames/Device-Simulated-001-170420134709.jpg"
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										},
+										{
+											"key": "",
+											"type": "file",
+											"src": [],
+											"disabled": true
+										}
+									],
+									"options": {
+										"formdata": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:25581/api/identification/visitors/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "25581",
+									"path": [
+										"api",
+										"identification",
+										"visitors",
+										"update"
 									]
 								}
 							},

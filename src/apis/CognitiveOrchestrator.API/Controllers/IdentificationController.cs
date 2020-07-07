@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace CognitiveOrchestrator.API.Controllers
 {
+    /// <summary>
+    /// Provides set of APIs to manage the identification capabilities for the platform (Visitors Groups and Identified Visitors)
+    /// </summary>
     [Route("api/identification")]
     public class Identification : Controller
     {
@@ -30,8 +33,8 @@ namespace CognitiveOrchestrator.API.Controllers
         /// <summary>
         /// Check the health of the service
         /// </summary>
-        /// <returns>The status message</returns>
-        /// <response code="200">Service is running</response>
+        /// <returns>The status message of the service</returns>
+        /// <response code="200">Running Status</response>
         [HttpGet]
         [ProducesResponseType(typeof(BaseResponse), 200)]
         public IActionResult Get()
@@ -45,6 +48,12 @@ namespace CognitiveOrchestrator.API.Controllers
         }
 
         // Visitors groups
+
+        /// <summary>
+        /// Get Visitors-Group by Id
+        /// </summary>
+        /// <param name="groupId">Id of the group to be retrieved</param>
+        /// <returns>Matched IdentifiedVisitorGroup</returns>
         [HttpGet("groups/getById/{groupId}")]
         [ProducesResponseType(typeof(IdentifiedVisitorGroup), 200)]
         public async Task<IActionResult> GetVisitrosGroupById(string groupId)
@@ -65,6 +74,11 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Visitors-Group by Name
+        /// </summary>
+        /// <param name="groupName">Name of the group to be retrieved</param>
+        /// <returns>Matched IdentifiedVisitorGroup</returns>
         [HttpGet("groups/getByName/{groupName}")]
         [ProducesResponseType(typeof(IdentifiedVisitorGroup), 200)]
         public async Task<IActionResult> GetVisitrosGroupByName(string groupName)
@@ -85,6 +99,10 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get All Visitors-Groups
+        /// </summary>
+        /// <returns>List of IdentifiedVisitorGroup</returns>
         [HttpGet("groups/getAll")]
         [ProducesResponseType(typeof(List<IdentifiedVisitorGroup>), 200)]
         public async Task<IActionResult> GetAllVisitorsGroups()
@@ -105,6 +123,11 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates new visitors group
+        /// </summary>
+        /// <param name="groupName">Name of the new group (must be unique)</param>
+        /// <returns>Newly created IdentifiedVisitorGroup</returns>
         [HttpPost("groups/create/{groupName}")]
         [ProducesResponseType(typeof(IdentifiedVisitorGroup), 200)]
         public async Task<IActionResult> CreateVisitorsGroup(string groupName)
@@ -125,6 +148,12 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Submit new Visitors-Group training request
+        /// </summary>
+        /// <param name="groupId">Id of the group to be trained</param>
+        /// <returns>Status message of the training</returns>
+        /// <remarks>Training should be called after adding/updating visitors. Call is synchronous</remarks>
         [HttpPost("groups/train/{groupId}")]
         [ProducesResponseType(typeof(BaseResponse), 200)]
         public async Task<IActionResult> TrainVisitorsGroup(string groupId)
@@ -151,6 +180,12 @@ namespace CognitiveOrchestrator.API.Controllers
             
         }
 
+        /// <summary>
+        /// Delete an existing Visitors-Group
+        /// </summary>
+        /// <param name="groupId">Id of the group to be deleted</param>
+        /// <returns>Status message of the deletion</returns>
+        /// <remarks>Delete an existing Visitors-Group with its all visitors. This is a permanent operation and can't be reversed</remarks>
         [HttpPost("groups/delete/{groupId}")]
         [ProducesResponseType(typeof(BaseResponse), 200)]
         public async Task<IActionResult> DeleteVisitorsGroup(string groupId)
@@ -177,6 +212,12 @@ namespace CognitiveOrchestrator.API.Controllers
         }
 
         // Visitors
+
+        /// <summary>
+        /// Creates new Identified-Visitor
+        /// </summary>
+        /// <param name="data">Array of IForm data. [0] in array must be the IdentifiedVisitor json with key "visitor". [1-N] include binary files for person photos</param>
+        /// <returns>Newly created IdentifiedVisitor</returns>
         [HttpPost("visitors/create")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(IdentifiedVisitor), 200)]
@@ -223,6 +264,11 @@ namespace CognitiveOrchestrator.API.Controllers
             return Ok(JsonConvert.SerializeObject(newVisitor));
         }
 
+        /// <summary>
+        /// Get Identified-Visitor by Id 
+        /// </summary>
+        /// <param name="id">Id of the visitor to be retrieved</param>
+        /// <returns>Marched IdentifiedVisitor</returns>
         [HttpGet("visitors/getById/{id}")]
         [ProducesResponseType(typeof(IdentifiedVisitor), 200)]
         public async Task<IActionResult> GetVisitorById(string id)
@@ -243,6 +289,10 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Retrieve list of all Identified-Visitors
+        /// </summary>
+        /// <returns>List of IdentifiedVisitor</returns>
         [HttpGet("visitors/getAll")]
         [ProducesResponseType(typeof(List<IdentifiedVisitor>), 200)]
         public async Task<IActionResult> GetAllVisitors()
@@ -263,6 +313,11 @@ namespace CognitiveOrchestrator.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Update existing Identified-Visitor
+        /// </summary>
+        /// <param name="data">Array of IForm data. [0] in array must be the IdentifiedVisitor json with key "visitor". [1-N] include binary files for person photos</param>
+        /// <returns>Updated IdentifiedVisitor</returns>
         [HttpPost("visitors/update")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(IdentifiedVisitor), 200)]

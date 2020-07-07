@@ -2,6 +2,9 @@
 
 namespace CognitiveOrchestrator.API.Models
 {
+    /// <summary>
+    /// Represent all information about a new cognitive processing request
+    /// </summary>
     public class CognitiveRequest : BaseModel
     {
         public string FileUrl { get; set; }

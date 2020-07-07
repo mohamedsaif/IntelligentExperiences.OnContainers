@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace CognitiveOrchestrator.API.Controllers
 {
+    /// <summary>
+    /// Provide direct access to submit requests to the crowd analytics platform
+    /// </summary>
     [Route("api/orchestrator")]
     public class OrchestratorController : Controller
     {
@@ -27,22 +30,32 @@ namespace CognitiveOrchestrator.API.Controllers
         /// <summary>
         /// Check the health of the service
         /// </summary>
-        /// <returns>The status message</returns>
-        /// <response code="200">Service is running</response>
+        /// <returns>The status message of the service</returns>
+        /// <response code="200">Running Status</response>
         [HttpGet]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(BaseResponse), 200)]
         public IActionResult Get()
         {
-            return Ok("{\"status\": \"Orchestrator APIs working...\"}");
+            return Ok(new BaseResponse
+            {
+                IsSuccessful = true,
+                Message = "Service is running...",
+                StatusCode = "0"
+            });
         }
 
         /// <summary>
-        /// Uploads a document to Azure storage
+        /// Submit Cognitive Request
         /// </summary>
         /// <returns>The result of the uploaded document</returns>
         /// <param name="deviceId">Device id where the submitted doc originated from</param>
         /// <param name="docType">This flag will be used to determine the cognitive operations to be executed</param>
+        /// <param name="docUTCTime">Time in UTC to indicate when the file being submitted created</param>
         /// <param name="doc">The binary of the document being processed</param>
+        /// <remarks>
+        ///     Uploads new document to storage and publish new cognitive request event message. 2 Form items must be submitted in the post request body, docUTCTime (string) and doc (binary file)
+        ///     Currently the platform support only CamFrameAnalysis as docType
+        /// </remarks>
         [HttpPost("{deviceId}/{docType}")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(typeof(CognitiveRequest), 200)]

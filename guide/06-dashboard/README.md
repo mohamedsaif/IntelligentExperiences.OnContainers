@@ -84,3 +84,9 @@ Click on one chart to see how it filters the others based on your selection.
 After you finished, you can click Publish to publish the report on PowerPI workspace so it can be shared with the target users (if you have corporate license, it can be controlled like many other Office related services like SharePoint)
 
 You are done with your very fast dashboard.
+
+## Next step
+
+Congratulations on completing this section. Let's move to the next step:
+
+[Next Step](../07-apis/README.md)

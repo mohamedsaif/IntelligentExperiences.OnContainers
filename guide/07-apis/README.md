@@ -38,3 +38,5 @@ Save and create a release for the new pipeline.
 ## API Testing
 
 You can use what ever tool you want to use to test the newly deployed APIs. I'm using Postman for the job.
+
+Postman import files can be found [src/apis/CognitiveOrchestrator.API/Postman-Tests](../../src/apis/CognitiveOrchestrator.API/Postman-Tests)

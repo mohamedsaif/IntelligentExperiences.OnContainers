@@ -11,7 +11,7 @@ APIs offered would cover the following functionalities:
 
 Deployment of these APIs is done through Azure DevOps.
 
-## APIs DevOps
+## Deployment via DevOps
 
 ### Continuos Integration
 

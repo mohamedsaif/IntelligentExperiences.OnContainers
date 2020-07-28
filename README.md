@@ -97,7 +97,11 @@ I'm really excited to share with you the great journey I took to build such syst
     - Query edit and data prep
     - Design the report
     - Publish the report
-8. BONUS Tracks (coming soon)
+8. BONUS Track: Crowd Analytics APIs
+    - Overview
+    - Deployment
+    - API Testing
+9. BONUS Tracks (coming soon)
     - Advanced AKS Provisioning
         - AKS Preview Features
         - Azure AD Integration

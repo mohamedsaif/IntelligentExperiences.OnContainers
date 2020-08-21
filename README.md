@@ -14,35 +14,35 @@ Hands-on workshop to create containers-based backend platform that exposes async
 
 ## Overview
 
-See how Crowd Analytics platform built on Azure can provides occupancy insights in workspace and other location for safety while having technical fun with AI-driven  platform on Kubernetes, with detailed walk through guide.
+Follow this detailed walk through guide to see how a Crowd Analytics platform, built on Azure, can provide occupancy insights in a workspace, or some other location, while having technical fun with an AI-driven platform on Kubernetes.
 
-Almost all enterprises already operate networked CCTV cameras all over buildings and stores. Crowd Analytics Platform extend these cameras capability to include some useful intelligence on top of it to improve customers experiences and safety trough AI.
+Almost all enterprises already operate networked CCTV cameras in their buildings and stores. This Crowd Analytics Platform extend the capabilities of these cameras to include additional useful intelligence, to improve customer experience and safety trough AI.
 
 >NOTE: It is important to mention before diving into the platform that leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)
 
 ### Crowd Analytics
 
-Crowd analytics (also known as footfall analytics) is about understanding who (age, gender,...) are visiting your location, when and how many.
+Crowd analytics (also known as footfall analytics) is about gaining a better understanding of the demographics (age, gender,...) of who is visiting your location, when they are visting and how many are visting.
 
-This workshop walks through a guided deployment of a connected, secure and reliable **Crowd Analytics** platform leveraging cloud native technologies.
+This workshop walks through a guided deployment of a connected, secure and reliable **Crowd Analytics** platform, leveraging cloud native technologies.
 
-Crowd analytics scenario can be used in:
+Crowd analytics scenarios can be used in:
 
-1. Retail shops in many industry (like telecom shops, consumer goods retailers, malls…)
+1. Retail shops in many industries (like telecom shops, consumer goods retailers, malls…)
 2. Public and Private Parks
 3. Events
 4. Building safety and evacuation readiness
-5. Any many other scenarios
+5. And many other scenarios
 
-Using advanced cloud technologies can provide key business metrics that allows stakeholders to make informative decisions to improve experience and/or performance.
+Advanced cloud technologies can provide key business metrics that allow stakeholders to make informative decisions on how to improve experience and/or performance.
 
 ### Open Source and Azure Technologies
 
 ![azure-tech](res/technologies.png)
 
-Azure already provides a sophisticated platform to develop and operate such system.
+Azure already provides a sophisticated platform to develop and operate such a system, and the **Crowd Analytics** platform makes use of a number of Azure's services.
 
-**Kubernetes** became the defacto cloud native technology to develop and operate sophisticated containerized systems anywhere and with Azure Kubernetes Service takes a lot of the cluster management tasks out of your way to focus more on the solution you want to build.
+**Kubernetes** has become the defacto cloud native technology to develop and operate sophisticated containerized systems anywhere, and Azure Kubernetes Service (AKS) takes care of a lot of the cluster management tasks, allowing you to focus more on the solution you want to build.
 
 Key technologies used in the workshop include:
 
@@ -56,7 +56,7 @@ Key technologies used in the workshop include:
 - Power BI
 - and many more
 
-I'm really excited to share with you the great journey I took to build such system.
+I'm really excited to share with you the great journey I took to build this system.
 
 ## Workshop Agenda
 
@@ -64,7 +64,7 @@ I'm really excited to share with you the great journey I took to build such syst
     - Visual Studio Code
     - Azure CLI
     - Other tools
-2. [Solution Whiteboarding & Architecture](/guide/01-architecture/README.md)
+2. [Solution Whiteboarding & Architecture](guide/01-architecture/README.md)
     - Walkthrough the system objectives
     - Review Azure architecture
 3. [Creating Azure Prerequisites](guide/02-prerequisites/README.md)
@@ -122,75 +122,30 @@ I'm really excited to share with you the great journey I took to build such syst
 
 ## Suggested 1-Day Workshop Agenda
 
-<table>
-<th>Topic</th>
-<th>Duration</th>
-<tr>
-<td>Registration and Setup</td>
-<td>15 mins</td>
-<tr>
-<tr>
-<td>Why Intelligent Experiences?</td>
-<td>20 mins</td>
-</tr>
-<tr>
-<td>Intelligent Retail - Crowd Analytics Overview</td>
-<td>25 mins</td>
-</tr>
-<tr>
-<td colspan="2">Break</td>
-</tr>
-<tr>
-<td>Solution White-boarding</td>
-<td>30 mins</td>
-</tr>
-<tr>
-<td>Lab - Azure Services Provisioning</td>
-<td>60 mins</td>
-</tr>
-<tr>
-<td>Lab - AKS Provisioning</td>
-<td>60 mins</td>
-</tr>
-<tr>
-<td colspan="2">Lunch</td>
-</tr>
-<td>Lab - IoT Hub Provisioning</td>
-<td>30 mins</td>
-</tr>
-<tr>
-<td>Lab - DevOps & Services Deployment</td>
-<td>90 mins</td>
-</tr>
-<tr>
-<td colspan="2">Break</td>
-</tr>
-<tr>
-<td>Lab - Dashboard & Data Visualization</td>
-<td>30 mins</td>
-</tr>
-<tr>
-<td>Q and A + Next Steps</td>
-<td>30 mins</td>
-</tr>
-<tr>
-<td colspan="2">Bonus Workshop Material (Take home tasks)</td>
-</tr>
-<tr>
-<td>Bonus 1 - Advanced AKS Provisioning</td>
-<td>-</td>
-</tr>
-<tr>
-<td>Bonus 2 - IoT Edge Development</td>
-<td>-</td>
-</tr>
-</table>
+Topic|Duration
+-----|:--------:
+Registration and Setup|15 mins
+Why Intelligent Experiences?|20 mins
+Intelligent Retail - Crowd Analytics Overview|25 mins
+Break|  
+Solution White-boarding|30 mins
+Lab - Azure Services Provisioning|60 mins
+Lab - AKS Provisioning|60 mins
+Lunch|  
+Lab - IoT Hub Provisioning|30 mins
+Lab - DevOps & Services Deployment|90 mins
+Break|  
+Lab - Dashboard & Data Visualization|30 mins
+Q and A + Next Steps|30 mins
+Bonus Workshop Material (Take home tasks)|  
+Bonus 1 - Advanced AKS Provisioning|-
+Bonus 2 - IoT Edge Development|-
 
 ## About the project
 
-I tried to make sure I cover all aspects and best practices while building this project, but all included architecture, code, documentation and any other artifact represent my personal opinion only. Think of it as a suggestion of how a one way things can work.
+I tried to make sure I covered all aspects and best practices while building this project, but all included architecture, code, documentation, and any other artifact represent my personal opinion only. Think of it as a suggestion of one way in which this platform could be built.
 
-Keep in mind that this is a work-in-progress, I will continue to contribute to it when I can.
+Keep in mind that this is a work-in-progress, and I will continue to contribute to it when I can.
 
 All constructive feedback is welcomed 🙏
 

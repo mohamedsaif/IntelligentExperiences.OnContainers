@@ -1,6 +1,6 @@
 # Intelligent Experiences On Containers
 
-Hands-on workshop to create containers-based backend platform that exposes async AI services
+Hands-on workshop to create a container-based backend platform that exposes async AI services
 
 ![architecture](res/architecture.png)
 
@@ -16,13 +16,13 @@ Hands-on workshop to create containers-based backend platform that exposes async
 
 Follow this detailed walk through guide to see how a Crowd Analytics platform, built on Azure, can provide occupancy insights in a workspace, or some other location, while having technical fun with an AI-driven platform on Kubernetes.
 
-Almost all enterprises already operate networked CCTV cameras in their buildings and stores. This Crowd Analytics Platform extend the capabilities of these cameras to include additional useful intelligence, to improve customer experience and safety trough AI.
+Almost all enterprises already operate networked CCTV cameras in their buildings and stores. This Crowd Analytics Platform extends the capabilities of these cameras to include additional useful intelligence, to improve customer experience and safety, through AI.
 
 >NOTE: It is important to mention before diving into the platform that leveraging and designing AI powered solutions should always adhere to responsible and ethical principles that reflect trust and timeless values. I personally like Microsoft's principles about fairness, inclusiveness, reliability, safety, transparency, privacy, security and accountability. [Read more](https://www.microsoft.com/en-us/AI/our-approach-to-ai)
 
 ### Crowd Analytics
 
-Crowd analytics (also known as footfall analytics) is about gaining a better understanding of the demographics (age, gender,...) of who is visiting your location, when they are visting and how many are visting.
+Crowd analytics (also known as footfall analytics) is about gaining a better understanding of the demographics (age, gender,...) of who is visiting your location, when they are visting, and how many are visting.
 
 This workshop walks through a guided deployment of a connected, secure and reliable **Crowd Analytics** platform, leveraging cloud native technologies.
 
@@ -143,7 +143,7 @@ Bonus 2 - IoT Edge Development|-
 
 ## About the project
 
-I tried to make sure I covered all aspects and best practices while building this project, but all included architecture, code, documentation, and any other artifact represent my personal opinion only. Think of it as a suggestion of one way in which this platform could be built.
+I tried to make sure I covered all aspects and best practices while building this project, but all included architecture, code, documentation, and any other artefacts represent my personal opinion only. Think of it as one suggested way in which this platform could be built.
 
 Keep in mind that this is a work-in-progress, and I will continue to contribute to it when I can.
 

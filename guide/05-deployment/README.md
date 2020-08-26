@@ -279,6 +279,8 @@ Here is the other pipeline variable mapping as well:
 | kedaServiceBusConnection | SB_TOPIC_CROWD_CONNECTION | Connection string specific to single topic (crowd-analysis)                      |
 | serviceBusConnection     | SB_NAMESPACE_CONNECTION   | Root connection string to your Service Bus                                       |
 | origin                   | CrowdAnalyzer.V1.0.0      | Static value indicate the originating crowd calculations                         |
+| IdentificationConfidence | 0.55                      | Static value indicates the threshold for positive identification                 |
+| demographicsWindowMins   | 60                        | Static value indicates the window of analyzed frames                             |
 
 ## Running Crowd Analytics Platform
 

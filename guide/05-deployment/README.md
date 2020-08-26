@@ -269,7 +269,7 @@ Here is the other pipeline variable mapping as well:
 | Pipeline Variable        | Script Variable           | Description                                                                      |
 |--------------------------|---------------------------|----------------------------------------------------------------------------------|
 | acrName                  | CONTAINER_REGISTRY_URL    | YOURCONTAINERNAME.azurecr.io                                                     |
-| appInsightsKey           | APPINSIGHTS_KEY_CAM       | Application Insights instrumentation key                                         |
+| appInsightsKey           | APPINSIGHTS_KEY_CRWD      | Application Insights instrumentation key                                         |
 | checkForDbConsistency    | true                      | A flag so used when updating the cosmos db crowd data                            |
 | cosmosDbEndpoint         | COSMOSDB_PRIMARY_CONN     | Take only the part after AccountEndpoint in the connection                       |
 | cosmosDbKey              | COSMOSDB_PRIMARY_CONN     | Copy only the part after AccountKey in the connection                            |

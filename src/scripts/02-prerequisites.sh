@@ -266,7 +266,7 @@ az cognitiveservices account create \
 CS_ACCOUNT_ENDPOINT=$(az cognitiveservices account show \
     -n $CS_ACCOUNT \
     -g $RG \
-    --query endpoint \
+    --query properties.endpoint \
     -o tsv)
 echo $CS_ACCOUNT_ENDPOINT
 

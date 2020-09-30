@@ -8,3 +8,5 @@ crowdanalytics
 **/*.Development.json
 **/*-internal.*
 **/*-aks-kubeconfig
+crowdanalytics-new
+src/iot/Cam.Device.Web/appsettings.Development.json

@@ -1,0 +1,796 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "Identification",
+      "description": "Set of APIs to manage various aspects of the crowd analytics platform",
+      "contact": {
+        "name": "Mohamed Saif",
+        "url": "https://github.com/mohamedsaif"
+      },
+      "license": {
+        "name": "MIT License",
+        "url": "https://blog.mohamedsaif.com"
+      },
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/api/identification": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Check the health of the service",
+          "responses": {
+            "200": {
+              "description": "Running Status",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/getById/{groupId}": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Get Visitors-Group by Id",
+          "parameters": [
+            {
+              "name": "groupId",
+              "in": "path",
+              "description": "Id of the group to be retrieved",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Id of the group to be retrieved",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/getByName/{groupName}": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Get Visitors-Group by Name",
+          "parameters": [
+            {
+              "name": "groupName",
+              "in": "path",
+              "description": "Name of the group to be retrieved",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Name of the group to be retrieved",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/getAll": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Get All Visitors-Groups",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/create/{groupName}": {
+        "post": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Creates new visitors group",
+          "parameters": [
+            {
+              "name": "groupName",
+              "in": "path",
+              "description": "Name of the new group (must be unique)",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Name of the new group (must be unique)",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitorGroup"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/train/{groupId}": {
+        "post": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Submit new Visitors-Group training request",
+          "description": "Training should be called after adding/updating visitors. Call is synchronous",
+          "parameters": [
+            {
+              "name": "groupId",
+              "in": "path",
+              "description": "Id of the group to be trained",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Id of the group to be trained",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/groups/delete/{groupId}": {
+        "post": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Delete an existing Visitors-Group",
+          "description": "Delete an existing Visitors-Group with its all visitors. This is a permanent operation and can't be reversed",
+          "parameters": [
+            {
+              "name": "groupId",
+              "in": "path",
+              "description": "Id of the group to be deleted",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Id of the group to be deleted",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/BaseResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/visitors/create": {
+        "post": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Creates new Identified-Visitor",
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StringStringValuesKeyValuePair"
+                      },
+                      "description": "Array of IForm data. [0] in array must be the IdentifiedVisitor json with key \"visitor\". [1-N] include binary files for person photos",
+                      "nullable": true
+                    }
+                  }
+                },
+                "encoding": {
+                  "data": {
+                    "style": "form"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/visitors/getById/{id}": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Get Identified-Visitor by Id",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Id of the visitor to be retrieved",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "Id of the visitor to be retrieved",
+                "nullable": true
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/visitors/getAll": {
+        "get": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Retrieve list of all Identified-Visitors",
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitor"
+                    }
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitor"
+                    }
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/IdentifiedVisitor"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/identification/visitors/update": {
+        "post": {
+          "tags": [
+            "Identification"
+          ],
+          "summary": "Update existing Identified-Visitor",
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/StringStringValuesKeyValuePair"
+                      },
+                      "description": "Array of IForm data. [0] in array must be the IdentifiedVisitor json with key \"visitor\". [1-N] include binary files for person photos",
+                      "nullable": true
+                    }
+                  }
+                },
+                "encoding": {
+                  "data": {
+                    "style": "form"
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/IdentifiedVisitor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "BaseResponse": {
+          "type": "object",
+          "properties": {
+            "statusCode": {
+              "type": "string",
+              "nullable": true
+            },
+            "message": {
+              "type": "string",
+              "nullable": true
+            },
+            "isSuccessful": {
+              "type": "boolean"
+            },
+            "errorDetails": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Represent default response to APIs that don't return a specific type"
+        },
+        "IdentifiedVisitorGroup": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "groupId": {
+              "type": "string",
+              "nullable": true
+            },
+            "filter": {
+              "type": "string",
+              "nullable": true
+            },
+            "isActive": {
+              "type": "boolean"
+            },
+            "partitionKey": {
+              "type": "string",
+              "nullable": true
+            },
+            "lastTrainingDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "id": {
+              "type": "string",
+              "nullable": true
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "isDeleted": {
+              "type": "boolean"
+            },
+            "origin": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "StringStringValuesKeyValuePair": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "nullable": true,
+              "readOnly": true
+            },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "readOnly": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "Person": {
+          "type": "object",
+          "properties": {
+            "personId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "persistedFaceIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "nullable": true
+            },
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "userData": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "VisitorPhoto": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "url": {
+              "type": "string",
+              "nullable": true
+            },
+            "isSaved": {
+              "type": "boolean"
+            },
+            "photoData": {
+              "type": "string",
+              "format": "byte",
+              "nullable": true
+            },
+            "status": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "Visit": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "visitDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "detectedOnDeviceId": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "IdentifiedVisitor": {
+          "type": "object",
+          "properties": {
+            "personDetails": {
+              "$ref": "#/components/schemas/Person"
+            },
+            "groupId": {
+              "type": "string",
+              "nullable": true
+            },
+            "partitionKey": {
+              "type": "string",
+              "nullable": true
+            },
+            "name": {
+              "type": "string",
+              "nullable": true
+            },
+            "title": {
+              "type": "string",
+              "nullable": true
+            },
+            "company": {
+              "type": "string",
+              "nullable": true
+            },
+            "email": {
+              "type": "string",
+              "nullable": true
+            },
+            "contactPhone": {
+              "type": "string",
+              "nullable": true
+            },
+            "isConsentGranted": {
+              "type": "boolean"
+            },
+            "photos": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/VisitorPhoto"
+              },
+              "nullable": true
+            },
+            "age": {
+              "type": "number",
+              "format": "double"
+            },
+            "gender": {
+              "type": "string",
+              "nullable": true
+            },
+            "lastVisits": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Visit"
+              },
+              "nullable": true
+            },
+            "visitsCount": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "isActive": {
+              "type": "boolean"
+            },
+            "notes": {
+              "type": "string",
+              "nullable": true
+            },
+            "integrationId": {
+              "type": "string",
+              "nullable": true
+            },
+            "id": {
+              "type": "string",
+              "nullable": true
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "isDeleted": {
+              "type": "boolean"
+            },
+            "origin": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "CognitiveRequest": {
+          "type": "object",
+          "properties": {
+            "fileUrl": {
+              "type": "string",
+              "nullable": true
+            },
+            "deviceId": {
+              "type": "string",
+              "nullable": true
+            },
+            "takenAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "processedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "targetAction": {
+              "type": "string",
+              "nullable": true
+            },
+            "status": {
+              "type": "string",
+              "nullable": true
+            },
+            "isProcessed": {
+              "type": "boolean"
+            },
+            "isActive": {
+              "type": "boolean"
+            },
+            "id": {
+              "type": "string",
+              "nullable": true
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "isDeleted": {
+              "type": "boolean"
+            },
+            "origin": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false,
+          "description": "Represent all information about a new cognitive processing request"
+        }
+      }
+    }
+}

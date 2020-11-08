@@ -18,7 +18,7 @@ variables:
 jobs:
 - template: azure-pipelines-webapp-oss-containers.yml
   parameters:
-    Name: Mask-Detection-APIs
+    Name: MaskDetectionAPIs
     ArtifactName: 'MaskDetectionAPIs'
     DeploymentSourceFolder: 'src/custom-models/mask-detection/deployment'
     ContainerRegistryServiceConnection: CrowdAnalyticsACR

@@ -18,9 +18,6 @@ spec:
       - name: mask-detection-apis
         image: #{acrName}#/crowdanalytics/mask-detection-apis:#{Build.BuildId}#
         imagePullPolicy: IfNotPresent
-        envFrom:
-        - secretRef:
-            name: mask-detection-apis
 ---
 apiVersion: v1
 kind: Service

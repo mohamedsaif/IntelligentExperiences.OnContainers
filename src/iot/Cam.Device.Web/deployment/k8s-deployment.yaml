@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cam-device-web
+  namespace: crowd-analytics
+  labels:
+    app: cam-device-web
+spec:
+  selector:
+    matchLabels:
+      app: cam-device-web
+  template:
+    metadata:
+      labels:
+        app: cam-device-web
+    spec:
+      containers:
+      - name: cam-device-web
+        image: #{acrName}#/crowdanalytics/cam-device-web:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: cam-device-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cam-device-web-service
+  labels:
+    app: cam-device-web
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  #   service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "SVCSUBNET"
+spec:
+  # You can change it to NodePort if you are planning to use the service only through App Gateway
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: cam-device-web
+---

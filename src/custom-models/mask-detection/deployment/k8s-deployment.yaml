@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mask-detection-apis
+  namespace: crowd-analytics
+  labels:
+    app: mask-detection-apis
+spec:
+  selector:
+    matchLabels:
+      app: mask-detection-apis
+  template:
+    metadata:
+      labels:
+        app: mask-detection-apis
+    spec:
+      containers:
+      - name: mask-detection-apis
+        image: #{acrName}#/crowdanalytics/mask-detection-apis:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: mask-detection-apis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mask-detection-apis-service
+  labels:
+    app: mask-detection-apis
+  # annotations:
+  #   service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  #   service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "SVCSUBNET"
+spec:
+  # You can change it to NodePort if you are planning to use the service only through App Gateway
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: mask-detection-apis
+---

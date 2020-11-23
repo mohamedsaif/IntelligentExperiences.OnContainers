@@ -22,5 +22,9 @@ namespace MaskDetector
         //Main Service Bus settings
         public const string SBTopic = "camframe-analysis";
         public const string SBSubscription = "mask-detector";
+        public const string SBPublishingTopic = "mask-detection";
+
+        //Mask Detection Service URL (local service call to another Kubernetes service)
+        public const string MaskDetectionServiceURL = "mask-detection-api.crowd-analytics.svc.cluster.local";
     }
 }

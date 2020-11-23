@@ -7,6 +7,7 @@
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CoreLib" Version="1.0.20200604.1" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
@@ -22,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Deployment\" />
-    <Folder Include="Models\" />
     <Folder Include="Repos\" />
   </ItemGroup>
 </Project>

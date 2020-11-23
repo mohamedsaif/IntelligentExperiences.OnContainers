@@ -1,0 +1,31 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+  paths:
+    include:
+      - 'src/services/MaskDetector'
+      - 'azure-pipelines-mask-detector.yml'
+      - 'azure-pipelines-webapp-containers.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-webapp-containers.yml
+  parameters:
+    Name: MaskDetector
+    RestoreBuildProjects: '**/MaskDetector.csproj'
+    BuildConfiguration: 'Release'
+    WorkingDirectory: 'src/services/MaskDetector'
+    ArtifactName: 'MaskDetector'
+    PublishWebApp: False
+    ZipAfterPublish: False
+    DeploymentSourceFolder: 'src/services/MaskDetector/Deployment'
+    ContainerRegistryServiceConnection: CrowdAnalyticsACR
+    ContainerRegistryName: 'crowdanalytics/'
+    ContainerRegistryRepo: mask-detector
+    DockerFilePath: 'src/services/MaskDetector/Dockerfile'

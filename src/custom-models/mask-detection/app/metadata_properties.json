@@ -1,0 +1,10 @@
+{
+    "CustomVision.Metadata.Version": "1.0",
+    "CustomVision.Postprocess.Method": "yolo",
+    "CustomVision.Postprocess.Yolo.Biases": "0.5727300047874451,0.6773849725723267,1.874459981918335,2.062530040740967,3.3384299278259277,5.474339962005615,7.882820129394531,3.527780055999756,9.770520210266113,9.168279647827148",
+    "CustomVision.Postprocess.Yolo.NmsThreshold": "0.45",
+    "CustomVision.Preprocess.ResizeAndCropMethod": "NoCropAlign32px",
+    "Image.BitmapPixelFormat": "Rgb8",
+    "Image.ColorSpaceGamma": "SRGB",
+    "Image.NominalPixelRange": "Normalized_0_1"
+}

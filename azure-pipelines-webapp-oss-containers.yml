@@ -1,0 +1,50 @@
+# Azure Pipelines for .NET Core app (Web, Function, ....) :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+parameters:
+  ArtifactName: 'AppDrop'
+  DeploymentSourceFolder: 'src/deployment'
+  ContainerRegistryName: myacr
+  ContainerRegistryServiceConnection: myacr
+  ContainerRegistryRepo: projectname
+  DockerFilePath: 'src'
+
+jobs:
+- job: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'ubuntu-18.04'
+    demands: npm
+  steps:
+  - task: CopyFiles@2
+    displayName: 'Copy Deployment Files'
+    inputs:
+      SourceFolder: ${{ Parameters.DeploymentSourceFolder }}
+      TargetFolder: '$(build.artifactstagingdirectory)/deployment'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: ${{ Parameters.ArtifactName }}'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+      ArtifactName: ${{ Parameters.ArtifactName }}
+      zipAfterPublish: false
+
+- job: BuildImage
+  displayName: 'BuildImages-${{ Parameters.Name }}'
+  dependsOn: ${{ Parameters.Name }}
+  pool:
+    vmImage: 'ubuntu-18.04'
+  steps:
+  - task: Docker@2
+    displayName: 'Docker Build'
+    inputs:
+      containerRegistry: ${{ Parameters.ContainerRegistryServiceConnection }}
+      repository: '${{ Parameters.ContainerRegistryName }}${{ Parameters.ContainerRegistryRepo }}'
+      command: build
+      Dockerfile: ${{ Parameters.DockerFilePath }}
+
+  - task: Docker@2
+    displayName: 'Docker Push'
+    inputs:
+      containerRegistry: ${{ Parameters.ContainerRegistryServiceConnection }}
+      repository: '${{ Parameters.ContainerRegistryName }}${{ Parameters.ContainerRegistryRepo }}'
+      command: push
+      Dockerfile: ${{ Parameters.DockerFilePath }}

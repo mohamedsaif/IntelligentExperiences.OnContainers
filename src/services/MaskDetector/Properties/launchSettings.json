@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "MaskDetector": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 32672,
+      "useSSL": false
+    }
+  }
+}

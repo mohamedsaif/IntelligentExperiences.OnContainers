@@ -1,0 +1,28 @@
+# Azure Pipelines for GitHub :)
+# More info: https://docs.microsoft.com/en-us/azure/devops/pipelines/?view=vsts
+trigger:
+  branches:
+    include:
+      - master
+      - dev
+      - mask-detection
+  paths:
+    include:
+      - 'src/custom-models/mask-detection'
+      - 'azure-pipelines-mask-detection-apis.yml'
+      - 'azure-pipelines-webapp-oss-containers.yml'
+
+variables:
+  buildConfiguration: 'Release'
+
+jobs:
+- template: azure-pipelines-webapp-oss-containers.yml
+  parameters:
+    Name: MaskDetectionAPIs
+    ArtifactName: 'MaskDetectionAPIs'
+    DeploymentSourceFolder: 'src/custom-models/mask-detection/deployment'
+    ContainerRegistryServiceConnection: CrowdAnalyticsACR
+    ContainerRegistryName: 'crowdanalytics/'
+    ContainerRegistryRepo: mask-detection-apis
+    DockerFilePath: 'src/custom-models/mask-detection/Dockerfile'
+    

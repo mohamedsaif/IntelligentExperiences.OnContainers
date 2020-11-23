@@ -1,11 +1,14 @@
 ﻿using CoreLib.Abstractions;
 using MaskDetector.Abstractions;
 using MaskDetector.Models;
+using MaskDetector.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Refit;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,11 +19,13 @@ namespace MaskDetector.Functions
     {
         private IMaskAnalysisRepository maskAnalysisRepo;
         private IStorageRepository filesStorageRepo;
+        private IMaskDetectionAPI maskDetectionApi;
 
-        public MaskDetector(IMaskAnalysisRepository repo, IStorageRepository storage)
+        public MaskDetector(IMaskAnalysisRepository repo, IStorageRepository storage, IMaskDetectionAPI maskApi)
         {
             maskAnalysisRepo = repo;
             filesStorageRepo = storage;
+            maskDetectionApi = maskApi;
         }
 
         [FunctionName("MaskDetector")]
@@ -60,6 +65,27 @@ namespace MaskDetector.Functions
 
             var fileName = cognitiveRequest.FileUrl.Substring(cognitiveRequest.FileUrl.LastIndexOf("/") + 1);
             var data = await filesStorageRepo.GetFileAsync(fileName);
+            var imageStream = new MemoryStream(data);
+
+            try
+            {
+                var detectionResult = await maskDetectionApi.DetectImage(new StreamPart(imageStream, "image.jpg", "multipart/form-data"));
+                result.DetectionResult = detectionResult;
+                result.DetectionResult.Predictions = detectionResult.Predictions.Where(p => p.Probability >= AppConstants.MaskDetectionThreshold).ToList();
+                result.IsSuccessful = true;
+                result.Status = ProcessingStatus.Successful.ToString();
+                result.TotalDetected = detectionResult.Predictions.Where(p => p.Probability >= AppConstants.MaskDetectionThreshold).Count();
+                result.TotalDetectedWithMasks = detectionResult.Predictions.Where(p => p.TagName == "MASK" && p.Probability >= AppConstants.MaskDetectionThreshold).Count();
+                result.TotalDetectedWithoutMasks = detectionResult.Predictions.Where(p => p.TagName == "NOMASK" && p.Probability >= AppConstants.MaskDetectionThreshold).Count();
+                result.MaskDetectionThreshold = AppConstants.MaskDetectionThreshold;
+                result.TotalProcessingTime = (int)(DateTime.UtcNow - startTime).TotalMilliseconds;
+                var dbResult = await maskAnalysisRepo.AddAsync(result);
+                return JsonConvert.SerializeObject(dbResult);
+            }
+            catch (Exception ex)
+            {
+                log.LogError($"FUNC (MaskDetector): camframe-analysis topic triggered and failed to parse message: {JsonConvert.SerializeObject(cognitiveRequest)} with the error: {ex.Message}");
+            }
 
             return null;
         }

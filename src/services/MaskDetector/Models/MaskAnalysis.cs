@@ -17,6 +17,7 @@ namespace MaskDetector.Models
         public int TotalDetected { get; set; }
         public int TotalDetectedWithMasks { get; set; }
         public int TotalDetectedWithoutMasks { get; set; }
+        public double MaskDetectionThreshold { get; set; }
 
         // Processing status
         public bool IsSuccessful { get; set; }

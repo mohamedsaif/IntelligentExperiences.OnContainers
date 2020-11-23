@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,8 @@ namespace MaskDetector.Models
         public string Id { get; set; }
         public string Iteration { get; set; }
         public string Project { get; set; }
-        public List<MaskDetectionPredection> Predections { get; set; }
+        
+        public List<MaskDetectionPredection> Predictions { get; set; }
     }
 
     public class MaskDetectionPredection

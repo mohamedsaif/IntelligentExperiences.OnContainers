@@ -59,4 +59,3 @@ spec:
       subscriptionName: mask-detector
       queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
 ---
-

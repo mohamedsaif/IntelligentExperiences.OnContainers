@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using MaskDetector.Services;
+using Refit;
+using Newtonsoft.Json.Serialization;
 
 [assembly: FunctionsStartup(typeof(MaskDetector.Startup))]
 
@@ -46,6 +49,19 @@ namespace MaskDetector
             builder.Services.AddSingleton<IAzureServiceBusRepository>((s) =>
             {
                 return new AzureServiceBusRepository(serviceBusConnection, AppConstants.SBTopic, AppConstants.SBSubscription);
+            });
+
+            var maskDetectionApiUrl = GlobalSettings.GetKeyValue("maskDetectionApiUrl");
+            AppConstants.MaskDetectionThreshold = double.Parse(GlobalSettings.GetKeyValue("maskDetectionThreshold"));
+            builder.Services.AddSingleton<IMaskDetectionAPI>((s) =>
+            {
+                return RestService.For<IMaskDetectionAPI>(maskDetectionApiUrl, new RefitSettings
+                {
+                     ContentSerializer = new NewtonsoftJsonContentSerializer(new Newtonsoft.Json.JsonSerializerSettings
+                     {
+                         ContractResolver = new CamelCasePropertyNamesContractResolver()
+                     })
+                });
             });
         }
     }

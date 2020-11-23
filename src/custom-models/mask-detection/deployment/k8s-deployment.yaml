@@ -31,7 +31,7 @@ metadata:
   #   service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "SVCSUBNET"
 spec:
   # You can change it to NodePort if you are planning to use the service only through App Gateway
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - protocol: TCP
       port: 80

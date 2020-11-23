@@ -25,6 +25,7 @@ namespace MaskDetector
         public const string SBPublishingTopic = "mask-detection";
 
         //Mask Detection Service URL (local service call to another Kubernetes service)
-        public const string MaskDetectionServiceURL = "mask-detection-api.crowd-analytics.svc.cluster.local";
+        //public const string MaskDetectionServiceURL = "mask-detection-apis-service.crowd-analytics.svc.cluster.local";
+        public static double MaskDetectionThreshold { get; set; }
     }
 }

@@ -38,25 +38,25 @@ Exported from [customvision.ai](https://customvision.ai)
 ### Build
 
 ```bash
-docker build -t <your image name> .
+docker build -t mask-detection-api .
 ```
 
 #### Build ARM container on x64 machine
 
 Export "ARM" Dockerfile from customvision.ai. Then build it using docker buildx command.
 ```bash
-docker buildx build --platform linux/arm/v7 -t <your image name> --load .
+docker buildx build --platform linux/arm/v7 -t mask-detection-api --load .
 ```
 
 ### Run the container locally
 
 ```bash
-docker run -p 127.0.0.1:80:80 -d <your image name>
+docker run -p 127.0.0.1:80:80 -d mask-detection-api
 ```
 
-### Image resizing
+From here, you can use Postman or a similar tool to test and validate the running model as you will see next.
 
-By default, we run manual image resizing to maintain parity with CVS webservice prediction results.
+>NOTE: Image resizing by default, we run manual image resizing to maintain parity with CVS webservice prediction results.
 If parity is not required, you can enable faster image resizing by uncommenting the lines installing OpenCV in the Dockerfile.
 
 ## Testing the service

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mask-detector
+  namespace: crowd-analytics
+  labels:
+    app: mask-detector
+spec:
+  selector:
+    matchLabels:
+      app: mask-detector
+  template:
+    metadata:
+      labels:
+        app: mask-detector
+    spec:
+      containers:
+      - name: mask-detector
+        image: #{acrName}#/crowdanalytics/mask-detector:#{Build.BuildId}#
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: MaskDetector
+        envFrom:
+        - secretRef:
+            name: mask-detector
+      # If your AKS Virtual Nodes and ACR is configured correctly, you can schedule the scaling on virtual nodes
+      # imagePullSecrets:
+      # - name: acrImagePullSecret
+      # nodeSelector:
+      #   kubernetes.io/role: agent
+      #   beta.kubernetes.io/os: linux
+      #   type: virtual-kubelet
+      # tolerations:
+      # - key: virtual-kubelet.io/provider
+      #   operator: Exists
+      # - key: azure.com/aci
+      #   effect: NoSchedule
+---
+apiVersion: keda.k8s.io/v1alpha1
+kind: ScaledObject
+metadata:
+  name: mask-detector
+  namespace: crowd-analytics
+  labels:
+    deploymentName: mask-detector
+spec:
+  scaleTargetRef:
+    deploymentName: mask-detector
+  pollingInterval: 30  # Optional. Default: 30 seconds
+  cooldownPeriod:  300 # Optional. Default: 300 seconds
+  minReplicaCount: 0   # Optional. Default: 0
+  maxReplicaCount: 50 # Optional. Default: 100
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      connection: KEDA_SERVICE_BUS_CONNECTION
+      topicName: camframe-analysis
+      subscriptionName: mask-detector
+      queueLength: '10' # This will be used to trigger a scale up operation when number of messages exceed this number
+---
+

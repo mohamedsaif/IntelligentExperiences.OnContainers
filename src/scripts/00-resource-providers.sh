@@ -20,6 +20,7 @@ az provider register --namespace Microsoft.OperationalInsights
 az provider register --namespace Microsoft.ServiceBus
 az provider register --namespace Microsoft.SignalRService
 az provider register --namespace Microsoft.EventHub
+az provider register --namespace Microsoft.OperationsManagement
 
 
 # If you want to list all resource providers with their status, you can use this:
